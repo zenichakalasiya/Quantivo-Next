@@ -1,3 +1,6 @@
+**On session start:** If `HANDOFF.md` exists in this directory, read it before
+anything else for the latest state of the work.
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -78,6 +81,46 @@ Six real routes replace the original's hash-based `state.page`. Theme is
 Fonts load via a plain `<link>`, not `next/font`: the CSS and ~700 inline styles
 reference the literal families `Manrope` and `'Bebas Neue'`, and `next/font` would
 hash those names and shift font-load timing (which perturbs scroll measurement).
+
+## The home outro — Q draw-and-reveal
+
+Home ends with a scroll sequence modelled on wearebulletproof.com: the logo Q
+draws itself, then opens onto the closing screens. Lives in `src/components/qreveal/`.
+
+| File | Role |
+| --- | --- |
+| `QReveal.tsx` | Pinned, scrubbed timeline. 0–0.55 draws the outline via stroke-dashoffset; 0.55–1 opens the clip. |
+| `QWatermark.tsx` | The oversized Q behind the outro, `half="top" \| "bottom"`. |
+| `OutroScreen.tsx` | `OutroLetsTalk` + `OutroFooter`, two independent 100svh screens. |
+| `HomeOutro.tsx` | Composes the three. |
+| `src/lib/qmark.ts` | The Q path data + measured bbox, lifted from `Quantivo logo-05.svg`. |
+
+**The reveal does not scale the panel.** It uses `clipPathUnits="userSpaceOnUse"`
+and animates a transform on the clip PATH, so the content never moves and only
+the window onto it opens. Scaling the panel would scale its text too — that is
+the whole difference between this and a cheap zoom.
+
+**The split Q is two halves, not one spanning element.** Each screen renders the
+same letter at 200% of its own height with the centre pinned to the shared edge,
+so each clips its own half and together they read as one continuous letter. That
+is what lets both screens stay independently 100svh — a spanning wrapper would
+force them to share one scroll container and the footer could never be full
+screen.
+
+**Watermark colour is theme-scoped** via `--q-wm` / `--q-wm-op` in `globals.css`.
+It must sit DARKER than its surface in both schemes; dark mode needs ~.30 because
+the ground is already near-black, light mode needs ~.05 or it becomes a grey slab.
+One shared value cannot serve both.
+
+**The arrow only survives because the ring is knocked out** in the section
+background colour. A plain filled silhouette loses it, and a stroked outline at
+that scale reads as busy linework competing with the copy — both were tried.
+
+**`_killScroll()` must only kill its own triggers.** It originally did
+`ScrollTrigger.getAll().forEach(t => t.kill())`, inherited from the source where
+it was the only code creating ScrollTriggers. `runPageMotion()` fires ~80ms after
+every route change, so a blanket kill silently destroys any scroll component
+mounted alongside it — this is exactly what broke the Q reveal, with no error.
 
 ## Known, and inherited from the original
 
