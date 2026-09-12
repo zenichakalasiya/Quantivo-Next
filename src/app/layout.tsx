@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/theme";
 import { SiteHeader } from "@/components/SiteHeader";
 import { GridOverlay } from "@/components/GridOverlay";
-import { SiteFooter } from "@/components/SiteFooter";
+import { GlobalFooter } from "@/components/GlobalFooter";
 import { CursorAndProgress } from "@/components/CursorAndProgress";
 import { MotionProvider } from "@/components/MotionProvider";
 
@@ -47,7 +47,7 @@ export default function RootLayout({
           <GridOverlay />
           <SiteHeader />
           {children}
-          <SiteFooter />
+          <GlobalFooter />
           <CursorAndProgress />
           <MotionProvider />
         </ThemeProvider>

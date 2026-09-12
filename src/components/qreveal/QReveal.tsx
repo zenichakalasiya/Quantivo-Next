@@ -95,6 +95,10 @@ export function QReveal({ children }: { children: React.ReactNode }) {
         tl.to('[data-q-panel]', { opacity: 1, ease: 'none', duration: 0.08 }, 0.52);
 
         // ---- phase 2: open the window ----
+        // Once the window is bigger than the screen the clip costs compositing
+        // for no visual difference, so drop it at the very end.
+        tl.set('[data-q-panel]', { clipPath: 'none' }, 0.995);
+
         tl.to(clip, {
           h: fullHeight(),
           ease: 'power2.in',
@@ -146,6 +150,8 @@ export function QReveal({ children }: { children: React.ReactNode }) {
           inset: '0',
           clipPath: 'url(#q-mask)',
           opacity: 0,
+          display: 'grid',
+          placeItems: 'center',
           willChange: 'clip-path',
           zIndex: 1,
         }}
