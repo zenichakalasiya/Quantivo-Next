@@ -44,19 +44,20 @@ const FLIP_MS = 380;
 const TILT = 14;
 
 /**
- * Card width is capped here — at full section width these ran ~440px across,
- * which was far too big.
+ * The three cards share the section's full width — no cap, each grows equally.
  *
- * The row is left-aligned rather than spread: space-between put ~300px between
- * three 330px cards and they stopped reading as a group. The trailing air on the
- * right matches the About section above, so it reads as deliberate.
+ * The crop is SQUARE rather than the 3:4 portrait it started as, and that is
+ * what makes the full width affordable: at ~450px across, a 3:4 card stands
+ * ~590px tall and the section no longer fits on one screen once the heading,
+ * captions and padding are counted. A square card at the same width is ~450px
+ * tall, so the row gets wider and shorter at the same time.
  */
-const CARD_MAX = 330;
+const CARD_ASPECT = '1 / 1';
 
 export function TeamCards() {
   return (
-    <section data-screen-label="Home / Team" style={{ padding: 'clamp(60px,8vw,124px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '16px', justifyContent: 'space-between', marginBottom: 'clamp(28px,4vw,56px)' }}>
+    <section data-screen-label="Home / Team" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '16px', justifyContent: 'space-between', marginBottom: 'clamp(20px,3vw,44px)' }}>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,5.4vw,86px)', lineHeight: '.92' }}>Our Team.</h2>
         <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover a card</span>
       </div>
@@ -94,10 +95,10 @@ function Card({ m }: { m: (typeof HOME_TEAM)[number] }) {
       onMouseLeave={() => setOn(false)}
       onFocus={() => setOn(true)}
       onBlur={() => setOn(false)}
-      style={{ flex: '1 1 240px', maxWidth: `${CARD_MAX}px`, display: 'flex', flexDirection: 'column', gap: '12px' }}
+      style={{ flex: '1 1 240px', minWidth: '0', display: 'flex', flexDirection: 'column', gap: '12px' }}
     >
       {/* perspective belongs on the direct parent of the rotating faces */}
-      <div style={{ position: 'relative', aspectRatio: '3 / 4', perspective: '1600px' }}>
+      <div style={{ position: 'relative', aspectRatio: CARD_ASPECT, maxHeight: 'min(52vh,520px)', perspective: '1600px' }}>
         {/* ---- front ---- */}
         <div
           style={{

@@ -111,7 +111,7 @@ export function AboutTeaser() {
 
         {/* 2 — the stacked wordmark. A <p>, not a heading: "About Us." above is
             this section's h2, and the wordmark reads as a strapline beside it. */}
-        <p style={{ maxWidth: 'clamp(190px,30vh,320px)', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', margin: '0' }}>
+        <p style={{ maxWidth: 'clamp(165px,25vh,268px)', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', margin: '0' }}>
           <span style={SR_ONLY}>{WORDS.join('. ')}.</span>
           {WORDS.map((w) => <Word key={w}>{w}</Word>)}
         </p>
@@ -138,8 +138,10 @@ export function AboutTeaser() {
         </div>
       </div>
 
-      {/* ---- trusted by: no card, no border, no background ---- */}
-      <div>
+      {/* ---- trusted by: no card, no border, no background ----
+           marginTop on top of the section gap: the partner strip is a separate
+           idea from the About copy and was sitting too close to it. */}
+      <div style={{ marginTop: 'clamp(16px,5vh,72px)' }}>
         <p style={{ textAlign: 'center', fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--mute)' }}>Trusted by leading brands</p>
         <div style={{ marginTop: 'clamp(12px,2vh,22px)', position: 'relative', width: '100%', overflow: 'hidden', WebkitMaskImage: 'linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%)', maskImage: 'linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%)' }}>
           <div data-partner-track="" style={{ height: '42px', display: 'flex', alignItems: 'center', width: 'max-content', animation: 'qvMarquee 40s linear infinite' }}>
