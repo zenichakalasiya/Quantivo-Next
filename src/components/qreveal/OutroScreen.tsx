@@ -48,12 +48,6 @@ const FIELD = {
   transition: 'border-color .3s',
 } as const;
 
-const CONTACT_ROWS = [
-  { k: 'Email', v: 'hello@quantivo.digital' },
-  { k: 'Studio', v: 'Add studio address' },
-  { k: 'Working globally', v: 'Ideas don’t have borders' },
-];
-
 /**
  * Screen 1 — what the Q opens onto. Top half of the letter behind.
  *
@@ -73,23 +67,17 @@ export function OutroLetsTalk() {
   return (
     <div data-outro-screen="lets-talk" style={SCREEN}>
       <QWatermark half="top" />
-      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignItems: 'center', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(24px,4vh,54px)' }}>
+      {/* alignContent centres the single row in the screen; alignItems:start then
+          lines the two columns up on the SAME top edge, so "Let's Talk" and
+          "Contact Us" sit on one horizontal line instead of each column being
+          independently centred against the other. */}
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignContent: 'center', alignItems: 'start', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(24px,4vh,54px)' }}>
 
         {/* ---- the pitch ---- */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px,3vh,34px)', alignItems: 'flex-start', textAlign: 'left', minWidth: '0' }}>
           <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Let&apos;s Talk</span>
           <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(40px,9vh,120px)', lineHeight: '.86', maxWidth: '14ch' }}>Let&apos;s Create What&apos;s Next.</h2>
           <p style={{ fontSize: 'clamp(13px,1.9vh,18px)', lineHeight: '1.6', color: 'var(--mute)', maxWidth: '46ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
-
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(7px,1.3vh,14px)', width: '100%', maxWidth: '40ch' }}>
-            {CONTACT_ROWS.map((c) => (
-              <li key={c.k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', paddingBottom: 'clamp(6px,1.1vh,12px)', borderBottom: '1px solid var(--line)' }}>
-                <span style={{ fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' }}>{c.k}</span>
-                <span style={{ fontSize: 'clamp(12px,1.7vh,15px)', fontWeight: '600' }}>{c.v}</span>
-              </li>
-            ))}
-          </ul>
-
           <button onClick={goContact} data-magnet="" data-cursor="Start" style={{ marginTop: 'clamp(2px,1vh,10px)', padding: 'clamp(12px,1.9vh,18px) clamp(24px,2.6vw,38px)', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: 'clamp(11px,1.4vh,13px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Project</button>
         </div>
 
