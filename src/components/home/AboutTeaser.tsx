@@ -72,11 +72,14 @@ export function AboutTeaser() {
   return (
     <section
       data-screen-label="Home / About"
+      // Height is content-driven, NOT min-height:100svh with the content centred.
+      // Centring inside a full-screen box splits the leftover space above and
+      // below the content, and that space above read as a large void between
+      // this section and the hero. Balanced padding gives the section room
+      // without manufacturing a gap.
       style={{
-        minHeight: '100svh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
         gap: GAP,
         padding: PAD,
       }}
@@ -111,7 +114,10 @@ export function AboutTeaser() {
 
         {/* 2 — the stacked wordmark. A <p>, not a heading: "About Us." above is
             this section's h2, and the wordmark reads as a strapline beside it. */}
-        <p style={{ maxWidth: 'clamp(165px,25vh,268px)', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', margin: '0' }}>
+        {/* alignSelf overrides the row's align-items:start so the wordmark sits
+            centred against the tallest column; margin-inline:auto centres it
+            across its own column rather than hugging the left edge. */}
+        <p style={{ maxWidth: 'clamp(165px,25vh,268px)', minWidth: '0', alignSelf: 'center', marginInline: 'auto', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', marginBlock: '0' }}>
           <span style={SR_ONLY}>{WORDS.join('. ')}.</span>
           {WORDS.map((w) => <Word key={w}>{w}</Word>)}
         </p>
