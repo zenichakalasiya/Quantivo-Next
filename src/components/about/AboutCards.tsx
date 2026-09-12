@@ -50,13 +50,15 @@ export function AboutCards() {
               style={{
                 flex: on ? '2.4 1 260px' : '1 1 260px',
                 minWidth: '0',
-                // Tall enough for card 02, which carries the most: a lead, three
-                // belief lines and two paragraphs. Sized to the fullest card so
-                // none of them clips mid-sentence.
-                height: 'clamp(360px,60vh,570px)',
+                // Sized to card 02, which carries the most: a lead, three belief
+                // lines and two paragraphs. The height is fixed rather than
+                // content-driven, or every card below would jump as the pointer
+                // moved along the row — so it is the fullest card that sets it,
+                // and the body type is tuned down to keep that number small.
+                height: 'clamp(310px,46vh,450px)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 'clamp(10px,1.4vh,16px)',
+                gap: 'clamp(8px,1.1vh,13px)',
                 background: 'var(--bg2)',
                 border: '1px solid var(--line)',
                 borderRadius: 'clamp(16px,1.6vw,24px)',
@@ -71,7 +73,7 @@ export function AboutCards() {
                 <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,3vw,50px)', lineHeight: '1', color: 'var(--line)' }}>{c.n}</span>
               </div>
 
-              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(22px,2.2vw,36px)', lineHeight: '1', maxWidth: '18ch', margin: '0' }}>{c.title}</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(20px,1.9vw,30px)', lineHeight: '1.02', maxWidth: '18ch', margin: '0' }}>{c.title}</h3>
 
               {/* revealed body. min-height 0 lets the column actually scroll-clip
                   inside the fixed card height instead of overflowing it. */}
@@ -82,24 +84,26 @@ export function AboutCards() {
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '12px',
-                  overflow: 'hidden',
+                  // auto, not hidden: a guard so a later copy change can never
+                  // silently cut a sentence off the bottom of a fixed-height card.
+                  overflowY: 'auto',
                   opacity: on ? 1 : 0,
                   transform: on ? 'none' : 'translateY(10px)',
                   transition: `opacity .45s ${EASE} ${on ? '.12s' : '0s'}, transform .55s ${EASE}`,
                 }}
               >
-                <p style={{ fontSize: 'clamp(13px,1vw,16px)', lineHeight: '1.6', color: 'var(--ink)', margin: '0' }}>{c.lead}</p>
+                <p style={{ fontSize: 'clamp(12px,.92vw,14px)', lineHeight: '1.55', color: 'var(--ink)', margin: '0' }}>{c.lead}</p>
 
                 {c.points.length > 0 && (
                   <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', margin: '0', padding: '0', listStyle: 'none' }}>
                     {c.points.map((p) => (
-                      <li key={p} style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(16px,1.5vw,24px)', lineHeight: '1.1', paddingBottom: '8px', borderBottom: '1px solid var(--line)' }}>{p}</li>
+                      <li key={p} style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(13px,1.15vw,18px)', lineHeight: '1.15', paddingBottom: '6px', borderBottom: '1px solid var(--line)' }}>{p}</li>
                     ))}
                   </ul>
                 )}
 
                 {c.paras.map((p) => (
-                  <p key={p} style={{ fontSize: 'clamp(12px,.92vw,15px)', lineHeight: '1.6', color: 'var(--mute)', margin: '0' }}>{p}</p>
+                  <p key={p} style={{ fontSize: 'clamp(11px,.84vw,13px)', lineHeight: '1.55', color: 'var(--mute)', margin: '0' }}>{p}</p>
                 ))}
               </div>
             </article>

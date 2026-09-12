@@ -461,7 +461,6 @@ export const ABOUT_CARDS = [
     title: 'Good Work Starts With Understanding.',
     lead: 'We believe great results don\u2019t come from simply following trends or using the same formula for every business.',
     paras: [
-      'That\u2019s why we take the time to understand the business, the challenge, and the opportunity before turning ideas into action.',
       'Our goal is not just to create something that looks good. Our goal is to create something that communicates clearly, creates value, and moves the brand forward.',
     ],
     points: BELIEFS,
