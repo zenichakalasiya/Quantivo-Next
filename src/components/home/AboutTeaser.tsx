@@ -100,16 +100,21 @@ export function AboutTeaser() {
 
       {/* ---- three equal columns, one equal gap ---- */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,230px),1fr))', gap: GAP, alignItems: 'start' }}>
-        {/* 1 — the lead paragraph */}
-        <p style={{ fontSize: 'clamp(14px,1.05vw,17px)', lineHeight: '1.7', color: 'var(--mute)', textWrap: 'pretty', margin: '0' }}>
-          We believe great results don&apos;t come from following trends or using the same formula for every business. That&apos;s why we take the time to understand the business, the challenge and the opportunity before turning ideas into action.
-        </p>
+        {/* 1 — section title and the lead paragraph */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px,1.6vh,18px)', minWidth: '0' }}>
+          <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>02 — About</span>
+          <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,3.4vw,54px)', lineHeight: '.94', letterSpacing: '-.005em', margin: '0' }}>About Us.</h2>
+          <p style={{ fontSize: 'clamp(14px,1.05vw,17px)', lineHeight: '1.7', color: 'var(--mute)', textWrap: 'pretty', margin: '0' }}>
+            We believe great results don&apos;t come from following trends or using the same formula for every business. That&apos;s why we take the time to understand the business, the challenge and the opportunity before turning ideas into action.
+          </p>
+        </div>
 
-        {/* 2 — the stacked wordmark */}
-        <h2 style={{ maxWidth: 'clamp(190px,30vh,320px)', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', margin: '0' }}>
+        {/* 2 — the stacked wordmark. A <p>, not a heading: "About Us." above is
+            this section's h2, and the wordmark reads as a strapline beside it. */}
+        <p style={{ maxWidth: 'clamp(190px,30vh,320px)', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', margin: '0' }}>
           <span style={SR_ONLY}>{WORDS.join('. ')}.</span>
           {WORDS.map((w) => <Word key={w}>{w}</Word>)}
-        </h2>
+        </p>
 
         {/* 3 — image, copy, CTA */}
         <div style={{ minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(14px,1.8vh,24px)' }}>
