@@ -35,8 +35,12 @@ export function QWatermark({ half }: { half: 'top' | 'bottom' }) {
         zIndex: 0,
       }}
     >
-      <path d={Q_OUTER} fill="var(--ink)" fillOpacity=".11" />
-      {/* Knockouts in the section background — this is what keeps the arrow. */}
+      {/* DARKER than the surface, not lighter — see the --q-wm note in globals.css.
+          Filling with --ink made the letter brighter than the page, which read as
+          washed out in dark mode. */}
+      <path d={Q_OUTER} fill="var(--q-wm)" fillOpacity="var(--q-wm-op)" />
+      {/* Knockouts back to the surface colour — this is what keeps the arrow,
+          now reading as lighter cuts through a darker mass. */}
       <path d={Q_RING} fill="var(--bg2)" />
       <circle cx={Q_DOT.cx} cy={Q_DOT.cy} r={Q_DOT.r} fill="var(--bg2)" />
     </svg>

@@ -137,3 +137,15 @@ summary::-webkit-details-marker{display:none}
 [data-team-btn]:hover{border-color:var(--a)!important}
 /* footer nav link (Q reveal screen) */
 [data-foot-nav]:hover{color:var(--ink)!important}
+
+/* ===== Outro Q watermark =====
+ * The big Q behind the outro must sit DARKER than the surface it is on, in both
+ * schemes. Filling it with --ink made it lighter than the page, which read as
+ * too bright in dark mode.
+ *
+ * Both schemes therefore darken with black; only the amount differs. Dark mode
+ * needs a lot (the ground is already near-black, so subtracting light barely
+ * moves it), light mode needs very little or it turns into a grey slab. */
+:root{--q-wm:#000;--q-wm-op:.45}
+:root:not([data-qv="light"]){--q-wm:#000;--q-wm-op:.45}
+:root[data-qv="light"]{--q-wm:#0F0F12;--q-wm-op:.05}
