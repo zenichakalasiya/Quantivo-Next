@@ -1,5 +1,4 @@
 import { HeroSlider } from '@/components/home/HeroSlider';
-import { Ticker } from '@/components/home/Ticker';
 import { AboutTeaser } from '@/components/home/AboutTeaser';
 import { Pillars } from '@/components/home/Pillars';
 import { ServicesShowcase } from '@/components/home/ServicesShowcase';
@@ -12,7 +11,10 @@ import { Faq } from '@/components/home/Faq';
 import { HomeOutro } from '@/components/qreveal/HomeOutro';
 
 /**
- * Home. Section order matches Quantivo.dc.html lines 161-660.
+ * Home. Section order follows Quantivo.dc.html lines 161-660, with two
+ * deliberate departures: the original hero and its three.js card drum are
+ * replaced by HeroSlider, and the capability marquee that sat under the hero
+ * has been removed.
  *
  * HomeOutro sits OUTSIDE <main> because it carries both the Let's Talk screen
  * (the old FinalCta, now revealed through the drawn Q) and the site footer — one
@@ -24,7 +26,6 @@ export default function HomePage() {
     <>
       <main style={{ position: 'relative', zIndex: '1' }}>
         <HeroSlider />
-        <Ticker />
         <AboutTeaser />
         <Pillars />
         <ServicesShowcase />
