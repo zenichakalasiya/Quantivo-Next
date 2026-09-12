@@ -397,3 +397,41 @@ export const SERVICE_CARDS = [
     target: 'svc-arch',
   },
 ] as const;
+
+/**
+ * Home / Testimonials — the three cards in the ring carousel.
+ *
+ * PLACEHOLDER, like the TESTIMONIALS set they are drawn from: the original site
+ * labels that block "Dummy copy" in its own UI, and every name there is
+ * "Placeholder Name". `rating` and `when` are new fields the reference card
+ * needs and the old data never had, so those are invented too.
+ *
+ * Swap all five fields per person for real, permissioned client quotes before
+ * this goes in front of anyone who matters.
+ */
+export const HOME_TESTIMONIALS = [
+  {
+    initial: 'A',
+    name: 'Placeholder Name',
+    role: 'Marketing Lead, Client Co.',
+    quote: 'Dummy testimonial copy. Replace with a real client quote about the work and how the collaboration ran.',
+    rating: 5,
+    when: '2 months ago',
+  },
+  {
+    initial: 'B',
+    name: 'Placeholder Name',
+    role: 'Founder, Studio Name',
+    quote: 'Dummy testimonial copy. A short line on responsiveness, clarity of communication, and delivery.',
+    rating: 5,
+    when: '3 months ago',
+  },
+  {
+    initial: 'C',
+    name: 'Placeholder Name',
+    role: 'Head of Brand, Retailer',
+    quote: 'Dummy testimonial copy. Two sentences work best here — one on the problem, one on the outcome.',
+    rating: 5,
+    when: '4 months ago',
+  },
+] as const;
