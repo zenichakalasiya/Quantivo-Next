@@ -1,77 +1,92 @@
-# Handoff — 2026-09-12 19:02
+# Handoff — 2026-09-13 00:02
 
 ## Read first
 
-`CLAUDE.md` in this folder — especially **"The home outro — Q draw-and-reveal"**
-(the newest work) and **"Two traps that cost real debugging time"**. Both record
-failure modes that produce *no error message*, so they are very hard to rediscover.
+`CLAUDE.md` in this directory, especially two new sections:
+
+- **"The home page redesign"** — the section order, what each rebuilt section
+  does, and the five mechanics that took real debugging to get right.
+- **"Placeholder content — do not ship in front of a client"** — the most
+  important thing on this page right now.
+
+Also worth reading before touching anything animated: **"A debugging note that
+will save an hour"** at the bottom of `CLAUDE.md`.
 
 ## What we worked on this session
 
-Converted the whole Quantivo site from the Claude Design canvas document
-(`Quantivo.dc.html`) to Next.js, published it live, then designed and built a
-scroll sequence for the home page ending: the logo Q draws itself and opens onto
-the Let's Talk screen and a full-screen footer.
+Redesigned the home page section by section against client reference images
+(Klarna, KOTA, wearebulletproof), and reordered the page to the client's running
+order. Everything was built, verified in the browser, committed and deployed
+section by section — the live site is current.
 
 ## Completed
 
-- **Full port.** All 6 pages (home with 12 sections, about, services, work,
-  insights, contact), the motion layer, header, footer, custom cursor, scroll
-  progress, and all 19 `style-hover`/`style-focus` rules.
-- **Published.** https://zenichakalasiya.github.io/Quantivo-Next/ — all routes
-  and assets verified 200 under the Pages subpath.
-- **Q draw-and-reveal outro.** Draw → open → Let's Talk (top half of Q) → footer
-  as its own 100svh screen (bottom half). Split wordmark QUANTIVO/DIGITAL at
-  34vh sliding apart on scroll.
-- **Logo fix.** Ring, arrow and centre dot are now `#fff`, matching `.cls-3` in
-  `Quantivo logo-05.svg`. They were `var(--bg)`, which rendered the arrow
-  near-black. **This bug also exists in the original V4 site** — not fixed there.
-- A prototype route at `/q-reveal` renders the same `HomeOutro` as home, for
-  tuning without scrolling the whole page.
+- **Hero** → `HeroSlider.tsx`. Clip-path aperture slider, 3 slides. Copy wipes in
+  left→right per line (staggered 0/95/190/285ms), image opens small→big at 560ms.
+  The three.js card drum, the old `Hero.tsx` and the `three` dependency are gone.
+- **About** → `AboutTeaser.tsx`. Three columns (paragraph / stacked wordmark /
+  image + copy + CTA), no card, `02 — About` + "About Us." heading, "Trusted by"
+  strip stripped of its box. Fits one screen.
+- **Services** → `ServicesShowcase.tsx`. Sticky card deck of the four capability
+  groups, theme-aware dark cards, per-card image opening left→right.
+- **Work** → `WorkRail.tsx`. Two opposed marquees, hover pauses the row and
+  expands the tile Klarna-style with year, description and a CTA.
+- **Team** → `TeamCards.tsx` (new section). Three cards, greyscale→colour on a
+  soft 14° cross-fade turn, full-width row, square crop.
+- **Testimonials** → `Testimonials.tsx`. Three-card ring carousel, centre lit,
+  dots, autoplay pausing on hover.
+- **Page reorder** in `src/app/page.tsx`; `Pillars` and `Ticker` deleted.
+- New data in `src/data/content.ts`: `HERO_SLIDES`, `SERVICE_CARDS`, `HOME_TEAM`,
+  `HOME_TESTIMONIALS`, plus an `img` field on every `WORK` entry.
 
 ## In progress
 
-Nothing mid-flight. Working tree clean, everything committed and pushed.
+Nothing mid-flight. Working tree is clean, `main` is pushed, Pages deploy green.
 
 ## Next steps
 
-1. **Visual sign-off on the port.** Fidelity was verified structurally (attribute
-   counts, computed styles, a 700/700 lossless style round-trip) but there was
-   never a side-by-side pixel diff of all six pages — the browser tab kept
-   wedging. Compare against https://zenichakalasiya.github.io/Quantivo-V4/.
-2. Decide whether to keep `/q-reveal` as a tuning sandbox or delete it.
-3. Consider applying the white-arrow logo fix to the original V4 site so the two
-   stay consistent.
-4. Optional: real images for the 14 `<image-slot>` placeholders; a backend for
-   the contact form (it posts nowhere, same as the original).
+1. **Replace the placeholder content** — see the table in `CLAUDE.md`. The
+   testimonial star ratings and dates are the urgent one: they were invented to
+   match the reference card and read as verified reviews.
+2. **Renumber the section eyebrows.** The reorder left them stale — Services says
+   `04` but is 3rd, Work says `06` but is 4th, Testimonials says `05` but is 8th.
+   Only About (`02`) is correct. Team and Numbers have no eyebrow at all.
+   (Offered twice; the client has not asked for it yet.)
+3. Continue section-by-section redesign if more references arrive. Per the last
+   instruction image, **Process and Insights stay as they are**.
+4. Optional, carried from earlier: decide whether to keep the `/q-reveal` route,
+   and whether to apply the white-arrow logo fix to the original V4 site.
 
 ## Decisions made
 
-- **Vendored rather than rewrote** `quantivo-roller.js`, `image-slot.js` and the
-  motion layer. They are identical *by construction* instead of by reproduction —
-  the highest-fidelity option for dense, measurement-sensitive scroll code.
-- **Plain `<link>` fonts, not `next/font`.** The CSS and ~700 inline styles
-  reference the literal families `Manrope` / `'Bebas Neue'`; `next/font` hashes
-  those names and shifts load timing, which perturbs scroll measurement.
-- **`reactStrictMode: false`.** Its double-mount wedges the vendored custom
-  elements in dev. Production was never affected.
-- **The reveal animates the clip path, not the panel.** Scaling the panel would
-  scale its text; here only the window opens and the content never moves.
-- **The split Q is two half-letters, not one spanning element** — that is what
-  lets both outro screens stay independently 100svh.
+- **Home is no longer a port.** The other five routes still mirror
+  `Quantivo.dc.html`; `/` does not. Recorded at the top of `CLAUDE.md` so nobody
+  "fixes" the home page back toward the original.
+- **Services and Process are exempt from the one-screen rule.** Both are
+  scroll-driven — the Services deck is ~4.8 screens and the Process rail ~3.9.
+  The height *is* the animation; compressing them would mean redesigning them.
+  Every other section is now at or under ~1.05 screens.
+- **Sticky over GSAP pinning for the card deck.** KOTA pins with GSAP plus a
+  smooth-scroll proxy; CSS sticky gets the same result with less machinery and
+  cannot drift out of sync, since no JS decides where a card sits.
+- **Four capability groups, not four individual services**, for the Services
+  cards — each already carries a sub-service list that maps onto the reference's
+  pill tags, and there is one `q-cat-*` image per group.
 
 ## Gotchas & notes
 
-- **The renderer freezes when scrolling deep into the Approach rail** at high DPR.
-  **The original site does this too** — inherited, not introduced. If a tab
-  wedges, open a fresh one; navigating does not recover it.
-- **Programmatic scroll under CDP does not dispatch scroll events**, so
-  ScrollTrigger and the progress bar appear frozen when driven from devtools.
-  Use real wheel scrolling, or `dispatchEvent(new Event('scroll'))`.
-- Screenshots at DPR 2.25 can come back looking hugely zoomed. That is a capture
-  artifact, not the page. Computed-style probes are the reliable instrument.
-- `python` is **not installed** on this machine, so the original project's
-  README instruction (`python -m http.server`) does not work. Use a node static
-  server.
-- Dev server is degraded by the StrictMode workaround; **verify against
-  production builds** (`npm run build`, serve `out/`).
+- **The renderer wedges regularly** when driving this page over CDP — screenshots
+  and scrolls start timing out. A fresh tab clears it. The original V4 site does
+  it too, so it is inherited.
+- **A backgrounded tab pauses rAF**, freezing every CSS transition at t=0 and
+  making computed style disagree with inline style forever. This cost real time
+  early on: it looks exactly like a stuck animation. Verify with screenshots.
+- **Shell escaping mangles template literals.** Several `node -e` edits silently
+  produced `` maxWidth: `px` `` — and TypeScript accepted it, because `'px'` is a
+  valid string. Use the Edit tool for anything containing backticks or `${}`.
+- `HOME_SERVICES` is now unused (the old three-column track was its only
+  consumer). Left in place deliberately, in case those three services are wanted
+  elsewhere.
+- `_initSvcTrack` in `src/vendor/motion.js` is now a no-op — it bails when
+  `[data-svc-col]` is absent, and the rebuilt Services section no longer emits
+  that attribute. Harmless, but it is dead weight if you are ever pruning.

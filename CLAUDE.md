@@ -37,16 +37,22 @@ frameworks. GSAP, ScrollTrigger and three.js came across at identical pinned ver
 - `src/app/globals.css` — the original's `<helmet><style>` block **byte-for-byte**
   (verified by diff), then a `PORTED PSEUDO-CLASSES` section at the bottom.
 - `src/data/content.ts` — every content constant, copied verbatim from the source.
-- `src/components/home/` — the 12 home sections, in page order.
+- `src/components/home/` — the home sections, in page order.
 - `src/vendor/` — code deliberately NOT rewritten (see below).
+
+**The home page is no longer a port.** Everything else on the site still is, but
+`/` has been redesigned section by section against client reference images — see
+"The home page redesign" below. Treat `Quantivo.dc.html` as the source of truth
+for the other five routes only.
 
 ### Vendored, not rewritten
 
-Three files are copied near-verbatim so they are identical **by construction**:
+Two files are copied near-verbatim so they are identical **by construction**.
+(`quantivo-roller.js`, the three.js card drum, was a third — it and the `three`
+dependency were deleted when the hero was redesigned.)
 
 | File | Why |
 | --- | --- |
-| `quantivo-roller.js` | three.js card drum. Self-registering custom element, owns its own theme MutationObserver and cleanup. Only change: `import('three')` instead of the jsDelivr URL. |
 | `image-slot.js` | Placeholder slots. Outside the Claude Design host `window.omelette` is absent, so it renders exactly the read-only placeholder the live site shows. |
 | `motion.js` | `_animate` + all 7 `_init*`/`_*Off()` pairs. Mechanically transformed: methods → functions, `this._x` → the module-level `S` object, gsap/ScrollTrigger → imports. Dense, measurement-sensitive scroll code — rewriting it is where an animation port drifts. |
 
@@ -81,6 +87,51 @@ Six real routes replace the original's hash-based `state.page`. Theme is
 Fonts load via a plain `<link>`, not `next/font`: the CSS and ~700 inline styles
 reference the literal families `Manrope` and `'Bebas Neue'`, and `next/font` would
 hash those names and shift font-load timing (which perturbs scroll measurement).
+
+## The home page redesign
+
+`/` was rebuilt section by section from client reference images (Klarna, KOTA,
+wearebulletproof). Section order is the client's, not the original document's:
+
+    Hero → About → Services → Work → Process → Team → Numbers →
+    Testimonials → Insights → FAQ → Let's Talk + Footer
+
+Gone from the original: the hero + three.js card drum, the capability marquee,
+and the "Four Things We Bring" pillars. New: `TeamCards`.
+
+| Section | Component | Mechanic |
+| --- | --- | --- |
+| Hero | `HeroSlider.tsx` | clip-path aperture `inset(45%) → inset(0%)`, image never transformed. Copy wipes in left→right per line, staggered; media follows on a `transition-delay`. |
+| About | `AboutTeaser.tsx` | Three columns, no card. Wordmark is SVG `<text textLength lengthAdjust="spacingAndGlyphs">` so all three words occupy the same width regardless of letter count. |
+| Services | `ServicesShowcase.tsx` | Sticky card deck; each card sticks lower than the last, covered cards fade in place. Per-card image opens left→right. |
+| Work | `WorkRail.tsx` | Two opposed marquees; hovering a tile pauses that row and expands it Klarna-style. |
+| Team | `TeamCards.tsx` | Greyscale → colour on a soft 14° cross-fade turn. |
+| Testimonials | `Testimonials.tsx` | Three-card ring; slot derived as `(i - active + n) % n`. |
+
+### Five things learned the hard way here
+
+1. **A sticky deck needs ONE shared container.** Giving each card its own
+   `100svh` slot means every card unsticks the instant its slot ends — which
+   lands exactly when the next card's top reaches the previous card's bottom.
+   The cards meet edge to edge and never overlap, no matter how you tune it.
+
+2. **A marquee that contains resizable children cannot use a `%` keyframe.**
+   `qvMarquee` translates by `-50%`, which resolves against the track's own
+   width — so the moment a hovered tile widens, the distance changes underneath
+   the animation and the row jumps. Tween `x` to a measured pixel distance.
+
+3. **Never let an animation's "from" state be the inline default.** If GSAP
+   fails to load, or `prefers-reduced-motion` makes the effect return early, a
+   clipped-to-nothing element stays invisible forever. Default to the VISIBLE
+   state and let the tween apply the closed one.
+
+4. **Don't reorder the DOM to rotate a carousel.** It restarts transitions,
+   throws focus, and walks a screen reader through the items in a different
+   order every cycle. Express rotation as transform + explicit `z-index`.
+
+5. **Fading a covered card to near-zero destroys the depth.** A card you cannot
+   see is not *behind* anything, it has just gone. Stop around `.3–.55` and give
+   each card a small sticky offset so a sliver of its top edge stays visible.
 
 ## The home outro — Q draw-and-reveal
 
@@ -128,6 +179,27 @@ mounted alongside it — this is exactly what broke the Q reveal, with no error.
 - The 14 `<image-slot>`s are placeholders; there is no `.image-slots.state.json`.
 - Scrolling deep into the Approach rail can wedge the renderer at high DPR — **the
   original does this too**, so it is inherited, not introduced.
+
+## Placeholder content — do not ship in front of a client
+
+The redesign surfaced placeholders that were previously buried. All of it needs
+real content:
+
+| Where | What is fake |
+| --- | --- |
+| `HOME_TEAM` | Names (`Name Surname`), photos (stock stand-ins — `/img` has no portraits), LinkedIn URLs (`#`). |
+| `HOME_TESTIMONIALS` | Quotes, names, **and the star ratings and "N months ago" dates, which were invented** — the old data had no such fields. A 5-star rating with a date reads as a verified review. |
+| `WORK[].img` | Stock stand-ins; all six projects originally pointed at empty image slots. |
+| `STATS` | Figures are placeholders (the section carries a visible chip saying so). |
+
+## A debugging note that will save an hour
+
+**A backgrounded tab pauses `requestAnimationFrame`**, so every CSS transition
+freezes at t=0 and `getComputedStyle` disagrees with the inline style
+indefinitely. This looks exactly like a stuck animation and is not one. Screenshots
+force a paint, so they are the trustworthy check; computed-style probes are not.
+Likewise, programmatic `scrollTo` does not drive ScrollTrigger the way a real
+wheel event does.
 
 ## Conventions
 
