@@ -37,9 +37,9 @@ export default function AboutPage() {
     <main style={{ position: 'relative', zIndex: '1' }}>
       {/* ---------- Hero ---------- */}
       <section data-screen-label="About / Hero" style={{ minHeight: '66svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: '24px', padding: '150px clamp(16px,3.4vw,48px) clamp(48px,6vw,90px)' }}>
-        <span style={EYEBROW}>About Quantivo Digital</span>
+        <span style={EYEBROW}>About Quantivo</span>
         <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(46px,9vw,168px)', lineHeight: '.84', maxWidth: '18ch' }}>Built for Ideas That Move Forward.</h1>
-        <p data-anim="up" style={{ fontSize: 'clamp(16px,1.4vw,22px)', lineHeight: '1.5', color: 'var(--mute)', maxWidth: '62ch' }}>Quantivo Digital is a creative and digital solutions company helping businesses build stronger brands, create meaningful digital experiences, and communicate their ideas with greater impact.</p>
+        <p data-anim="up" style={{ fontSize: 'clamp(16px,1.4vw,22px)', lineHeight: '1.5', color: 'var(--mute)', maxWidth: '62ch' }}>Quantivo is a creative and digital solutions company helping businesses build stronger brands, create meaningful digital experiences, and communicate their ideas with greater impact.</p>
       </section>
 
       {/* ---------- About Quantivo ---------- */}
@@ -56,7 +56,7 @@ export default function AboutPage() {
                 <h3 style={H3}>Creativity Meets Strategy. Ideas Meet Execution.</h3>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <p style={P_INK}>The digital world is constantly changing, and businesses need more than individual services to stand out. They need strong ideas, clear communication, memorable visuals, and the right digital strategy. That&apos;s where Quantivo Digital comes in.</p>
+                <p style={P_INK}>The digital world is constantly changing, and businesses need more than individual services to stand out. They need strong ideas, clear communication, memorable visuals, and the right digital strategy. That&apos;s where Quantivo comes in.</p>
                 <p style={P_MUTE}>We are a team focused on combining strategy, creativity, technology, and visualization to create solutions that help businesses build their presence and present themselves with confidence.</p>
                 <p style={P_MUTE}>From managing a brand&apos;s social media presence to creating its identity, building its website, designing its packaging, or bringing products and spaces to life through 3D visualization — we approach every project with purpose.</p>
               </div>
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 <h3 style={H3}>One Partner. Multiple Possibilities.</h3>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <p style={P_MUTE}>Quantivo Digital brings together different capabilities to support businesses across their digital and creative journey.</p>
+                <p style={P_MUTE}>Quantivo brings together different capabilities to support businesses across their digital and creative journey.</p>
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@ export default function AboutPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '52ch' }}>
                 <h3 style={VM_H3}>Creating Better Ways for Brands to Be Seen.</h3>
                 <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'rgba(255,255,255,.9)' }}>Our vision is to become a trusted creative and digital partner for businesses around the world. We want to help ambitious brands turn ideas into meaningful experiences through creativity, technology, strategy, and innovation.</p>
-                <p style={{ fontSize: 'clamp(14px,1.1vw,17px)', lineHeight: '1.5', color: '#fff' }}>As Quantivo Digital grows, our focus remains simple: Keep learning. Keep creating. Keep moving forward.</p>
+                <p style={{ fontSize: 'clamp(14px,1.1vw,17px)', lineHeight: '1.5', color: '#fff' }}>As Quantivo grows, our focus remains simple: Keep learning. Keep creating. Keep moving forward.</p>
               </div>
             </div>
 
@@ -276,7 +276,7 @@ export default function AboutPage() {
         <span style={EYEBROW}>Working Globally</span>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(40px,6.4vw,116px)', lineHeight: '.9', marginTop: '14px', maxWidth: '16ch' }}>Ideas Don&apos;t Have Borders.</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(270px,1fr))', gap: 'clamp(24px,4vw,60px)', marginTop: 'clamp(24px,3vw,44px)' }}>
-          <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>Great collaboration can happen anywhere. Quantivo Digital works with businesses internationally, helping brands and companies access creative, digital, and visualization services across markets.</p>
+          <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>Great collaboration can happen anywhere. Quantivo works with businesses internationally, helping brands and companies access creative, digital, and visualization services across markets.</p>
           <p data-anim="up" style={{ fontSize: 'clamp(16px,1.3vw,20px)', lineHeight: '1.5' }}>No matter where your business is located, our goal remains the same: Understand the challenge. Create the right solution. Deliver work that creates value.</p>
         </div>
       </section>

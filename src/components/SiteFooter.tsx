@@ -18,7 +18,6 @@ export function SiteFooter() {
           <span style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'nowrap', maxWidth: '100%' }}>
             <QuantivoLogoFooter />
           </span>
-          <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(20px,2vw,28px)', letterSpacing: '.18em', lineHeight: '1', color: 'var(--mute)' }}>DIGITAL</span>
           <span style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mute)', lineHeight: '1.6' }}>Digital Marketing · Branding · Packaging · Web Development · 3D Visualization</span>
           <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'var(--mute)', maxWidth: '34ch' }}>Helping businesses create stronger brands and better digital experiences.</p>
         </div>
@@ -48,7 +47,7 @@ export function SiteFooter() {
       </div>
 
       <div style={{ marginTop: 'clamp(36px,5vw,70px)', paddingTop: '20px', borderTop: '1px solid var(--line)', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)' }}>
-        <span>© Quantivo Digital</span>
+        <span>© Quantivo</span>
         <span>Ideas don&apos;t have borders</span>
       </div>
 

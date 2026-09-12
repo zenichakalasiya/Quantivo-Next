@@ -26,7 +26,7 @@ export function AboutTeaser() {
           <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,4.6vw,74px)', lineHeight: '.92', letterSpacing: '-.005em' }}>
             About <span style={{ background: 'var(--grad)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>Quantivo</span>
           </h2>
-          <p style={{ fontSize: 'clamp(15px,1.15vw,18px)', lineHeight: '1.65', color: 'var(--mute)', maxWidth: '42ch', textWrap: 'pretty' }}>In a digital world where every brand is competing for attention, being visible isn&apos;t enough. Quantivo Digital combines strategy, creativity, technology, and 3D to help businesses communicate their value and connect with the right audience.</p>
+          <p style={{ fontSize: 'clamp(15px,1.15vw,18px)', lineHeight: '1.65', color: 'var(--mute)', maxWidth: '42ch', textWrap: 'pretty' }}>In a digital world where every brand is competing for attention, being visible isn&apos;t enough. Quantivo combines strategy, creativity, technology, and 3D to help businesses communicate their value and connect with the right audience.</p>
           <button onClick={() => { router.push('/about'); scrollTo({ top: 0, behavior: 'instant' }); }} data-magnet="" data-cursor="About" style={{ marginTop: '4px', padding: '16px 34px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Learn More</button>
         </div>
 

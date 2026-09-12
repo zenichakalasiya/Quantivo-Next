@@ -38,7 +38,7 @@ export default function ServicesPage() {
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Our Services</span>
         <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,8.4vw,158px)', lineHeight: '.84', maxWidth: '20ch' }}>Everything Your Brand Needs to Move Forward.</h1>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 'clamp(20px,4vw,60px)', textAlign: 'center' }}>
-          <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>At Quantivo Digital, we combine digital marketing, branding, web development, and 3D visualization to help businesses build stronger brands, improve their digital presence, and communicate their ideas more effectively.</p>
+          <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>At Quantivo, we combine digital marketing, branding, web development, and 3D visualization to help businesses build stronger brands, improve their digital presence, and communicate their ideas more effectively.</p>
           <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>Our services are designed to support businesses at different stages—from building a brand and reaching the right audience to creating digital experiences and high-quality visualizations.</p>
         </div>
       </section>
@@ -96,7 +96,7 @@ export default function ServicesPage() {
 
       <section id="svc-contact" data-screen-label="Services / One team" style={{ position: 'relative', zIndex: '20', background: 'var(--bg)', borderTop: '1px solid var(--line)', padding: 'clamp(70px,10vw,150px) clamp(16px,3.4vw,48px)', display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'start' }}>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(40px,6.8vw,124px)', lineHeight: '.88', maxWidth: '18ch' }}>One Team. Multiple Capabilities.</h2>
-        <p style={{ fontSize: 'clamp(15px,1.25vw,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '66ch' }}>From building your brand identity and packaging to growing your digital presence, developing your website, running advertising campaigns, and creating high-quality 3D visualizations—Quantivo Digital brings strategy, creativity, technology, and visualization together under one roof.</p>
+        <p style={{ fontSize: 'clamp(15px,1.25vw,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '66ch' }}>From building your brand identity and packaging to growing your digital presence, developing your website, running advertising campaigns, and creating high-quality 3D visualizations—Quantivo brings strategy, creativity, technology, and visualization together under one roof.</p>
         <p style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(26px,3.2vw,50px)', lineHeight: '1' }}>Have a Project in Mind? Let&apos;s create something meaningful.</p>
         <button onClick={goContact} data-magnet="" data-cursor="Start" style={{ padding: '16px 32px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Project</button>
       </section>

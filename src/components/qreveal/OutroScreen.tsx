@@ -121,13 +121,16 @@ export function OutroFooter() {
             <span data-foot-link="">Terms</span>
             <span data-foot-link="">Cookies</span>
           </span>
-          <span>© Quantivo Digital 2026. All rights reserved</span>
+          <span>© Quantivo 2026. All rights reserved</span>
         </div>
 
-        {/* split wordmark, cropped by the viewport edges */}
+        {/* Split wordmark, cropped by the viewport edges.
+            With "Digital" dropped from the brand there is no second word to put on
+            the right, so the name splits against itself — QUAN | TIVO — which is
+            exactly how the reference treats BULLET | PROOF. */}
         <div aria-hidden="true" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 'clamp(12px,4vw,80px)', overflow: 'hidden' }}>
-          <span data-word-left="" style={WORD}>QUANTIVO</span>
-          <span data-word-right="" style={WORD}>DIGITAL</span>
+          <span data-word-left="" style={WORD}>QUAN</span>
+          <span data-word-right="" style={WORD}>TIVO</span>
         </div>
       </div>
     </div>

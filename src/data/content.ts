@@ -274,7 +274,7 @@ export const TEAM = [
 
 /** Journey rail. `left` is the absolute x on the 3400px track - _initYearRail translates it. */
 export const JOURNEY = [
-  { left: 120, year: '2021', body: 'Quantivo Digital starts as a small creative team focused on branding and social media.', img: '/img/q-yr-2021.jpg' },
+  { left: 120, year: '2021', body: 'Quantivo starts as a small creative team focused on branding and social media.', img: '/img/q-yr-2021.jpg' },
   { left: 740, year: '2022', body: 'Performance marketing and SEO join the offering as client programmes grow.', img: '/img/q-yr-2022.jpg' },
   { left: 1360, year: '2023', body: 'Website development brought in-house, connecting design and build.', img: '/img/q-yr-2023.jpg' },
   { left: 1980, year: '2024', body: '3D visualization studio launches for architecture and product clients.', img: '/img/q-yr-2024.jpg' },

@@ -36,7 +36,6 @@ export function QuantivoLogo() {
               <polygon points="1120.53 505.11 1105.42 516.03 1122.44 523.65 1120.53 505.11"></polygon>
             </g>
           </svg>
-          <span style={{ fontFamily: 'Manrope,sans-serif', fontSize: '9px', fontWeight: '600', letterSpacing: '.22em', color: 'var(--mute)', border: '1px solid var(--line)', borderRadius: '99px', padding: '3px 7px' }}>DIGITAL</span>
     </>
   );
 }

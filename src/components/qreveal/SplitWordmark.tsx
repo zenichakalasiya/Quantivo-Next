@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 /**
  * Oversized wordmark that splits apart as the footer scrolls in:
  *
- *     QUANTIVO  <--- left            right ---> DIGITAL
+ *     QUAN  <--- left                    right --->  TIVO
  *
  * Both halves are deliberately cropped by the viewport edges — they run
  * off-screen, which is the point (the reference does the same with BULLET|PROOF).
@@ -79,8 +79,10 @@ export function SplitWordmark() {
         paddingTop: 'clamp(20px,4vw,60px)',
       }}
     >
-      <span data-word-left="" style={word}>QUANTIVO</span>
-      <span data-word-right="" style={word}>DIGITAL</span>
+      {/* The name splits against itself now that "Digital" is gone from the
+          brand — same treatment the reference gives BULLET | PROOF. */}
+      <span data-word-left="" style={word}>QUAN</span>
+      <span data-word-right="" style={word}>TIVO</span>
     </div>
   );
 }

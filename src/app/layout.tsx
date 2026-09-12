@@ -8,9 +8,9 @@ import { CursorAndProgress } from "@/components/CursorAndProgress";
 import { MotionProvider } from "@/components/MotionProvider";
 
 export const metadata: Metadata = {
-  title: "Quantivo Digital — We turn attention into measurable growth",
+  title: "Quantivo — We turn attention into measurable growth",
   description:
-    "Quantivo Digital — digital marketing, brand design, website development and 3D visualization.",
+    "Quantivo — digital marketing, brand design, website development and 3D visualization.",
 };
 
 export default function RootLayout({
