@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NAV } from '@/lib/nav';
 import { QWatermark } from './QWatermark';
@@ -35,19 +35,82 @@ const SCREEN = {
   background: 'var(--bg2)',
 } as const;
 
-/** Screen 1 — what the Q opens onto. Top half of the letter behind. */
+const FIELD = {
+  background: 'var(--bg)',
+  border: '1px solid var(--line)',
+  borderRadius: '10px',
+  padding: 'clamp(9px,1.5vh,13px) 14px',
+  color: 'var(--ink)',
+  font: 'inherit',
+  fontSize: 'clamp(12px,1.7vh,15px)',
+  outline: 'none',
+  width: '100%',
+  transition: 'border-color .3s',
+} as const;
+
+const CONTACT_ROWS = [
+  { k: 'Email', v: 'hello@quantivo.digital' },
+  { k: 'Studio', v: 'Add studio address' },
+  { k: 'Working globally', v: 'Ideas don’t have borders' },
+];
+
+/**
+ * Screen 1 — what the Q opens onto. Top half of the letter behind.
+ *
+ * Two columns: the pitch on the left, contact details and a short enquiry form on
+ * the right. Centring a single narrow column left most of this screen empty, and
+ * the Q behind it only made that more obvious.
+ *
+ * The form mirrors /contact: preventDefault, flip the button label. There is no
+ * backend anywhere on the site, so posting it somewhere would be new behaviour
+ * rather than a port.
+ */
 export function OutroLetsTalk() {
   const router = useRouter();
+  const [sent, setSent] = useState(false);
   const goContact = () => { router.push('/contact'); scrollTo({ top: 0, behavior: 'instant' }); };
 
   return (
     <div data-outro-screen="lets-talk" style={SCREEN}>
       <QWatermark half="top" />
-      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2.6vh,30px)', padding: 'clamp(120px,24vh,260px) clamp(16px,3.4vw,48px) clamp(14px,2vh,28px)' }}>
-        <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Let&apos;s Talk</span>
-        <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,11vh,150px)', lineHeight: '.86', maxWidth: '20ch' }}>Let&apos;s Create What&apos;s Next.</h2>
-        <p style={{ fontSize: 'clamp(14px,2vh,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '54ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
-        <button onClick={goContact} data-magnet="" data-cursor="Start" style={{ marginTop: 'clamp(2px,1vh,10px)', padding: 'clamp(12px,1.9vh,18px) clamp(24px,2.6vw,38px)', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: 'clamp(11px,1.4vh,13px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Project</button>
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignItems: 'center', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(24px,4vh,54px)' }}>
+
+        {/* ---- the pitch ---- */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px,3vh,34px)', alignItems: 'flex-start', textAlign: 'left', minWidth: '0' }}>
+          <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Let&apos;s Talk</span>
+          <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(40px,9vh,120px)', lineHeight: '.86', maxWidth: '14ch' }}>Let&apos;s Create What&apos;s Next.</h2>
+          <p style={{ fontSize: 'clamp(13px,1.9vh,18px)', lineHeight: '1.6', color: 'var(--mute)', maxWidth: '46ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
+
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(7px,1.3vh,14px)', width: '100%', maxWidth: '40ch' }}>
+            {CONTACT_ROWS.map((c) => (
+              <li key={c.k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', paddingBottom: 'clamp(6px,1.1vh,12px)', borderBottom: '1px solid var(--line)' }}>
+                <span style={{ fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' }}>{c.k}</span>
+                <span style={{ fontSize: 'clamp(12px,1.7vh,15px)', fontWeight: '600' }}>{c.v}</span>
+              </li>
+            ))}
+          </ul>
+
+          <button onClick={goContact} data-magnet="" data-cursor="Start" style={{ marginTop: 'clamp(2px,1vh,10px)', padding: 'clamp(12px,1.9vh,18px) clamp(24px,2.6vw,38px)', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: 'clamp(11px,1.4vh,13px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Project</button>
+        </div>
+
+        {/* ---- enquiry form ---- */}
+        <form
+          onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px,1.7vh,16px)', border: '1px solid var(--line)', borderRadius: '20px', padding: 'clamp(18px,3vh,34px)', background: 'var(--bg2)', minWidth: '0' }}
+        >
+          <span style={{ fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' }}>Contact Us</span>
+          <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(22px,3.6vh,42px)', lineHeight: '1', letterSpacing: '.01em' }}>Tell us about it.</span>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 'clamp(10px,1.6vh,14px)' }}>
+            <input type="text" placeholder="Your name" data-field="" aria-label="Your name" style={FIELD} />
+            <input type="email" placeholder="Email" data-field="" aria-label="Email" style={FIELD} />
+          </div>
+          <textarea rows={3} placeholder="A few lines about the project." data-field="" aria-label="Project details" style={{ ...FIELD, resize: 'vertical' }} />
+
+          <button type="submit" data-magnet="" data-cursor="Send" style={{ alignSelf: 'start', padding: 'clamp(11px,1.8vh,16px) clamp(22px,2.4vw,34px)', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: 'clamp(10px,1.3vh,12px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>
+            {sent ? 'Thanks — we’ll be in touch' : 'Send Enquiry'}
+          </button>
+        </form>
       </div>
     </div>
   );
@@ -124,13 +187,10 @@ export function OutroFooter() {
           <span>© Quantivo 2026. All rights reserved</span>
         </div>
 
-        {/* Split wordmark, cropped by the viewport edges.
-            With "Digital" dropped from the brand there is no second word to put on
-            the right, so the name splits against itself — QUAN | TIVO — which is
-            exactly how the reference treats BULLET | PROOF. */}
+        {/* Split wordmark, cropped by the viewport edges. */}
         <div aria-hidden="true" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 'clamp(12px,4vw,80px)', overflow: 'hidden' }}>
-          <span data-word-left="" style={WORD}>QUAN</span>
-          <span data-word-right="" style={WORD}>TIVO</span>
+          <span data-word-left="" style={WORD}>QUANTIVO</span>
+          <span data-word-right="" style={WORD}>DIGITAL</span>
         </div>
       </div>
     </div>
