@@ -1,54 +1,60 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import { HERO_SLIDES } from '@/data/content';
 import { asset } from '@/lib/assets';
 import { goService } from '@/lib/goService';
 
 /**
- * Hero media slider — an expanding clip-path window, NOT a scale/zoom.
+ * Hero media slider. The sequence is strictly TEXT FIRST, THEN IMAGE:
  *
- * ── The mechanism ────────────────────────────────────────────────────────────
- * The image is never transformed. It sits still at full size while a rounded
- * clip window opens over it:
+ *     0ms     eyebrow wipes in left -> right
+ *     95ms    headline follows
+ *     190ms   paragraph
+ *     285ms   button
+ *     560ms   only now does the image start opening small -> big
  *
- *     inactive  clip-path: inset(45% round 48px);  opacity: 0
- *     active    clip-path: inset(0%  round 48px);  opacity: 1
+ * ── The text wipe ────────────────────────────────────────────────────────────
+ * Left-to-right is a clip-path inset animated on its RIGHT edge:
  *
- * The corner radius stays a constant 48px inside inset() — the window grows, the
- * radius does not. This is measured from klarna.com, where the resting state of
- * every queued slide is literally `inset(45% round 48px); opacity: 0`.
+ *     hidden   inset(-.25em 100% -.35em -.25em)   right edge closed all the way
+ *     shown    inset(-.25em -.25em -.35em -.25em) right edge past the text
  *
- * NO transform: scale() anywhere on the image. That is the whole point: a scale
- * resamples the pixels and reads as cheap, whereas here the picture stays
- * pin-sharp and motionless while the frame opens around it like an aperture.
+ * The em insets on the other three sides give the glyphs breathing room so
+ * descenders and the button's rounded corners are not shaved by the clip. Each
+ * piece gets its own transition-delay, which is what produces the stagger —
+ * the block does not move as one lump.
  *
- * ── Why the copy is not inside the clipped element ───────────────────────────
- * The text must lead and the media follow. If the copy lived inside the clipped
- * media it would be cut by the same window and could not animate first, so the
- * two are siblings: copy fades/rises immediately, the media reveal starts
- * COPY_LEAD_MS later.
+ * ── The image ────────────────────────────────────────────────────────────────
+ * Unchanged mechanism: the picture never moves, a rounded window opens over it
+ * from inset(45%) to inset(0%) at a constant 48px radius. No transform: scale(),
+ * so the image stays pin-sharp instead of being resampled.
  *
- * The lead is expressed purely as the media's transition-DELAY, with no JS
- * timing state. An earlier version flipped a `copyIn` flag inside
- * requestAnimationFrame to retrigger the copy; if that frame was cancelled by the
- * effect's own cleanup the flag never flipped back and the copy stuck part-way
- * through its fade. Deriving straight from `active` cannot get stuck.
- *
- * ── Timing ───────────────────────────────────────────────────────────────────
- * clip-path runs REVEAL_MS on a heavy ease-out so it decelerates into place;
- * opacity runs much shorter, which is how "fade over the first ~40%" is done
- * with plain CSS transitions — two properties, two durations, one trigger.
+ * ── Why the OUTGOING slide only fades ────────────────────────────────────────
+ * Giving both slides the same transition made the leaving image animate its clip
+ * backwards — shrinking 0% -> 45% in full view. Two images moving in opposite
+ * directions read as "big turning into small", the exact opposite of the intended
+ * small-to-big. So the leaving slide fades on opacity alone and its clip is reset
+ * with `0ms` duration on a delay equal to the fade, i.e. it snaps back to 45%
+ * only once it is already invisible. The z-index keeps the incoming slide on top
+ * while that happens.
  */
-const REVEAL_MS = 1050;
-const COPY_LEAD_MS = 200;
-const AUTOPLAY_MS = 6200;
+const TEXT_MS = 820;
+const TEXT_STAGGER = 95;
+const MEDIA_DELAY = 560;
+const REVEAL_MS = 1150;
+const LEAVE_MS = 300;
+const AUTOPLAY_MS = 6600;
 const RADIUS = 48;
 const EASE = 'cubic-bezier(.16,1,.3,1)';
 
-const CLIP_IN = `inset(0% round ${RADIUS}px)`;
-const CLIP_OUT = `inset(45% round ${RADIUS}px)`;
+const CLIP_OPEN = `inset(0% round ${RADIUS}px)`;
+const CLIP_SMALL = `inset(45% round ${RADIUS}px)`;
+
+const WIPE_SHOWN = 'inset(-.25em -.25em -.35em -.25em)';
+const WIPE_HIDDEN = 'inset(-.25em 100% -.35em -.25em)';
 
 export function HeroSlider() {
   const router = useRouter();
@@ -69,6 +75,22 @@ export function HeroSlider() {
     const id = setInterval(() => { if (!hovering.current) go(active + 1); }, AUTOPLAY_MS);
     return () => clearInterval(id);
   }, [active, go, reduced]);
+
+  /** One staggered left-to-right wipe. `k` is the piece's position in the stack. */
+  const wipe = (on: boolean, k: number): CSSProperties => {
+    if (reduced) return {};
+    const lead = k * TEXT_STAGGER;
+    return {
+      clipPath: on ? WIPE_SHOWN : WIPE_HIDDEN,
+      opacity: on ? 1 : 0,
+      transform: on ? 'none' : 'translateX(-22px)',
+      transition: on
+        ? `clip-path ${TEXT_MS}ms ${EASE} ${lead}ms, transform ${TEXT_MS}ms ${EASE} ${lead}ms, opacity ${Math.round(TEXT_MS * 0.55)}ms ease ${lead}ms`
+        // Leaving: fade only, then snap the wipe shut once it cannot be seen.
+        : `opacity ${LEAVE_MS}ms ease, clip-path 0ms linear ${LEAVE_MS}ms, transform 0ms linear ${LEAVE_MS}ms`,
+      willChange: 'clip-path, transform, opacity',
+    };
+  };
 
   return (
     <section
@@ -98,11 +120,14 @@ export function HeroSlider() {
               style={{
                 position: 'absolute',
                 inset: '0',
-                clipPath: reduced ? CLIP_IN : on ? CLIP_IN : CLIP_OUT,
-                opacity: reduced ? 1 : on ? 1 : 0,
+                zIndex: on ? 1 : 0,
+                clipPath: reduced || on ? CLIP_OPEN : CLIP_SMALL,
+                opacity: reduced || on ? 1 : 0,
                 transition: reduced
                   ? 'none'
-                  : `clip-path ${REVEAL_MS}ms ${EASE} ${COPY_LEAD_MS}ms, opacity ${Math.round(REVEAL_MS * 0.4)}ms linear ${COPY_LEAD_MS}ms`,
+                  : on
+                    ? `clip-path ${REVEAL_MS}ms ${EASE} ${MEDIA_DELAY}ms, opacity 420ms linear ${MEDIA_DELAY}ms`
+                    : `opacity ${LEAVE_MS}ms ease, clip-path 0ms linear ${LEAVE_MS}ms`,
                 willChange: 'clip-path, opacity',
                 pointerEvents: on ? 'auto' : 'none',
               }}
@@ -126,7 +151,7 @@ export function HeroSlider() {
         })}
 
         {/* ---- copy: leads the media ---- */}
-        <div style={{ position: 'absolute', inset: '0', display: 'grid', alignContent: 'center', padding: 'clamp(24px,5vw,88px)', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', inset: '0', zIndex: 2, display: 'grid', alignContent: 'center', padding: 'clamp(24px,5vw,88px)', pointerEvents: 'none' }}>
           {HERO_SLIDES.map((s, i) => {
             const on = i === active;
             return (
@@ -144,23 +169,28 @@ export function HeroSlider() {
                   // 16px font, not the headline's, so a ch cap throttled the h1
                   // into a thin stack regardless of its own max-width.
                   maxWidth: 'min(100%, 660px)',
-                  opacity: on ? 1 : 0,
-                  transform: on ? 'none' : 'translateY(18px)',
-                  transition: reduced ? 'none' : `opacity 620ms ease, transform 760ms ${EASE}`,
                   pointerEvents: on ? 'auto' : 'none',
                 }}
               >
-                <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: '#fff', opacity: '.75' }}>{s.eyebrow}</span>
-                <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(42px,7.4vw,124px)', lineHeight: '.88', letterSpacing: '-.005em', color: '#fff', maxWidth: '16ch' }}>{s.head}</h1>
-                <p style={{ fontSize: 'clamp(14px,1.25vw,19px)', lineHeight: '1.55', color: 'rgba(255,255,255,.86)', maxWidth: '46ch' }}>{s.sub}</p>
-                <button
-                  onClick={goService(router, s.target)}
-                  data-magnet=""
-                  data-cursor="Explore"
-                  style={{ marginTop: 'clamp(2px,1vh,10px)', padding: '16px 32px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}
-                >
-                  {s.cta}
-                </button>
+                {[
+                  <span key="eyebrow" style={{ display: 'block', fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: '#fff', opacity: '.75' }}>{s.eyebrow}</span>,
+                  <h1 key="head" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(42px,7.4vw,124px)', lineHeight: '.88', letterSpacing: '-.005em', color: '#fff', maxWidth: '16ch' }}>{s.head}</h1>,
+                  <p key="sub" style={{ fontSize: 'clamp(14px,1.25vw,19px)', lineHeight: '1.55', color: 'rgba(255,255,255,.86)', maxWidth: '46ch' }}>{s.sub}</p>,
+                  <button
+                    key="cta"
+                    onClick={goService(router, s.target)}
+                    data-magnet=""
+                    data-cursor="Explore"
+                    style={{ padding: '16px 32px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}
+                  >
+                    {s.cta}
+                  </button>,
+                ].map((node, k) => (
+                  // Wrapper carries the wipe so each piece's own styles stay clean.
+                  <div key={k} data-hero-line="" style={{ ...wipe(on, k), marginTop: k === 3 ? 'clamp(2px,1vh,10px)' : undefined }}>
+                    {node}
+                  </div>
+                ))}
               </div>
             );
           })}
