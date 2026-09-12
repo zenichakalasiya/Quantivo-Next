@@ -350,3 +350,50 @@ export const HOME_TEAM = [
     linkedin: '#',
   },
 ] as const;
+
+/**
+ * Home / Services — the four cards in the scroll stack.
+ *
+ * These are the four CAPABILITIES groups, which is what "four main services"
+ * means here: each one already owns a list of sub-services, and those lists are
+ * exactly the pill tags the reference puts under each card title. There is also
+ * one q-cat-* image per group, so the pairing is the site's own.
+ *
+ * `body` is each group's CAPABILITIES body with its trailing "through:" dropped
+ * — in the reference the paragraph stands on its own ABOVE the tags rather than
+ * running into them.
+ */
+export const SERVICE_CARDS = [
+  {
+    n: '01',
+    title: 'Digital Growth',
+    body: 'We help businesses strengthen their online presence, reaching the right audience and turning attention into measurable growth.',
+    tags: ['Social Media Management', 'SEO', 'Google Ads', 'Meta Ads Management'],
+    img: '/img/q-cat-growth.jpg',
+    target: 'svc-social',
+  },
+  {
+    n: '02',
+    title: 'Brand & Creative',
+    body: 'We help businesses build identities and experiences people remember, from the core identity through to how it shows up in someone\u2019s hands.',
+    tags: ['Branding & Identity', 'Packaging Design'],
+    img: '/img/q-cat-brand.jpg',
+    target: 'svc-brand',
+  },
+  {
+    n: '03',
+    title: 'Digital Experiences',
+    body: 'We create modern and functional online experiences, designed around how people actually use them rather than how they look in a template.',
+    tags: ['Website Development'],
+    img: '/img/q-cat-web.jpg',
+    target: 'svc-web',
+  },
+  {
+    n: '04',
+    title: '3D Visualization',
+    body: 'We bring ideas, products and spaces to life before they are built, so decisions get made with the eyes rather than the imagination.',
+    tags: ['3D Architectural Visualization', '3D Product Visualization'],
+    img: '/img/q-cat-3d.jpg',
+    target: 'svc-arch',
+  },
+] as const;
