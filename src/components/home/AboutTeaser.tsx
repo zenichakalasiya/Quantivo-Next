@@ -5,20 +5,20 @@ import { PARTNERS } from '@/data/content';
 import { asset } from '@/lib/assets';
 
 /**
- * Home / About. Rebuilt from the FigJam reference
- * ("Printeve -QUantivo_Home-About section.png").
+ * Home / About.
  *
  * ── Layout ───────────────────────────────────────────────────────────────────
- * One borderless card. A thin top row (an outlined circle at the left, the
- * founding year at the right), then two columns: three enormous stacked words on
- * the left, and image -> paragraph -> pill CTA on the right. The left column is
- * deliberately the narrower of the two, matching the reference.
+ * No card — the content sits directly on the page ground. A thin top row (an
+ * outlined circle at the left, the founding year at the right), then THREE
+ * columns of equal width separated by one equal gap:
+ *
+ *     paragraph   |   the stacked wordmark   |   image + paragraph + CTA
  *
  * ── The stacked words, and why they are SVG ──────────────────────────────────
- * In the reference all three words are set to the SAME width regardless of how
- * many letters each has — so the six-letter word has visibly fatter glyphs than
- * the ten-letter one. That is not something font-size can do; it needs the glyph
- * advances themselves stretched to a target width.
+ * All three words are set to the SAME width regardless of how many letters each
+ * has — so the six-letter word has visibly fatter glyphs than the ten-letter
+ * one. That is not something font-size can do; it needs the glyph advances
+ * themselves stretched to a target width.
  *
  * `<text textLength="100" lengthAdjust="spacingAndGlyphs">` inside a 100-unit
  * viewBox does exactly that: the browser forces the run to occupy the full width
@@ -27,15 +27,22 @@ import { asset } from '@/lib/assets';
  * flush-justified at every screen size, with no measuring in JS and no
  * dependence on the webfont having loaded before layout.
  *
- * The proportions are read off the reference: cap height is roughly half the
- * word's width and the line pitch a little over the cap height. Hence fontSize
- * 68 (Bebas' cap height is ~.75em, so ~51 units tall) inside a 58-unit-tall box.
+ * ── Why the wordmark is capped in vh, not px ─────────────────────────────────
+ * Each word is ~.58 as tall as it is wide, so three of them stand ~1.74x the
+ * column width. That makes the wordmark — not the photograph — the thing that
+ * decides this section's height. Capping it against vh is what lets the section
+ * hold to one screen: at 30vh the stack lands around half the viewport, leaving
+ * room for the top row, the partner strip and the padding.
  */
 const WORDS = ['Strategize', 'Create', 'Deliver'];
 const SINCE = '2021';
 
+/** Uniform padding on all four sides, and one gap value used everywhere. */
+const PAD = 'clamp(28px,4vw,64px) clamp(16px,3.4vw,48px)';
+const GAP = 'clamp(24px,3vw,56px)';
+
 const PARTNER_ROW = { display: 'flex', alignItems: 'center', gap: 'clamp(40px,5vw,72px)', paddingRight: 'clamp(40px,5vw,72px)' } as const;
-const PARTNER_NAME = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(20px,1.8vw,26px)', letterSpacing: '.05em', whiteSpace: 'nowrap', color: 'var(--mute)', transition: 'color .35s' } as const;
+const PARTNER_NAME = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(18px,1.6vw,24px)', letterSpacing: '.05em', whiteSpace: 'nowrap', color: 'var(--mute)', transition: 'color .35s' } as const;
 
 /** Visually hidden but still read aloud — the SVG words expose no text to a11y. */
 const SR_ONLY = { position: 'absolute', width: '1px', height: '1px', margin: '-1px', padding: '0', overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: '0' } as const;
@@ -63,7 +70,17 @@ export function AboutTeaser() {
   const goAbout = () => { router.push('/about'); scrollTo({ top: 0, behavior: 'instant' }); };
 
   return (
-    <section data-screen-label="Home / About" style={{ padding: 'clamp(56px,8vw,120px) clamp(16px,3.4vw,48px) clamp(28px,4vw,52px)' }}>
+    <section
+      data-screen-label="Home / About"
+      style={{
+        minHeight: '100svh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: GAP,
+        padding: PAD,
+      }}
+    >
       {/* Gradient the SVG words fill with. Declared once; stop-color goes through
           `style` because var() is not reliable in a presentation attribute. */}
       <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
@@ -75,49 +92,52 @@ export function AboutTeaser() {
         </defs>
       </svg>
 
-      <div style={{ background: 'var(--bg2)', borderRadius: 'clamp(18px,2vw,30px)', padding: 'clamp(22px,3.2vw,58px)' }}>
-        {/* ---- top row: marker + year ---- */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(20px,3vw,46px)' }}>
-          <span aria-hidden="true" style={{ width: 'clamp(26px,2.4vw,36px)', height: 'clamp(26px,2.4vw,36px)', borderRadius: '50%', border: '1px solid var(--line)', flex: 'none' }} />
-          <span style={{ fontSize: 'clamp(10px,.85vw,12px)', fontWeight: '700', letterSpacing: '.22em', textTransform: 'uppercase', color: 'var(--mute)' }}>Since {SINCE}</span>
-        </div>
+      {/* ---- top row: marker + year ---- */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+        <span aria-hidden="true" style={{ width: 'clamp(24px,2.2vw,32px)', height: 'clamp(24px,2.2vw,32px)', borderRadius: '50%', border: '1px solid var(--line)', flex: 'none' }} />
+        <span style={{ fontSize: 'clamp(10px,.85vw,12px)', fontWeight: '700', letterSpacing: '.22em', textTransform: 'uppercase', color: 'var(--mute)' }}>Since {SINCE}</span>
+      </div>
 
-        {/* ---- two columns ---- */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'clamp(26px,3.4vw,66px)', alignItems: 'flex-start' }}>
-          {/* left: the stacked wordmark */}
-          <h2 style={{ flex: '1 1 240px', maxWidth: '360px', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,7px)', margin: '0' }}>
-            <span style={SR_ONLY}>{WORDS.join('. ')}.</span>
-            {WORDS.map((w) => <Word key={w}>{w}</Word>)}
-          </h2>
+      {/* ---- three equal columns, one equal gap ---- */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,230px),1fr))', gap: GAP, alignItems: 'start' }}>
+        {/* 1 — the lead paragraph */}
+        <p style={{ fontSize: 'clamp(14px,1.05vw,17px)', lineHeight: '1.7', color: 'var(--mute)', textWrap: 'pretty', margin: '0' }}>
+          We believe great results don&apos;t come from following trends or using the same formula for every business. That&apos;s why we take the time to understand the business, the challenge and the opportunity before turning ideas into action.
+        </p>
 
-          {/* right: image, copy, CTA */}
-          <div style={{ flex: '1.6 1 320px', maxWidth: '560px', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(16px,2vw,28px)' }}>
-            <img
-              src={asset('/img/q-cat-web.jpg')}
-              alt="The Quantivo studio"
-              style={{ display: 'block', width: '100%', aspectRatio: '16 / 9', objectFit: 'cover', borderRadius: '12px' }}
-            />
-            <p style={{ fontSize: 'clamp(14px,1.05vw,17px)', lineHeight: '1.7', color: 'var(--mute)', textWrap: 'pretty', margin: '0' }}>
-              In a digital world where every brand is competing for attention, being visible isn&apos;t enough. Quantivo combines strategy, creativity, technology and 3D to help businesses communicate their value and connect with the right audience.
-            </p>
-            <button
-              onClick={goAbout}
-              data-magnet=""
-              data-cursor="About"
-              style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(26px,3vw,54px)', padding: '15px 22px 15px 30px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}
-            >
-              More About Us
-              <span aria-hidden="true" style={{ fontSize: '15px', lineHeight: '1' }}>&#8594;</span>
-            </button>
-          </div>
+        {/* 2 — the stacked wordmark */}
+        <h2 style={{ maxWidth: 'clamp(190px,30vh,320px)', minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(2px,.4vw,6px)', margin: '0' }}>
+          <span style={SR_ONLY}>{WORDS.join('. ')}.</span>
+          {WORDS.map((w) => <Word key={w}>{w}</Word>)}
+        </h2>
+
+        {/* 3 — image, copy, CTA */}
+        <div style={{ minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(14px,1.8vh,24px)' }}>
+          <img
+            src={asset('/img/q-cat-web.jpg')}
+            alt="The Quantivo studio"
+            style={{ display: 'block', width: '100%', aspectRatio: '16 / 9', objectFit: 'cover', borderRadius: '12px' }}
+          />
+          <p style={{ fontSize: 'clamp(13px,.95vw,16px)', lineHeight: '1.65', color: 'var(--mute)', textWrap: 'pretty', margin: '0' }}>
+            In a digital world where every brand is competing for attention, being visible isn&apos;t enough. Quantivo combines strategy, creativity, technology and 3D to help businesses communicate their value and connect with the right audience.
+          </p>
+          <button
+            onClick={goAbout}
+            data-magnet=""
+            data-cursor="About"
+            style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(22px,2.6vw,46px)', padding: '14px 20px 14px 27px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '11px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}
+          >
+            More About Us
+            <span aria-hidden="true" style={{ fontSize: '14px', lineHeight: '1' }}>&#8594;</span>
+          </button>
         </div>
       </div>
 
       {/* ---- trusted by: no card, no border, no background ---- */}
-      <div style={{ marginTop: 'clamp(30px,4.5vw,70px)' }}>
+      <div>
         <p style={{ textAlign: 'center', fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--mute)' }}>Trusted by leading brands</p>
-        <div style={{ marginTop: '24px', position: 'relative', width: '100%', overflow: 'hidden', WebkitMaskImage: 'linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%)', maskImage: 'linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%)' }}>
-          <div data-partner-track="" style={{ height: '48px', display: 'flex', alignItems: 'center', width: 'max-content', animation: 'qvMarquee 40s linear infinite' }}>
+        <div style={{ marginTop: 'clamp(12px,2vh,22px)', position: 'relative', width: '100%', overflow: 'hidden', WebkitMaskImage: 'linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%)', maskImage: 'linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%)' }}>
+          <div data-partner-track="" style={{ height: '42px', display: 'flex', alignItems: 'center', width: 'max-content', animation: 'qvMarquee 40s linear infinite' }}>
             <div style={PARTNER_ROW}>
               {PARTNERS.map((c) => (
                 <span key={c} data-partner="" style={PARTNER_NAME}>{c}</span>
