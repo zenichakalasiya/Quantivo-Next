@@ -280,3 +280,37 @@ export const JOURNEY = [
   { left: 1980, year: '2024', body: '3D visualization studio launches for architecture and product clients.', img: '/img/q-yr-2024.jpg' },
   { left: 2600, year: '2025', body: 'Working with businesses across multiple international markets.', img: '/img/q-yr-2025.jpg' },
 ] as const;
+
+/**
+ * Hero media slider. Headlines and CTAs are the real `head` / `cta` strings from
+ * DETAIL for the three featured services; the sub lines are trimmed from their
+ * HOME_SERVICES blurbs so the hero says nothing the rest of the site doesn't.
+ *
+ * `target` is the DETAIL id the CTA scrolls to on /services.
+ */
+export const HERO_SLIDES = [
+  {
+    img: '/img/q-svc-seo.jpg',
+    eyebrow: 'SEO',
+    head: 'Get Found When Your Customers Are Searching.',
+    sub: 'A great website needs to be discoverable. We improve visibility in search and attract people already looking for what you offer.',
+    cta: 'Explore SEO',
+    target: 'svc-seo',
+  },
+  {
+    img: '/img/q-svc-website-development.jpg',
+    eyebrow: 'Website Development',
+    head: 'Build a Digital Experience for Your Brand.',
+    sub: 'Your website is often where customers first meet your business. We build fast, clear, scalable sites designed around how people actually use them.',
+    cta: 'Explore Website Development',
+    target: 'svc-web',
+  },
+  {
+    img: '/img/q-svc-3d-architectural-visualization.jpg',
+    eyebrow: '3D Architectural Visualization',
+    head: 'See the Vision Before It Becomes Reality.',
+    sub: 'Architecture is easier to understand when people can see it. We turn concepts and plans into detailed visuals before anything is built.',
+    cta: 'Explore Architectural Visualization',
+    target: 'svc-arch',
+  },
+] as const;

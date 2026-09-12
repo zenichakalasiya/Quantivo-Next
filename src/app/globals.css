@@ -149,3 +149,5 @@ summary::-webkit-details-marker{display:none}
 :root{--q-wm:#000;--q-wm-op:.30}
 :root:not([data-qv="light"]){--q-wm:#000;--q-wm-op:.30}
 :root[data-qv="light"]{--q-wm:#0F0F12;--q-wm-op:.05}
+/* hero prev/next arrows */
+[data-hero-arrow]:hover{border-color:#fff!important;background:rgba(9,9,12,.7)!important}

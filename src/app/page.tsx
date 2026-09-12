@@ -1,4 +1,4 @@
-import { Hero } from '@/components/home/Hero';
+import { HeroSlider } from '@/components/home/HeroSlider';
 import { Ticker } from '@/components/home/Ticker';
 import { AboutTeaser } from '@/components/home/AboutTeaser';
 import { Pillars } from '@/components/home/Pillars';
@@ -23,7 +23,7 @@ export default function HomePage() {
   return (
     <>
       <main style={{ position: 'relative', zIndex: '1' }}>
-        <Hero />
+        <HeroSlider />
         <Ticker />
         <AboutTeaser />
         <Pillars />
