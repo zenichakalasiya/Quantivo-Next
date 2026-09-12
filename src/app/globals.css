@@ -144,8 +144,8 @@ summary::-webkit-details-marker{display:none}
  * too bright in dark mode.
  *
  * Both schemes therefore darken with black; only the amount differs. Dark mode
- * needs a lot (the ground is already near-black, so subtracting light barely
+ * needs more (the ground is already near-black, so subtracting light barely
  * moves it), light mode needs very little or it turns into a grey slab. */
-:root{--q-wm:#000;--q-wm-op:.45}
-:root:not([data-qv="light"]){--q-wm:#000;--q-wm-op:.45}
+:root{--q-wm:#000;--q-wm-op:.30}
+:root:not([data-qv="light"]){--q-wm:#000;--q-wm-op:.30}
 :root[data-qv="light"]{--q-wm:#0F0F12;--q-wm-op:.05}

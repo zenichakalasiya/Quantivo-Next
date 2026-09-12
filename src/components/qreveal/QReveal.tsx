@@ -135,7 +135,7 @@ export function QReveal({ children }: { children: React.ReactNode }) {
       {/* phase 1 — the outline being drawn */}
       <div data-q-art="" style={{ position: 'absolute', inset: '0', display: 'grid', placeItems: 'center', pointerEvents: 'none', zIndex: 2 }}>
         <svg viewBox={Q_VIEWBOX} style={{ height: 'clamp(200px,48vh,520px)', width: 'auto', overflow: 'visible' }} aria-hidden="true">
-          <g fill="none" stroke="var(--ink)" strokeWidth="0.9" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round">
+          <g fill="none" stroke="var(--ink)" strokeOpacity=".72" strokeWidth="0.9" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round">
             <path data-q-stroke="" d={Q_OUTER} />
             <path data-q-stroke="" d={Q_RING} />
             <circle data-q-stroke="" cx={Q_DOT.cx} cy={Q_DOT.cy} r={Q_DOT.r} />
