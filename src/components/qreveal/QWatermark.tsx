@@ -35,7 +35,7 @@ export function QWatermark({ half }: { half: 'top' | 'bottom' }) {
         zIndex: 0,
       }}
     >
-      <path d={Q_OUTER} fill="var(--ink)" fillOpacity=".055" />
+      <path d={Q_OUTER} fill="var(--ink)" fillOpacity=".11" />
       {/* Knockouts in the section background — this is what keeps the arrow. */}
       <path d={Q_RING} fill="var(--bg2)" />
       <circle cx={Q_DOT.cx} cy={Q_DOT.cy} r={Q_DOT.r} fill="var(--bg2)" />

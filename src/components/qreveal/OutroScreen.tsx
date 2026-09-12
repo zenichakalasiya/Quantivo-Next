@@ -22,10 +22,10 @@ import { QWatermark } from './QWatermark';
  * Dimensions clamp against vh rather than vw so neither screen can overflow on
  * short laptop displays.
  */
-const LABEL = { fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' } as const;
-const LINK = { fontSize: 'clamp(13px,1.9vh,17px)', fontWeight: '600', color: 'var(--ink)', textAlign: 'left', lineHeight: '1.6' } as const;
-const NAV_LINK = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(22px,4.2vh,50px)', lineHeight: '1.1', letterSpacing: '.02em', color: 'var(--mute)', transition: 'color .3s' } as const;
-const WORD = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(56px,15vh,210px)', lineHeight: '.8', letterSpacing: '.01em', color: 'var(--ink)', whiteSpace: 'nowrap', userSelect: 'none' } as const;
+const LABEL = { fontSize: 'clamp(11px,1.6vh,14px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' } as const;
+const LINK = { fontSize: 'clamp(17px,2.8vh,26px)', fontWeight: '600', color: 'var(--ink)', textAlign: 'left', lineHeight: '1.6' } as const;
+const NAV_LINK = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,6vh,74px)', lineHeight: '1.1', letterSpacing: '.02em', color: 'var(--mute)', transition: 'color .3s' } as const;
+const WORD = { fontFamily: "'Bebas Neue',sans-serif", fontSize: '34vh', lineHeight: '.8', letterSpacing: '.01em', color: 'var(--ink)', whiteSpace: 'nowrap', userSelect: 'none' } as const;
 
 const SCREEN = {
   position: 'relative',
@@ -77,8 +77,8 @@ export function OutroFooter() {
 
       ctx = gsap.context(() => {
         const trigger = { trigger: el, start: 'top bottom', end: 'bottom bottom', scrub: 0.5 } as const;
-        gsap.fromTo('[data-word-left]', { xPercent: 18 }, { xPercent: -14, ease: 'none', scrollTrigger: trigger });
-        gsap.fromTo('[data-word-right]', { xPercent: -18 }, { xPercent: 14, ease: 'none', scrollTrigger: trigger });
+        gsap.fromTo('[data-word-left]', { xPercent: 26 }, { xPercent: -20, ease: 'none', scrollTrigger: trigger });
+        gsap.fromTo('[data-word-right]', { xPercent: -26 }, { xPercent: 20, ease: 'none', scrollTrigger: trigger });
       }, el);
     })();
 
@@ -107,8 +107,8 @@ export function OutroFooter() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(6px,1.2vh,13px)', alignItems: 'center', textAlign: 'center' }}>
             <span style={LABEL}>Newsletter</span>
-            <span style={{ fontSize: 'clamp(13px,1.9vh,17px)', fontWeight: '600' }}>Be in the know</span>
-            <button onClick={go('/contact')} data-cursor="Subscribe" data-svc-all="" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'clamp(8px,1.3vh,12px) clamp(16px,1.6vw,24px)', borderRadius: '99px', border: '1px solid var(--line)', fontSize: 'clamp(10px,1.3vh,12px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase', transition: 'border-color .3s' }}>
+            <span style={{ fontSize: 'clamp(17px,2.8vh,26px)', fontWeight: '600' }}>Be in the know</span>
+            <button onClick={go('/contact')} data-cursor="Subscribe" data-svc-all="" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'clamp(8px,1.3vh,12px) clamp(16px,1.6vw,24px)', borderRadius: '99px', border: '1px solid var(--line)', fontSize: 'clamp(11px,1.5vh,14px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase', transition: 'border-color .3s' }}>
               Subscribe<span aria-hidden="true">&#8594;</span>
             </button>
           </div>
