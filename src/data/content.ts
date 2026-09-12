@@ -435,3 +435,84 @@ export const HOME_TESTIMONIALS = [
     when: '4 months ago',
   },
 ] as const;
+
+/**
+ * About page, section 1 — the three cards that widen on hover.
+ *
+ * Copy is lifted verbatim from the previous /about "About Quantivo" block, so
+ * the rebuild changed the layout and not a word of the writing. `points` on
+ * card 02 is BELIEFS, which the old block rendered as its own list.
+ */
+export const ABOUT_CARDS = [
+  {
+    n: '01',
+    eyebrow: 'Who We Are',
+    title: 'Creativity Meets Strategy. Ideas Meet Execution.',
+    lead: 'The digital world is constantly changing, and businesses need more than individual services to stand out. They need strong ideas, clear communication, memorable visuals, and the right digital strategy. That\u2019s where Quantivo comes in.',
+    paras: [
+      'We are a team focused on combining strategy, creativity, technology, and visualization to create solutions that help businesses build their presence and present themselves with confidence.',
+      'From managing a brand\u2019s social media presence to creating its identity, building its website, designing its packaging, or bringing products and spaces to life through 3D visualization \u2014 we approach every project with purpose.',
+    ],
+    points: [] as readonly string[],
+  },
+  {
+    n: '02',
+    eyebrow: 'What We Believe',
+    title: 'Good Work Starts With Understanding.',
+    lead: 'We believe great results don\u2019t come from simply following trends or using the same formula for every business.',
+    paras: [
+      'That\u2019s why we take the time to understand the business, the challenge, and the opportunity before turning ideas into action.',
+      'Our goal is not just to create something that looks good. Our goal is to create something that communicates clearly, creates value, and moves the brand forward.',
+    ],
+    points: BELIEFS,
+  },
+  {
+    n: '03',
+    eyebrow: 'What We Do',
+    title: 'One Partner. Multiple Possibilities.',
+    lead: 'Quantivo brings together different capabilities to support businesses across their digital and creative journey.',
+    paras: [
+      'Instead of looking at every project as an isolated task, we look at how branding, marketing, digital experiences and visualization can work together.',
+    ],
+    points: [] as readonly string[],
+  },
+] as const;
+
+/**
+ * About page, section 3 — the Vision / Mission / Why accordion.
+ *
+ * Vision and Mission copy comes from the old cross-fade band; the Why row's
+ * points are WHY_US, which already carried a title and a line each.
+ */
+export const ABOUT_VMW = [
+  {
+    n: '01',
+    title: 'Vision',
+    head: 'Creating Better Ways for Brands to Be Seen.',
+    body: 'Our vision is to become a trusted creative and digital partner for businesses around the world. We want to help ambitious brands turn ideas into meaningful experiences through creativity, technology, strategy, and innovation.',
+    points: [
+      { title: 'Keep learning', body: 'As Quantivo grows, our focus stays on getting better at the work.' },
+      { title: 'Keep creating', body: 'Ideas are only worth something once they exist in the world.' },
+      { title: 'Keep moving forward', body: 'Every project should leave the brand further along than it started.' },
+    ],
+  },
+  {
+    n: '02',
+    title: 'Mission',
+    head: 'Turning Ideas Into Meaningful Experiences.',
+    body: 'Our mission is to help businesses communicate better, build stronger brands, and create digital experiences that connect with people. We do this by combining the right mix of strategy, creativity, technology and visualization.',
+    points: [
+      { title: 'Strategy', body: 'Decisions grounded in what the business actually needs.' },
+      { title: 'Creativity', body: 'Ideas that stand out and stay with people.' },
+      { title: 'Technology', body: 'Built to work, not just to look good.' },
+      { title: 'Visualization', body: 'Seeing it before it exists.' },
+    ],
+  },
+  {
+    n: '03',
+    title: 'Why Quantivo',
+    head: 'More Than a Service Provider.',
+    body: 'We believe the best partnerships happen when people understand the bigger picture. Instead of looking at every project as an isolated task, we look at how branding, marketing, digital experiences, and visualization can work together.',
+    points: WHY_US,
+  },
+] as const;
