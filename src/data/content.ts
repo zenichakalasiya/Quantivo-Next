@@ -314,3 +314,39 @@ export const HERO_SLIDES = [
     target: 'svc-arch',
   },
 ] as const;
+
+/**
+ * Home / Our Team. Three of the six people on /about, plus the two fields the
+ * home cards need that TEAM does not carry: a photograph and a LinkedIn URL.
+ *
+ * PLACEHOLDERS, all three of them: `name` is still the "Name Surname" stub that
+ * TEAM ships with, `linkedin` is "#", and `img` points at stock frames from the
+ * existing library because there are no portraits in /img. The stand-ins are
+ * there so the greyscale -> colour flip is visible; swap all three fields per
+ * person when the real photos and profiles arrive.
+ *
+ * `quote` is the person's TEAM bio verbatim — it already reads as a quote.
+ */
+export const HOME_TEAM = [
+  {
+    name: 'Name Surname',
+    role: 'Founder & Creative Director',
+    quote: 'Quantivo exists to give ambitious businesses one partner for strategy, craft and delivery — not five vendors pulling in different directions.',
+    img: '/img/q-cat-brand.jpg',
+    linkedin: '#',
+  },
+  {
+    name: 'Name Surname',
+    role: 'Head of Digital Marketing',
+    quote: 'The work I care about is the kind that survives contact with a real budget. Quantivo lets us plan campaigns around outcomes, not vanity metrics.',
+    img: '/img/q-cat-growth.jpg',
+    linkedin: '#',
+  },
+  {
+    name: 'Name Surname',
+    role: 'Lead 3D Visualization Artist',
+    quote: 'Seeing a space or product before it exists changes how clients decide. That is the part of Quantivo I find most rewarding.',
+    img: '/img/q-cat-3d.jpg',
+    linkedin: '#',
+  },
+] as const;

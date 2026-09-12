@@ -1,20 +1,24 @@
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { AboutTeaser } from '@/components/home/AboutTeaser';
-import { Pillars } from '@/components/home/Pillars';
 import { ServicesShowcase } from '@/components/home/ServicesShowcase';
-import { Numbers } from '@/components/home/Numbers';
-import { Testimonials } from '@/components/home/Testimonials';
 import { WorkRail } from '@/components/home/WorkRail';
 import { ApproachRail } from '@/components/home/ApproachRail';
+import { TeamCards } from '@/components/home/TeamCards';
+import { Numbers } from '@/components/home/Numbers';
+import { Testimonials } from '@/components/home/Testimonials';
 import { Articles } from '@/components/home/Articles';
 import { Faq } from '@/components/home/Faq';
 import { HomeOutro } from '@/components/qreveal/HomeOutro';
 
 /**
- * Home. Section order follows Quantivo.dc.html lines 161-660, with two
- * deliberate departures: the original hero and its three.js card drum are
- * replaced by HeroSlider, and the capability marquee that sat under the hero
- * has been removed.
+ * Home. The section order is the client's, not the original document's:
+ *
+ *   Hero -> About -> Services -> Work -> Process -> Team -> Numbers ->
+ *   Testimonials -> Insights -> FAQ -> Let's Talk + Footer
+ *
+ * Departures from Quantivo.dc.html: the original hero and its three.js card
+ * drum are replaced by HeroSlider; the capability marquee and the "Four Things
+ * We Bring" pillars are gone; Team is new to the home page.
  *
  * HomeOutro sits OUTSIDE <main> because it carries both the Let's Talk screen
  * (the old FinalCta, now revealed through the drawn Q) and the site footer — one
@@ -27,12 +31,12 @@ export default function HomePage() {
       <main style={{ position: 'relative', zIndex: '1' }}>
         <HeroSlider />
         <AboutTeaser />
-        <Pillars />
         <ServicesShowcase />
-        <Numbers />
-        <Testimonials />
         <WorkRail />
         <ApproachRail />
+        <TeamCards />
+        <Numbers />
+        <Testimonials />
         <Articles />
         <Faq />
       </main>
