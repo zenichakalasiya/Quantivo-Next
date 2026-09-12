@@ -151,3 +151,16 @@ summary::-webkit-details-marker{display:none}
 :root[data-qv="light"]{--q-wm:#0F0F12;--q-wm-op:.05}
 /* hero prev/next arrows */
 [data-hero-arrow]:hover{border-color:#fff!important;background:rgba(9,9,12,.7)!important}
+
+/* ===== About / Our Journey =====
+ * The timeline alternates image and text either side of a centre rail. Below
+ * ~860px two columns cannot hold both a legible image and a paragraph, so it
+ * collapses to a single column with the rail moved to the left edge.
+ *
+ * !important throughout for the reason documented at the top of this section:
+ * every value here is also set inline, and inline beats any selector. */
+@media (max-width:860px){
+  [data-journey-row]{grid-template-columns:1fr!important;row-gap:14px!important;padding-left:40px!important}
+  [data-journey-row] > *{grid-column:1!important;justify-self:start!important;max-width:100%!important}
+  [data-journey-line],[data-journey-progress],[data-journey-dot]{left:14px!important}
+}

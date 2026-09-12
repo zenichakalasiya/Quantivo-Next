@@ -4,24 +4,28 @@ import { useRouter } from 'next/navigation';
 import { AboutCards } from '@/components/about/AboutCards';
 import { CapabilityCircles } from '@/components/about/CapabilityCircles';
 import { VisionAccordion } from '@/components/about/VisionAccordion';
+import { JourneyTimeline } from '@/components/about/JourneyTimeline';
 
 /**
- * About. Rebuilt from the client's sticky-note layout — three sections between
+ * About. Rebuilt from the client's sticky-note layout — four sections between
  * the hero and the closing CTA:
  *
  *   1. About Quantivo           three cards, one widening on hover
  *   2. What We Do               four capabilities as a joined cluster of circles
  *   3. Vision / Mission / Why   one accordion, three rows
+ *   4. Our Journey              vertical 2021-2025 timeline with a filling rail
  *
- * The previous page ran 12,792px over eight sections; Approach, Team, Journey
- * and Global are gone at the client's direction. Every word of copy that
- * survived was moved, not rewritten — see ABOUT_CARDS and ABOUT_VMW.
+ * The previous page ran 12,792px over eight sections. Approach, Team and Global
+ * are gone at the client's direction; Journey came back rebuilt, as a vertical
+ * timeline rather than the old horizontal year rail. Every word of copy that
+ * survived was moved, not rewritten — see ABOUT_CARDS and ABOUT_VMW, and
+ * JOURNEY, which the old rail already carried.
  *
- * That also retires this page's three imperative scroll rigs. `_initVM`,
- * `_initTeam` and `_initYearRail` in the vendored motion layer each bail early
- * when their root attribute is missing ([data-vm-sec], [data-team-wrap],
- * [data-yr-sec]), so dropping those sections makes them no-ops rather than
- * errors — but they are dead code now if anyone is pruning.
+ * That retires this page's three imperative scroll rigs. `_initVM`, `_initTeam`
+ * and `_initYearRail` in the vendored motion layer each bail early when their
+ * root attribute is missing ([data-vm-sec], [data-team-wrap], [data-yr-sec]),
+ * so dropping those sections makes them no-ops rather than errors — but they
+ * are dead code now if anyone is pruning.
  */
 export default function AboutPage() {
   const router = useRouter();
@@ -52,6 +56,7 @@ export default function AboutPage() {
       <AboutCards />
       <CapabilityCircles />
       <VisionAccordion />
+      <JourneyTimeline />
 
       {/* ---------- Final CTA ---------- */}
       <section data-screen-label="About / Final CTA" style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'start' }}>
