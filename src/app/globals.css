@@ -1,49 +1,137 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ──────────────────────────────────────────────────────────────
+ * Quantivo Digital — global stylesheet
+ *
+ * Lines below the VERBATIM marker are copied byte-for-byte from the
+ * <helmet><style> block of Quantivo.dc.html (lines 20-100).
+ * Do not reformat or 'tidy' them - byte equality with the original is
+ * what guarantees the visual output matches. Any additions go in the
+ * PORTED PSEUDO-CLASSES section at the bottom.
+ * ────────────────────────────────────────────────────────────── */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ===== VERBATIM: Quantivo.dc.html lines 20-100 ===== */
+:root{--bg:#0F0F12;--bg2:#15151B;--ink:#F4F4F6;--mute:#9A9AA8;--line:#2A2A33;--a:#4461C8;--b:#6B3FA0;--grad:linear-gradient(100deg,#4461C8,#6B3FA0)}
+:root[data-qv="light"]{--bg:#F3F0EA;--bg2:#FFFFFF;--ink:#0F0F12;--mute:#55555F;--line:#DDD8CF}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;overflow-x:hidden;transition:background .5s ease,color .5s ease}
+a{color:var(--ink);text-decoration:none}
+a:hover{color:var(--a)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--a);color:#fff}
+h1,h2,h3,h4,p,ul{margin:0}
+ul{list-style:none;padding:0}
+summary::-webkit-details-marker{display:none}
+@keyframes qvMarquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@keyframes qvSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes qvBlink{0%,100%{opacity:1}50%{opacity:.25}}
+[data-svc-face]{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}
+[data-svc-face].on{opacity:1;transform:none;pointer-events:auto}
+[data-svc-col]:not([data-ready]) [data-svc-face]:first-child{opacity:1;transform:none;pointer-events:auto}
+[data-svc-slide]{opacity:.3;transition:opacity .55s ease}
+[data-svc-slide].on{opacity:1}
+[data-rail-step]{opacity:.32;transition:opacity .45s ease}
+[data-rail-step].on{opacity:1}
+[data-rail-sec]:not([data-ready]) [data-rail-step]:first-of-type{opacity:1}
+[data-art-scroll]{scrollbar-width:none;-ms-overflow-style:none}
+[data-art-scroll]::-webkit-scrollbar{display:none}
+[data-art-wash]{opacity:0;transition:opacity .5s ease}
+[data-art]:hover [data-art-wash]{opacity:.62}
+[data-art-img]{transition:transform .7s cubic-bezier(.2,0,.2,1),filter .5s ease}
+[data-art]:hover [data-art-img]{transform:scale(1.06);filter:saturate(.6)}
+[data-art-desc]{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
+[data-art]:hover [data-art-desc]{opacity:1;transform:none}
+[data-val-row]{transition:background .4s ease}
+[data-val-row] [data-val-name],[data-val-row] [data-val-copy],[data-val-row] [data-val-num]{transition:color .4s ease,opacity .4s ease}
+[data-val-row] [data-val-name]{color:var(--mute);opacity:.5}
+[data-val-row] [data-val-copy],[data-val-row] [data-val-num]{opacity:.42}
+[data-val-row]:hover{background:var(--bg)}
+[data-val-row]:hover [data-val-name]{color:var(--ink);opacity:1}
+[data-val-row]:hover [data-val-copy],[data-val-row]:hover [data-val-num]{opacity:1}
+[data-team-bio]{opacity:0;transition:opacity .45s ease;pointer-events:none}
+[data-team-bio].on{opacity:1;pointer-events:auto}
+[data-team-strip]{scrollbar-width:none}
+[data-team-strip]::-webkit-scrollbar{display:none}
+[data-team-card]{opacity:.22;filter:grayscale(1);transition:opacity .55s ease,filter .55s ease}
+[data-team-card].on{opacity:1;filter:none}
+[data-team-wrap]:not([data-ready]) [data-team-bio]:first-of-type{opacity:1}
+[data-team-wrap]:not([data-ready]) [data-team-card]:first-of-type{opacity:1;filter:none}
+[data-yr-step]{transition:opacity .45s ease}
+[data-mega-panel]{opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .3s ease,transform .35s cubic-bezier(.4,0,.2,1),visibility .3s}
+[data-mega-item]:hover [data-mega-panel],[data-mega-item]:focus-within [data-mega-panel]{opacity:1;visibility:visible;transform:none}
+[data-hdr-panel]{opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .22s ease,transform .3s cubic-bezier(.4,0,.2,1),visibility .22s;z-index:70}
+[data-nav-item]:hover [data-hdr-panel],[data-nav-item]:focus-within [data-hdr-panel]{opacity:1;visibility:visible;transform:none}
+[data-hdr-link] [data-hdr-n]{color:var(--mute);transition:color .28s ease}
+[data-hdr-link] [data-hdr-t]{color:var(--mute);transition:color .28s ease}
+[data-hdr-link]:hover [data-hdr-t]{color:var(--ink)}
+[data-hdr-link]:hover [data-hdr-n]{color:var(--a)}
+[data-hdr-peek]{position:absolute;right:clamp(14px,1.6vw,20px);top:clamp(14px,1.6vw,20px);bottom:clamp(14px,1.6vw,20px);width:clamp(150px,16vw,200px);border-radius:14px;border:1px solid var(--line);background-size:cover;background-position:center;opacity:0;transition:opacity .25s ease;pointer-events:none}
+[data-hdr-link]:hover [data-hdr-peek]{opacity:1}
+[data-svc-link] [data-svc-n]{color:var(--mute);transition:color .3s ease}
+[data-svc-link] [data-svc-t]{color:var(--mute);transition:color .3s ease}
+[data-svc-link]:hover [data-svc-t]{color:var(--ink)}
+[data-svc-link]:hover [data-svc-n]{color:var(--a)}
+[data-svc-peek]{position:absolute;right:clamp(16px,3.4vw,48px);top:calc(100% + 12px);width:clamp(180px,17vw,250px);aspect-ratio:4/3;border-radius:14px;border:1px solid var(--line);background-color:var(--bg2);background-size:cover;background-position:center;box-shadow:0 26px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-10px) scale(.97);transition:opacity .32s ease,transform .45s cubic-bezier(.16,1,.3,1),visibility .32s;pointer-events:none;z-index:55}
+[data-svc-link]:hover [data-svc-peek],[data-svc-link]:focus-visible [data-svc-peek]{opacity:1;visibility:visible;transform:none}
+[data-marq-track][data-dir="up"]{animation:marq-up 52s linear infinite}
+[data-marq-track][data-dir="down"]{animation:marq-down 46s linear infinite}
+@keyframes marq-up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes marq-down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+[data-marq]:hover [data-marq-track],[data-marq]:focus-within [data-marq-track]{animation-play-state:paused}
+[data-pill]{transition:border-color .3s ease,background .3s ease,transform .35s cubic-bezier(.4,0,.2,1)}
+[data-pill] [data-pill-n]{color:var(--mute);transition:color .3s ease}
+[data-pill]:hover{border-color:transparent;background:var(--bg2);transform:translateY(-3px)}
+[data-pill]:hover [data-pill-n]{color:var(--a)}
+[data-cap]{flex:1 1 200px;background:var(--bg);transition:flex-basis .6s cubic-bezier(.4,0,.2,1),opacity .45s ease,background .45s ease}
+[data-cap-num]{opacity:.1;transition:opacity .45s ease,transform .6s cubic-bezier(.4,0,.2,1)}
+[data-cap-bar]{transform:scaleX(.1);transform-origin:left;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+[data-cap-row]:hover [data-cap]{opacity:.32;flex-basis:18%}
+[data-cap-row]:hover [data-cap]:hover{opacity:1;flex-basis:42%;background:var(--bg2)}
+[data-cap-row]:hover [data-cap]:hover [data-cap-num]{opacity:.34;transform:translateY(-8px)}
+[data-cap-row]:hover [data-cap]:hover [data-cap-bar]{transform:scaleX(1)}
+[data-svc-col]:not([data-ready]) [data-svc-slide]:first-child{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-html {
-  height: 100%;
-}
+/* ===== PORTED PSEUDO-CLASSES =====
+ * The dc-runtime compiled style-hover="" / style-focus="" attributes into real
+ * pseudo-class rules. React has no equivalent, so the 16 style-hover and 3
+ * style-focus attributes in the original are re-expressed here.
+ *
+ * !important IS REQUIRED, NOT OPTIONAL. These elements carry the overridden
+ * property inline (e.g. border:1px solid transparent), and an inline style beats
+ * any selector. support.js ran every style-<pseudo> value through importantify()
+ * for exactly this reason - see createPseudoSheet/importantify in support.js.
+ * Drop the !important and the hover silently does nothing.
+ * ===== */
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
+/* header nav button - was style-hover on Quantivo.dc.html L137 */
+[data-nav-btn]:hover{color:var(--ink)!important;border-color:var(--a)!important}
+/* theme toggle - was style-hover on Quantivo.dc.html L154 */
+[data-theme-toggle]:hover{border-color:var(--a)!important;transform:rotate(90deg)!important}
+/* partner marquee track — was style-hover on Quantivo.dc.html L217 */
+[data-partner-track]:hover{animation-play-state:paused!important}
+/* partner name — was style-hover on Quantivo.dc.html L220 */
+[data-partner]:hover{color:var(--ink)!important}
+/* pillar flip card — was style-hover on Quantivo.dc.html L245 */
+[data-pillar-card]:hover{transform:rotateY(180deg)!important}
+/* service "Learn more" — was style-hover on Quantivo.dc.html L295 */
+[data-svc-learn]:hover{color:var(--a)!important}
+/* "View all services" — was style-hover on Quantivo.dc.html L303 */
+[data-svc-all]:hover{border-color:var(--a)!important}
+/* FAQ question row — was style-hover on Quantivo.dc.html L636 */
+[data-faq-q]:hover{color:var(--a)!important}
+/* "Get in Touch" outline CTA — was style-hover on Quantivo.dc.html L656 */
+[data-cta-outline]:hover{border-color:var(--a)!important}
+/* footer quick link — was style-hover on Quantivo.dc.html L1233 */
+[data-foot-link]:hover{color:var(--a)!important}
+/* footer service link — was style-hover on Quantivo.dc.html L1241 */
+[data-foot-svc]:hover{color:var(--ink)!important}
+/* service card CTA — was style-hover on Quantivo.dc.html L1025 */
+[data-svc-cta]:hover{border-color:var(--a)!important}
+/* work card lift — was style-hover on Quantivo.dc.html L1087 */
+[data-work-card]:hover{transform:translateY(-10px)!important}
+/* blog post card — was style-hover on Quantivo.dc.html L1135 */
+[data-post-card]:hover{transform:translateY(-8px)!important;border-color:var(--a)!important}
+/* form fields — was style-focus on Quantivo.dc.html L1171, L1175, L1188 */
+[data-field]:focus{border-color:var(--a)!important}
+/* team prev button — was style-hover on Quantivo.dc.html L846 */
+[data-team-btn]:hover{border-color:var(--a)!important}
