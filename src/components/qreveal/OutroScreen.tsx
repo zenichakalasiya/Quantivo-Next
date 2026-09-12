@@ -1,83 +1,98 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { NAV } from '@/lib/nav';
-import { Q_DOT, Q_OUTER, Q_RING, Q_VIEWBOX } from '@/lib/qmark';
+import { QWatermark } from './QWatermark';
 
 /**
- * The single screen the Q opens onto. Everything lives in ONE viewport:
+ * The outro is TWO full-screen sections, each 100svh:
  *
- *     Let's Talk  (headline + CTA)
- *     ───────────── divider ─────────────
- *     Connect / nav / Newsletter columns
- *     legal bar
- *     QUANTIVO ←   → DIGITAL
+ *   OutroLetsTalk   headline + CTA          — TOP half of the Q behind
+ *   OutroFooter     footer + wordmark       — BOTTOM half of the Q behind
  *
- * ── Watermark alignment ──────────────────────────────────────────────────────
- * The background Q is a light STROKE (outer, ring, arrow, dot) rather than a
- * filled silhouette, so the arrow inside the mark stays readable.
+ * The Q is not one element spanning a tall wrapper; it is the same letter drawn
+ * in both sections at the same size, positioned so its centre lands on the shared
+ * edge. Each section clips its own half, and together they read as one continuous
+ * letter cut by the boundary. That keeps each section independently 100svh, which
+ * is what makes the footer a true full-screen viewport.
  *
- * It is positioned so the ARROW ends exactly on the divider: the arrow's lower
- * edge sits at y≈533.26 in the mark, and the mark's ink bounds are y 497.34 →
- * 583.81, which puts the arrow end at 41.5% of the letter's height. With the
- * watermark at height:112% / top:0.5%, 0.005 + 0.415×1.12 ≈ 0.47 — so the
- * divider at 47% of the screen lands on it. Change one of those three numbers
- * and the other two have to move with it.
+ * No divider rule any more — the section boundary IS the division.
  *
- * Every dimension is clamped against vh rather than vw so the screen cannot
- * overflow on short laptop displays, where vw-scaled type would push the footer
- * out of frame.
+ * Dimensions clamp against vh rather than vw so neither screen can overflow on
+ * short laptop displays.
  */
-const DIVIDER_AT = '47%';
-
-const LABEL = { fontSize: 'clamp(9px,1.1vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' } as const;
-const LINK = { fontSize: 'clamp(12px,1.6vh,15px)', fontWeight: '600', color: 'var(--ink)', textAlign: 'left', lineHeight: '1.5' } as const;
-const NAV_LINK = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(17px,2.7vh,30px)', lineHeight: '1.08', letterSpacing: '.02em', color: 'var(--mute)', transition: 'color .3s' } as const;
+const LABEL = { fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' } as const;
+const LINK = { fontSize: 'clamp(13px,1.9vh,17px)', fontWeight: '600', color: 'var(--ink)', textAlign: 'left', lineHeight: '1.6' } as const;
+const NAV_LINK = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(22px,4.2vh,50px)', lineHeight: '1.1', letterSpacing: '.02em', color: 'var(--mute)', transition: 'color .3s' } as const;
 const WORD = { fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(56px,15vh,210px)', lineHeight: '.8', letterSpacing: '.01em', color: 'var(--ink)', whiteSpace: 'nowrap', userSelect: 'none' } as const;
 
-export function OutroScreen() {
+const SCREEN = {
+  position: 'relative',
+  width: '100%',
+  height: '100svh',
+  overflow: 'hidden',
+  background: 'var(--bg2)',
+} as const;
+
+/** Screen 1 — what the Q opens onto. Top half of the letter behind. */
+export function OutroLetsTalk() {
   const router = useRouter();
-  const go = (href: string) => () => { router.push(href); scrollTo({ top: 0, behavior: 'instant' }); };
+  const goContact = () => { router.push('/contact'); scrollTo({ top: 0, behavior: 'instant' }); };
 
   return (
-    <div
-      data-outro-screen=""
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100svh',
-        overflow: 'hidden',
-        background: 'var(--bg2)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      {/* Light-stroke Q behind everything — the letter that just opened, at rest.
-          Stroked, not filled, so the arrow survives. See the note above for why
-          these numbers are what they are. */}
-      <svg
-        viewBox={Q_VIEWBOX}
-        aria-hidden="true"
-        style={{ position: 'absolute', left: '50%', top: '0.5%', transform: 'translateX(-50%)', height: '112%', width: 'auto', pointerEvents: 'none', zIndex: 0, overflow: 'visible' }}
-      >
-        <g fill="none" stroke="var(--ink)" strokeOpacity=".13" strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round">
-          <path d={Q_OUTER} />
-          <path d={Q_RING} />
-          <circle cx={Q_DOT.cx} cy={Q_DOT.cy} r={Q_DOT.r} />
-        </g>
-      </svg>
-
-      {/* ───────── Let's Talk ───────── */}
-      <div style={{ position: 'relative', zIndex: 1, flex: `0 0 ${DIVIDER_AT}`, minHeight: '0', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(10px,1.8vh,20px)', padding: 'clamp(56px,8vh,90px) clamp(16px,3.4vw,48px) clamp(14px,2.4vh,28px)', borderBottom: '1px solid var(--line)' }}>
-        <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,8vh,104px)', lineHeight: '.88', maxWidth: '20ch' }}>Let&apos;s Create What&apos;s Next.</h2>
-        <p style={{ fontSize: 'clamp(12px,1.7vh,17px)', lineHeight: '1.5', color: 'var(--mute)', maxWidth: '54ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
-        <button onClick={go('/contact')} data-magnet="" data-cursor="Start" style={{ padding: 'clamp(10px,1.6vh,16px) clamp(22px,2.4vw,34px)', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: 'clamp(10px,1.3vh,12px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Project</button>
+    <div data-outro-screen="lets-talk" style={SCREEN}>
+      <QWatermark half="top" />
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2.6vh,30px)', padding: 'clamp(70px,10vh,120px) clamp(16px,3.4vw,48px)' }}>
+        <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Let&apos;s Talk</span>
+        <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,11vh,150px)', lineHeight: '.86', maxWidth: '20ch' }}>Let&apos;s Create What&apos;s Next.</h2>
+        <p style={{ fontSize: 'clamp(14px,2vh,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '54ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
+        <button onClick={goContact} data-magnet="" data-cursor="Start" style={{ marginTop: 'clamp(2px,1vh,10px)', padding: 'clamp(12px,1.9vh,18px) clamp(24px,2.6vw,38px)', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: 'clamp(11px,1.4vh,13px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Project</button>
       </div>
+    </div>
+  );
+}
 
-      {/* ───────── footer ───────── */}
-      <div style={{ position: 'relative', zIndex: 1, flex: '1', minHeight: '0', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 'clamp(10px,2vh,24px)', padding: 'clamp(14px,2.6vh,30px) clamp(16px,3.4vw,48px) 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 'clamp(14px,2.4vw,48px)', alignItems: 'start' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(4px,.8vh,9px)', alignItems: 'center', textAlign: 'center' }}>
+/** Screen 2 — the footer, full viewport. Bottom half of the letter behind. */
+export function OutroFooter() {
+  const router = useRouter();
+  const root = useRef<HTMLDivElement>(null);
+  const go = (href: string) => () => { router.push(href); scrollTo({ top: 0, behavior: 'instant' }); };
+
+  // The wordmark halves slide apart as this screen scrolls in. It lives outside
+  // the pinned reveal now, so it can drive itself off its own position again.
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let ctx: { revert: () => void } | undefined;
+    let cancelled = false;
+
+    (async () => {
+      const { gsap } = await import('gsap');
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      if (cancelled) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      ctx = gsap.context(() => {
+        const trigger = { trigger: el, start: 'top bottom', end: 'bottom bottom', scrub: 0.5 } as const;
+        gsap.fromTo('[data-word-left]', { xPercent: 18 }, { xPercent: -14, ease: 'none', scrollTrigger: trigger });
+        gsap.fromTo('[data-word-right]', { xPercent: -18 }, { xPercent: 14, ease: 'none', scrollTrigger: trigger });
+      }, el);
+    })();
+
+    return () => { cancelled = true; ctx?.revert(); };
+  }, []);
+
+  return (
+    <div ref={root} data-outro-screen="footer" style={SCREEN}>
+      <QWatermark half="bottom" />
+
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {/* columns */}
+        <div style={{ flex: '1', minHeight: '0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 'clamp(18px,2.6vw,56px)', alignItems: 'center', padding: 'clamp(60px,9vh,110px) clamp(16px,3.4vw,48px) clamp(14px,2.4vh,30px)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(5px,1.1vh,11px)', alignItems: 'center', textAlign: 'center' }}>
             <span style={LABEL}>Connect</span>
             <button onClick={go('/contact')} data-cursor="Go" data-foot-link="" style={LINK}>Get in touch</button>
             <span data-foot-link="" style={LINK}>Instagram</span>
@@ -90,16 +105,17 @@ export function OutroScreen() {
             ))}
           </nav>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(5px,1vh,11px)', alignItems: 'center', textAlign: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(6px,1.2vh,13px)', alignItems: 'center', textAlign: 'center' }}>
             <span style={LABEL}>Newsletter</span>
-            <span style={{ fontSize: 'clamp(12px,1.6vh,15px)', fontWeight: '600' }}>Be in the know</span>
-            <button onClick={go('/contact')} data-cursor="Subscribe" data-svc-all="" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: 'clamp(7px,1.1vh,10px) clamp(14px,1.4vw,20px)', borderRadius: '99px', border: '1px solid var(--line)', fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase', transition: 'border-color .3s' }}>
+            <span style={{ fontSize: 'clamp(13px,1.9vh,17px)', fontWeight: '600' }}>Be in the know</span>
+            <button onClick={go('/contact')} data-cursor="Subscribe" data-svc-all="" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'clamp(8px,1.3vh,12px) clamp(16px,1.6vw,24px)', borderRadius: '99px', border: '1px solid var(--line)', fontSize: 'clamp(10px,1.3vh,12px)', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase', transition: 'border-color .3s' }}>
               Subscribe<span aria-hidden="true">&#8594;</span>
             </button>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'space-between', paddingTop: 'clamp(8px,1.4vh,16px)', borderTop: '1px solid var(--line)', fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '600', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)' }}>
+        {/* legal bar */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'space-between', padding: 'clamp(10px,1.6vh,18px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '600', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)' }}>
           <span style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
             <span data-foot-link="">Privacy</span>
             <span data-foot-link="">Terms</span>
@@ -107,12 +123,12 @@ export function OutroScreen() {
           </span>
           <span>© Quantivo Digital 2026. All rights reserved</span>
         </div>
-      </div>
 
-      {/* ───────── split wordmark, cropped by the viewport edges ───────── */}
-      <div aria-hidden="true" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 'clamp(12px,4vw,80px)', overflow: 'hidden' }}>
-        <span data-word-left="" style={WORD}>QUANTIVO</span>
-        <span data-word-right="" style={WORD}>DIGITAL</span>
+        {/* split wordmark, cropped by the viewport edges */}
+        <div aria-hidden="true" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 'clamp(12px,4vw,80px)', overflow: 'hidden' }}>
+          <span data-word-left="" style={WORD}>QUANTIVO</span>
+          <span data-word-right="" style={WORD}>DIGITAL</span>
+        </div>
       </div>
     </div>
   );

@@ -106,11 +106,6 @@ export function QReveal({ children }: { children: React.ReactNode }) {
           onUpdate: () => setClip(clip.h),
         }, 0.55);
 
-        // The split wordmark lives INSIDE the pinned panel, so it cannot use its
-        // own ScrollTrigger (its position never changes while pinned). Drive it
-        // from this timeline instead, so it slides apart as the Q opens.
-        tl.fromTo('[data-word-left]', { xPercent: 16 }, { xPercent: -12, ease: 'none', duration: 0.45 }, 0.55);
-        tl.fromTo('[data-word-right]', { xPercent: -16 }, { xPercent: 12, ease: 'none', duration: 0.45 }, 0.55);
 
         const onResize = () => setClip(clip.h);
         addEventListener('resize', onResize);
