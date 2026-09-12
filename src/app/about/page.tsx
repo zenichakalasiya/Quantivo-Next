@@ -2,20 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import { AboutCards } from '@/components/about/AboutCards';
-import { CapabilityCircles } from '@/components/about/CapabilityCircles';
-import { VisionAccordion } from '@/components/about/VisionAccordion';
+import { WhatWeDo } from '@/components/about/WhatWeDo';
 import { JourneyTimeline } from '@/components/about/JourneyTimeline';
 import { TeamMarquee } from '@/components/about/TeamMarquee';
 
 /**
- * About. Rebuilt from the client's sticky-note layout — five sections between
+ * About. Rebuilt from the client's sticky-note layout — four sections between
  * the hero and the closing CTA:
  *
  *   1. About Quantivo           three cards, one widening on hover
- *   2. What We Do               four capabilities as a joined cluster of circles
- *   3. Vision / Mission / Why   one accordion, three rows
- *   4. Our Journey              vertical 2021-2025 timeline with a filling rail
- *   5. Our Team                 continuously scrolling cards, quote on hover
+ *   2. What We Do               flipping circle cluster, pinned beside the
+ *                               Vision / Mission / Why accordion
+ *   3. Our Journey              vertical 2021-2025 timeline with a filling rail
+ *   4. Our Team                 continuously scrolling cards, quote on hover
  *
  * The previous page ran 12,792px over eight sections. Approach and Global are
  * gone at the client's direction; Journey and Team both came back rebuilt — a
@@ -57,8 +56,7 @@ export default function AboutPage() {
       </section>
 
       <AboutCards />
-      <CapabilityCircles />
-      <VisionAccordion />
+      <WhatWeDo />
       <JourneyTimeline />
       <TeamMarquee />
 
