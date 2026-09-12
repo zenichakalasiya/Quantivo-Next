@@ -5,19 +5,22 @@ import { AboutCards } from '@/components/about/AboutCards';
 import { CapabilityCircles } from '@/components/about/CapabilityCircles';
 import { VisionAccordion } from '@/components/about/VisionAccordion';
 import { JourneyTimeline } from '@/components/about/JourneyTimeline';
+import { TeamMarquee } from '@/components/about/TeamMarquee';
 
 /**
- * About. Rebuilt from the client's sticky-note layout — four sections between
+ * About. Rebuilt from the client's sticky-note layout — five sections between
  * the hero and the closing CTA:
  *
  *   1. About Quantivo           three cards, one widening on hover
  *   2. What We Do               four capabilities as a joined cluster of circles
  *   3. Vision / Mission / Why   one accordion, three rows
  *   4. Our Journey              vertical 2021-2025 timeline with a filling rail
+ *   5. Our Team                 continuously scrolling cards, quote on hover
  *
- * The previous page ran 12,792px over eight sections. Approach, Team and Global
- * are gone at the client's direction; Journey came back rebuilt, as a vertical
- * timeline rather than the old horizontal year rail. Every word of copy that
+ * The previous page ran 12,792px over eight sections. Approach and Global are
+ * gone at the client's direction; Journey and Team both came back rebuilt — a
+ * vertical timeline rather than the old horizontal year rail, and a marquee
+ * rather than the old bio-and-card carousel. Every word of copy that
  * survived was moved, not rewritten — see ABOUT_CARDS and ABOUT_VMW, and
  * JOURNEY, which the old rail already carried.
  *
@@ -57,6 +60,7 @@ export default function AboutPage() {
       <CapabilityCircles />
       <VisionAccordion />
       <JourneyTimeline />
+      <TeamMarquee />
 
       {/* ---------- Final CTA ---------- */}
       <section data-screen-label="About / Final CTA" style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'start' }}>

@@ -264,12 +264,12 @@ export const WHY_US = [
 
 /** Team carousel. _initTeam syncs [data-team-card] with [data-team-bio] by index. */
 export const TEAM = [
-  { slot: 'qv-team-1', bio: 'Quantivo exists to give ambitious businesses one partner for strategy, craft and delivery — not five vendors pulling in different directions.', name: 'Name Surname', role: 'Founder & Creative Director' },
-  { slot: 'qv-team-2', bio: 'The work I care about is the kind that survives contact with a real budget. Quantivo lets us plan campaigns around outcomes, not vanity metrics.', name: 'Name Surname', role: 'Head of Digital Marketing' },
-  { slot: 'qv-team-3', bio: 'Seeing a space or product before it exists changes how clients decide. That is the part of Quantivo I find most rewarding.', name: 'Name Surname', role: 'Lead 3D Visualization Artist' },
-  { slot: 'qv-team-4', bio: 'A site should make one decision easy for the visitor. At Quantivo the build starts from that decision, not from a template.', name: 'Name Surname', role: 'Web Development Lead' },
-  { slot: 'qv-team-5', bio: 'Identity is a promise repeated consistently. Quantivo gives us the room to design that promise properly, across every surface.', name: 'Name Surname', role: 'Brand & Packaging Designer' },
-  { slot: 'qv-team-6', bio: 'My job is to keep the brief honest. Quantivo works best when the client and the team are looking at the same problem.', name: 'Name Surname', role: 'Client Partner' },
+  { slot: 'qv-team-1', img: '/img/q-band-mission.jpg', bio: 'Quantivo exists to give ambitious businesses one partner for strategy, craft and delivery — not five vendors pulling in different directions.', name: 'Name Surname', role: 'Founder & Creative Director' },
+  { slot: 'qv-team-2', img: '/img/q-peek-social.jpg', bio: 'The work I care about is the kind that survives contact with a real budget. Quantivo lets us plan campaigns around outcomes, not vanity metrics.', name: 'Name Surname', role: 'Head of Digital Marketing' },
+  { slot: 'qv-team-3', img: '/img/q-band-why.jpg', bio: 'Seeing a space or product before it exists changes how clients decide. That is the part of Quantivo I find most rewarding.', name: 'Name Surname', role: 'Lead 3D Visualization Artist' },
+  { slot: 'qv-team-4', img: '/img/q-art-3.jpg', bio: 'A site should make one decision easy for the visitor. At Quantivo the build starts from that decision, not from a template.', name: 'Name Surname', role: 'Web Development Lead' },
+  { slot: 'qv-team-5', img: '/img/q-art-2.jpg', bio: 'Identity is a promise repeated consistently. Quantivo gives us the room to design that promise properly, across every surface.', name: 'Name Surname', role: 'Brand & Packaging Designer' },
+  { slot: 'qv-team-6', img: '/img/q-art-4.jpg', bio: 'My job is to keep the brief honest. Quantivo works best when the client and the team are looking at the same problem.', name: 'Name Surname', role: 'Client Partner' },
 ] as const;
 
 /** Journey rail. `left` is the absolute x on the 3400px track - _initYearRail translates it. */
