@@ -32,8 +32,18 @@ function _root() {
 
 
 function _killScroll() {
-    if (ScrollTrigger) ScrollTrigger.getAll().forEach((t) => t.kill());
-    (S._tweens || []).forEach((t) => t.kill && t.kill());
+    // Kills ONLY the triggers this layer created.
+    //
+    // The original did ScrollTrigger.getAll().forEach(t => t.kill()), which was
+    // safe when this was the only code on the page creating ScrollTriggers. It is
+    // not any more - runPageMotion() fires ~80ms after every route change, so a
+    // blanket kill silently destroys any scroll-driven component mounted
+    // alongside it (this is exactly what broke QReveal). _vmOff/_yrOff already
+    // kill their own standalone triggers, so tracked tweens are all that is left.
+    (S._tweens || []).forEach((t) => {
+      if (t.scrollTrigger) t.scrollTrigger.kill();
+      if (t.kill) t.kill();
+    });
     S._tweens = [];
   }
 

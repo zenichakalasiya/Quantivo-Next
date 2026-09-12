@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { SERVICES } from '@/data/content';
 import { NAV } from '@/lib/nav';
 import { QuantivoLogoFooter } from './QuantivoLogoFooter';
@@ -8,7 +8,13 @@ import { QuantivoLogoFooter } from './QuantivoLogoFooter';
 /** Site footer. Ported from Quantivo.dc.html lines 1195-1254. Renders on every page. */
 export function SiteFooter() {
   const router = useRouter();
+  const pathname = usePathname();
+  // The /q-reveal prototype ships its own footer as part of the reveal, so the
+  // global one would double up on screen.
+  const hide = pathname.startsWith('/q-reveal');
   const go = (href: string) => () => { router.push(href); scrollTo({ top: 0, behavior: 'instant' }); };
+
+  if (hide) return null;
 
   return (
     <footer style={{ position: 'relative', zIndex: '1', borderTop: '1px solid var(--line)', background: 'var(--bg2)', padding: 'clamp(48px,6vw,90px) clamp(16px,3.4vw,48px) 28px' }}>

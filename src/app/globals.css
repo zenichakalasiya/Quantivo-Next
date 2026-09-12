@@ -135,3 +135,5 @@ summary::-webkit-details-marker{display:none}
 [data-field]:focus{border-color:var(--a)!important}
 /* team prev button — was style-hover on Quantivo.dc.html L846 */
 [data-team-btn]:hover{border-color:var(--a)!important}
+/* footer nav link (Q reveal screen) */
+[data-foot-nav]:hover{color:var(--ink)!important}
