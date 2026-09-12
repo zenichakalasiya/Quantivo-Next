@@ -43,7 +43,7 @@ export function OutroLetsTalk() {
   return (
     <div data-outro-screen="lets-talk" style={SCREEN}>
       <QWatermark half="top" />
-      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2.6vh,30px)', padding: 'clamp(70px,10vh,120px) clamp(16px,3.4vw,48px)' }}>
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2.6vh,30px)', padding: 'clamp(120px,24vh,260px) clamp(16px,3.4vw,48px) clamp(14px,2vh,28px)' }}>
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Let&apos;s Talk</span>
         <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,11vh,150px)', lineHeight: '.86', maxWidth: '20ch' }}>Let&apos;s Create What&apos;s Next.</h2>
         <p style={{ fontSize: 'clamp(14px,2vh,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '54ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
@@ -91,7 +91,7 @@ export function OutroFooter() {
 
       <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* columns */}
-        <div style={{ flex: '1', minHeight: '0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 'clamp(18px,2.6vw,56px)', alignItems: 'center', padding: 'clamp(60px,9vh,110px) clamp(16px,3.4vw,48px) clamp(14px,2.4vh,30px)' }}>
+        <div style={{ flex: '1', minHeight: '0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 'clamp(18px,2.6vw,56px)', alignItems: 'center', padding: 'clamp(18px,3vh,44px) clamp(16px,3.4vw,48px) clamp(14px,2.4vh,30px)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(5px,1.1vh,11px)', alignItems: 'center', textAlign: 'center' }}>
             <span style={LABEL}>Connect</span>
             <button onClick={go('/contact')} data-cursor="Go" data-foot-link="" style={LINK}>Get in touch</button>
