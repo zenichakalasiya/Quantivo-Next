@@ -17,12 +17,15 @@ export function Faq() {
   const [open, setOpen] = useState(0);
 
   return (
-    <section data-screen-label="Home / FAQ" style={{ padding: 'clamp(60px,8vw,124px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 'clamp(28px,5vw,72px)', alignItems: 'start' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', position: 'sticky', top: '110px' }}>
+    // Centred single column. The two-column split left a wide void between the
+    // heading and the questions, and the bottom padding is tightened because the
+    // Q reveal follows immediately after.
+    <section data-screen-label="Home / FAQ" style={{ padding: 'clamp(56px,7vw,110px) clamp(16px,3.4vw,48px) clamp(30px,4vw,56px)', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(26px,3.6vw,52px)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '14px' }}>
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>09 — FAQ</span>
-        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,5.4vw,86px)', lineHeight: '.92', maxWidth: '14ch' }}>Questions, Answered.</h2>
+        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,5.4vw,86px)', lineHeight: '.92' }}>Questions, Answered.</h2>
       </div>
-      <ul style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--line)' }}>
+      <ul style={{ width: '100%', maxWidth: '860px', display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--line)' }}>
         {FAQS.map((f, i) => {
           const isOpen = open === i;
           return (

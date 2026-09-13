@@ -7,7 +7,11 @@ export const routeFor = (p: PageId): string => (p === 'home' ? '/' : `/${p}`);
 export const labelFor = (p: PageId): string =>
   p === 'blog' ? 'Insights' : p.charAt(0).toUpperCase() + p.slice(1);
 
-export const NAV = PAGES.map((p) => ({
+/**
+ * Home is deliberately absent: the logo is the route home, so a nav entry for it
+ * is a second control doing the same job.
+ */
+export const NAV = PAGES.filter((p) => p !== 'home').map((p) => ({
   key: p,
   href: routeFor(p),
   label: labelFor(p),

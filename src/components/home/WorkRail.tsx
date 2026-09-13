@@ -36,9 +36,9 @@ import { asset } from '@/lib/assets';
  * same six projects a second time, and a screen reader should not meet them
  * twice.
  */
-const ROW_H = 'clamp(160px,23vh,262px)';
-const TILE_W = 'clamp(150px,15vw,230px)';
-const TILE_W_OPEN = 'clamp(300px,36vw,560px)';
+const ROW_H = 'clamp(175px,25vh,290px)';
+const TILE_W = 'clamp(190px,19vw,300px)';
+const TILE_W_OPEN = 'clamp(320px,38vw,600px)';
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 /** Pixels per second the rows drift. */
 const SPEED = 34;

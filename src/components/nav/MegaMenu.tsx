@@ -152,16 +152,23 @@ function Card({ card, onClick }: { card: MegaCard; onClick: () => void }) {
             fill="none"
             stroke="rgba(255,255,255,.92)"
             strokeWidth="1.4"
-            strokeLinecap="round"
+            // Round caps look right on the moving ends, but a round cap paints a
+            // dot even where the dash has zero length — which left a mark at each
+            // card's corners at rest. Butt caps render nothing at zero.
+            strokeLinecap={on ? 'round' : 'butt'}
             style={{
               width: '100%',
               height: '100%',
               transformBox: 'fill-box',
               transformOrigin: 'center',
               transform: `rotate(${rot}deg)`,
-              strokeDasharray: '50 50',
-              strokeDashoffset: on ? 0 : 50,
-              transition: `stroke-dashoffset .62s ${EASE}`,
+              // Grow the DASH from nothing, rather than offsetting a fixed
+              // pattern. stroke-dashoffset only slides a pattern along the path:
+              // "50 50" at offset 50 still paints half the perimeter, just a
+              // different half — which is why every card sat with a full border
+              // at rest instead of a bare one.
+              strokeDasharray: on ? '50 50' : '0 100',
+              transition: `stroke-dasharray .62s ${EASE}`,
             }}
           />
         ))}

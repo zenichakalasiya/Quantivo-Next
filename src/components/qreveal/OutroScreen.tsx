@@ -71,10 +71,10 @@ export function OutroLetsTalk() {
           lines the two columns up on the SAME top edge, so "Let's Talk" and
           "Contact Us" sit on one horizontal line instead of each column being
           independently centred against the other. */}
-      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignContent: 'center', alignItems: 'start', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(24px,4vh,54px)' }}>
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignContent: 'center', alignItems: 'stretch', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(24px,4vh,54px)' }}>
 
         {/* ---- the pitch ---- */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px,3vh,34px)', alignItems: 'flex-start', textAlign: 'left', minWidth: '0' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 'clamp(16px,3vh,34px)', alignItems: 'flex-start', textAlign: 'left', minWidth: '0' }}>
           <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Let&apos;s Talk</span>
           <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(40px,9vh,120px)', lineHeight: '.86', maxWidth: '14ch' }}>Let&apos;s Create What&apos;s Next.</h2>
           <p style={{ fontSize: 'clamp(13px,1.9vh,18px)', lineHeight: '1.6', color: 'var(--mute)', maxWidth: '46ch' }}>Whether you&apos;re building a brand, growing your digital presence, launching a product or visualizing something in 3D — we&apos;re ready to turn it into something people can experience.</p>
@@ -84,7 +84,7 @@ export function OutroLetsTalk() {
         {/* ---- enquiry form ---- */}
         <form
           onSubmit={(e) => { e.preventDefault(); setSent(true); }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px,1.7vh,16px)', border: '1px solid var(--line)', borderRadius: '20px', padding: 'clamp(18px,3vh,34px)', background: 'var(--bg2)', minWidth: '0' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px,1.7vh,16px)', border: '1px solid var(--line)', borderRadius: '20px', padding: 'clamp(18px,3vh,34px)', background: 'var(--bg)', boxShadow: '0 30px 70px -40px rgba(0,0,0,.85)', minWidth: '0' }}
         >
           <span style={{ fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' }}>Contact Us</span>
           <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(22px,3.6vh,42px)', lineHeight: '1', letterSpacing: '.01em' }}>Tell us about it.</span>
