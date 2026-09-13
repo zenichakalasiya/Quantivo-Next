@@ -1,129 +1,98 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ABOUT_VMW, CAPABILITIES } from '@/data/content';
 
 /**
- * About / What We Do — the capability circles and the Vision / Mission / Why
+ * About / What We Do — the capability cluster and the Vision / Mission / Why
  * accordion, side by side under one heading.
  *
- * ── The circles ──────────────────────────────────────────────────────────────
- * Four circles at the compass points with NO lines between them. The joins were
- * removed because at this scale they read heavier than the circles themselves.
- * Each circle instead wears a quarter-arc ring, rotated 90° per circle so the
- * four form a pinwheel, following the infographic reference.
+ * ── The cluster overlaps ─────────────────────────────────────────────────────
+ * The four circles sit on a diamond whose radius is SMALLER than a circle, so
+ * neighbours overlap into a clover. Everything is expressed as a percentage of
+ * the square container, which is what keeps the overlap identical at every size:
  *
- * The arc is an SVG stroke with `stroke-dasharray` set to a quarter of the
- * circumference. On hover it animates to the full circumference, so the colour
- * sweeps the rest of the way round rather than simply appearing — that sweep is
- * the highlight. The circle behind it flips at the same time to show the
- * sub-services.
+ *   circle diameter   48% of the box
+ *   centre offset     26% of the box from the middle
  *
- * `pathLength="100"` is what makes that tractable: it renormalises the path so
- * the dash values are percentages, instead of having to compute 2πr in JS and
- * recompute it whenever the circle resizes.
+ * 26% + 24% = 50%, so the circles reach the box edge exactly and never overhang
+ * it. That is why this version needs no padding to stop the top circle colliding
+ * with the section heading — the previous layout put the circles ON the compass
+ * points, where each hung half its own diameter outside the box.
  *
- * ── The circles pin ──────────────────────────────────────────────────────────
- * `position: sticky` inside the flex row. Sticky needs a parent taller than
- * itself to have anywhere to travel, and that parent is the row, whose height
- * comes from the accordion column. `align-items: flex-start` matters: the
- * default `stretch` would make both columns the row's full height, and a sticky
- * element that already fills its parent never moves.
+ * Each circle carries a ring of the PAGE background rather than a border, which
+ * is what reads as the white gap between overlapping petals in the reference.
+ * A border would sit inside the circle and the petals would touch.
  *
- * ── The accordion opens on scroll ────────────────────────────────────────────
- * Which row is open is driven by scroll position through the section, not only
- * by clicking. A click still works and simply sets the row directly; scrolling
- * on will take over again, which is the behaviour asked for.
+ * The arc now draws just inside the circle's edge instead of orbiting outside
+ * it, because an outer ring would be sliced by whichever neighbour overlaps it.
  *
- * Rows carry a heading, one paragraph, and their points as bare labels. The
- * points used to carry a line of description each, which made the panel read as
- * a wall of small text — that context now lives in the paragraph, and the
- * labels are set in the body face rather than the display face so they cannot
- * be mistaken for more headings.
+ * ── The accordion stacks as you scroll ───────────────────────────────────────
+ * Hovering a row expands it; the other two narrow to their title. Each row's
+ * HEADER is `position: sticky` at a staggered offset, so scrolling on does not
+ * change what is open — instead the next row's header rides up and parks on top
+ * of the open row's description, hiding it behind. The headers end up stacked.
+ *
+ * Sticky headers only hide what is behind them if they are opaque, so each one
+ * paints `var(--bg)`. A transparent header would let the description scroll
+ * through it.
+ *
+ * Which row is open used to be driven by scroll progress. That is gone: it
+ * fought the pointer, reopening a row the moment you scrolled away from the one
+ * you were reading.
  */
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 const FLIP_MS = 260;
-const CIRCLE = 'clamp(148px,17.5vw,224px)';
-/** Gap between the circle edge and its arc. */
-const RING = 11;
+/** Where the first header parks, clear of the fixed site header. */
+const STICK_TOP = 'clamp(82px,12vh,122px)';
+/** Approximate header height — each row parks one of these below the last. */
+const ROW_H = 72;
 
-/** Compass points: 01 north, 02 east, 03 south, 04 west. */
+/** Diamond positions, tight enough that neighbours overlap. */
 const POS = [
-  { top: '0%', left: '50%' },
-  { top: '50%', left: '100%' },
-  { top: '100%', left: '50%' },
-  { top: '50%', left: '0%' },
+  { top: '24%', left: '50%' },   // 01 north
+  { top: '50%', left: '76%' },   // 02 east
+  { top: '76%', left: '50%' },   // 03 south
+  { top: '50%', left: '24%' },   // 04 west
 ] as const;
 
 export function WhatWeDo() {
-  const root = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(0);
 
-  // Scroll drives which row is open.
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    let ctx: { revert: () => void } | undefined;
-    let cancelled = false;
-
-    (async () => {
-      const { gsap } = await import('gsap');
-      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-      if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
-
-      ctx = gsap.context(() => {
-        ScrollTrigger.create({
-          trigger: el,
-          start: 'top top+=26%',
-          end: 'bottom bottom-=12%',
-          onUpdate: (self) => {
-            const i = Math.min(
-              ABOUT_VMW.length - 1,
-              Math.floor(self.progress * ABOUT_VMW.length),
-            );
-            setOpen(i);
-          },
-        });
-      }, el);
-    })();
-
-    return () => { cancelled = true; ctx?.revert(); };
-  }, []);
-
   return (
-    <section data-screen-label="About / What We Do" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px) clamp(60px,8vw,130px)', borderTop: '1px solid var(--line)' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(40px,6vw,88px)' }}>
+    <section data-screen-label="About / What We Do" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px) clamp(60px,8vw,120px)', borderTop: '1px solid var(--line)' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(30px,4vw,56px)' }}>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,4.6vw,72px)', lineHeight: '.94' }}>What We Do.</h2>
-        <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover a circle</span>
+        <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover to explore</span>
       </div>
 
-      {/* flex-start, not stretch — see the note above about sticky travel */}
-      <div ref={root} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 'clamp(34px,5vw,80px)' }}>
-        {/* ---- left: the cluster, pinned ---- */}
-        {/* The circles sit ON the box's compass points, so each overhangs it by
-            half its own diameter. Without this padding the top one collides with
-            the section heading and the side ones run past the column. */}
-        <div style={{ flex: '1 1 330px', minWidth: '0', position: 'sticky', top: 'clamp(86px,13vh,132px)', paddingBlock: 'clamp(74px,9vw,124px)' }}>
-          <div style={{ position: 'relative', width: 'min(100%, clamp(320px,34vw,470px))', aspectRatio: '1 / 1', margin: '0 auto' }}>
+      {/* flex-start so both columns begin on the same line, and so the sticky
+          cluster has somewhere to travel — `stretch` would size it to the row
+          and leave it nothing to do. */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 'clamp(30px,4.5vw,72px)' }}>
+        {/* ---- left: the overlapping cluster ---- */}
+        <div style={{ flex: '1 1 300px', minWidth: '0', position: 'sticky', top: STICK_TOP }}>
+          <div style={{ position: 'relative', width: 'min(100%, clamp(290px,31vw,430px))', aspectRatio: '1 / 1', margin: '0 auto' }}>
             {CAPABILITIES.map((c, i) => (
-              <Circle key={c.n} c={c} pos={POS[i]} spin={i * 90} />
+              <Circle key={c.n} c={c} pos={POS[i]} spin={i * 90} depth={i} />
             ))}
           </div>
         </div>
 
         {/* ---- right: Vision / Mission / Why ---- */}
-        <div style={{ flex: '1.2 1 380px', minWidth: '0' }}>
-          <Accordion open={open} setOpen={setOpen} />
+        <div style={{ flex: '1.25 1 360px', minWidth: '0' }}>
+          <div style={{ borderTop: '1px solid var(--line)' }}>
+            {ABOUT_VMW.map((row, i) => (
+              <Row key={row.n} row={row} i={i} on={open === i} onEnter={() => setOpen(i)} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function Circle({ c, pos, spin }: { c: (typeof CAPABILITIES)[number]; pos: (typeof POS)[number]; spin: number }) {
+function Circle({ c, pos, spin, depth }: { c: (typeof CAPABILITIES)[number]; pos: (typeof POS)[number]; spin: number; depth: number }) {
   const [on, setOn] = useState(false);
 
   const face = {
@@ -132,7 +101,7 @@ function Circle({ c, pos, spin }: { c: (typeof CAPABILITIES)[number]; pos: (type
     borderRadius: '50%',
     display: 'grid',
     placeItems: 'center',
-    padding: '14px',
+    padding: '16%',
     textAlign: 'center',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
@@ -152,26 +121,29 @@ function Circle({ c, pos, spin }: { c: (typeof CAPABILITIES)[number]; pos: (type
         top: pos.top,
         left: pos.left,
         transform: 'translate(-50%,-50%)',
-        width: CIRCLE,
-        height: CIRCLE,
+        width: '48%',
+        aspectRatio: '1 / 1',
+        borderRadius: '50%',
+        // The gap between overlapping petals is a ring of the page background,
+        // painted OUTSIDE the circle. A border would sit inside it and the
+        // petals would meet with no separation.
+        boxShadow: '0 0 0 7px var(--bg)',
+        // Hovered circle comes to the front; otherwise they stack in order.
+        zIndex: on ? 10 : depth + 1,
       }}
     >
-      {/* The arc. pathLength=100 renormalises the circumference to 100, so the
-          dash values are plain percentages and never need recomputing when the
-          circle resizes. 25 -> 100 sweeps it the rest of the way round. */}
-      <svg
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-        style={{ position: 'absolute', inset: `-${RING}px`, width: `calc(100% + ${RING * 2}px)`, height: `calc(100% + ${RING * 2}px)`, transform: `rotate(${spin - 90}deg)`, overflow: 'visible' }}
-      >
+      {/* The arc, drawn just inside the circle's edge. Outside it would be
+          sliced by whichever neighbour overlaps this one. pathLength=100 makes
+          the dash values plain percentages, so nothing needs measuring. */}
+      <svg viewBox="0 0 100 100" aria-hidden="true" style={{ position: 'absolute', inset: '0', width: '100%', height: '100%', transform: `rotate(${spin - 90}deg)`, zIndex: 2, pointerEvents: 'none' }}>
         <circle
           cx="50"
           cy="50"
-          r="47"
+          r="48"
           pathLength="100"
           fill="none"
           stroke="url(#qvArc)"
-          strokeWidth="3.2"
+          strokeWidth="2.6"
           strokeLinecap="round"
           strokeDasharray={on ? '100 0' : '25 75'}
           style={{ transition: `stroke-dasharray ${on ? 620 : 420}ms ${EASE}` }}
@@ -184,7 +156,6 @@ function Circle({ c, pos, spin }: { c: (typeof CAPABILITIES)[number]; pos: (type
         </defs>
       </svg>
 
-      {/* perspective belongs on the direct parent of the rotating box */}
       <div style={{ position: 'absolute', inset: '0', perspective: '900px' }}>
         <div
           style={{
@@ -196,19 +167,17 @@ function Circle({ c, pos, spin }: { c: (typeof CAPABILITIES)[number]; pos: (type
             transition: `transform ${FLIP_MS}ms ${EASE}`,
           }}
         >
-          {/* front */}
           <div style={{ ...face, background: 'var(--bg2)', border: '1px solid var(--line)' }}>
-            <span style={{ display: 'grid', gap: '4px' }}>
-              <span style={{ fontSize: '10px', fontWeight: '700', letterSpacing: '.2em', color: 'var(--mute)' }}>{c.n}</span>
-              <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(17px,1.7vw,24px)', lineHeight: '1.02', letterSpacing: '.02em', color: 'var(--ink)' }}>{c.title}</span>
+            <span style={{ display: 'grid', gap: '3px' }}>
+              <span style={{ fontSize: '9.5px', fontWeight: '700', letterSpacing: '.2em', color: 'var(--mute)' }}>{c.n}</span>
+              <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(14px,1.45vw,20px)', lineHeight: '1.02', letterSpacing: '.02em', color: 'var(--ink)' }}>{c.title}</span>
             </span>
           </div>
 
-          {/* back — the sub-services */}
           <div style={{ ...face, transform: 'rotateY(180deg)', background: 'var(--grad)', border: '1px solid transparent' }}>
-            <ul style={{ display: 'grid', gap: '5px', margin: '0', padding: '0', listStyle: 'none' }}>
+            <ul style={{ display: 'grid', gap: '3px', margin: '0', padding: '0', listStyle: 'none' }}>
               {c.items.map((it) => (
-                <li key={it} style={{ fontSize: 'clamp(9.5px,.78vw,12px)', fontWeight: '600', lineHeight: '1.25', color: '#fff' }}>{it}</li>
+                <li key={it} style={{ fontSize: 'clamp(8.5px,.68vw,10.5px)', fontWeight: '600', lineHeight: '1.25', color: '#fff' }}>{it}</li>
               ))}
             </ul>
           </div>
@@ -219,62 +188,55 @@ function Circle({ c, pos, spin }: { c: (typeof CAPABILITIES)[number]; pos: (type
 }
 
 /**
- * Vision / Mission / Why. One row is always open — closing the last one would
- * leave three bare lines.
- *
- * The body animates `grid-template-rows: 0fr -> 1fr`, which reaches the
- * content's true height. `height: auto` cannot be transitioned, and a fixed
- * max-height has to be guessed: too small clips the five-point Why row, too
- * large makes the three-point Vision row ease with nothing moving. The inner
- * wrapper needs `overflow: hidden` or content spills out of the collapsed row.
+ * One accordion row. The body animates `grid-template-rows: 0fr -> 1fr`, which
+ * reaches the content's real height — `height: auto` cannot be transitioned, and
+ * a fixed max-height has to be guessed. The inner wrapper needs
+ * `overflow: hidden` or the content spills out of the collapsed row.
  */
-function Accordion({ open, setOpen }: { open: number; setOpen: (i: number) => void }) {
+function Row({ row, i, on, onEnter }: { row: (typeof ABOUT_VMW)[number]; i: number; on: boolean; onEnter: () => void }) {
   return (
-    <div style={{ borderTop: '1px solid var(--line)' }}>
-      {ABOUT_VMW.map((row, i) => {
-        const on = open === i;
-        return (
-          <div key={row.n} style={{ borderBottom: '1px solid var(--line)' }}>
-            <button
-              onClick={() => setOpen(i)}
-              aria-expanded={on}
-              data-cursor={on ? 'Open' : 'Expand'}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 'clamp(12px,2vw,28px)', padding: 'clamp(16px,2.2vh,26px) 0', background: 'transparent', textAlign: 'left' }}
-            >
-              <span style={{ flex: 'none', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(16px,1.5vw,24px)', lineHeight: '1', color: on ? 'var(--a)' : 'var(--mute)', transition: 'color .4s' }}>{row.n}.</span>
-              <span style={{ flex: '1', minWidth: '0', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(24px,2.9vw,44px)', lineHeight: '1', letterSpacing: '.01em', color: 'var(--ink)' }}>{row.title}</span>
-              <span aria-hidden="true" style={{ flex: 'none', width: '26px', height: '26px', display: 'grid', placeItems: 'center', color: on ? 'var(--a)' : 'var(--mute)', transform: on ? 'rotate(180deg)' : 'none', transition: `transform .5s ${EASE}, color .4s` }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
-              </span>
-            </button>
+    <div onMouseEnter={onEnter} style={{ borderBottom: '1px solid var(--line)' }}>
+      <button
+        onClick={onEnter}
+        onFocus={onEnter}
+        aria-expanded={on}
+        data-cursor={on ? 'Open' : 'Expand'}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'clamp(12px,2vw,28px)',
+          padding: 'clamp(15px,2vh,22px) 0',
+          // Sticky, one row height lower than the row above, so the headers
+          // stack instead of scrolling away. Opaque, or the description behind
+          // would scroll straight through it.
+          position: 'sticky',
+          top: `calc(${STICK_TOP} + ${i * ROW_H}px)`,
+          zIndex: i + 2,
+          background: 'var(--bg)',
+          textAlign: 'left',
+        }}
+      >
+        <span style={{ flex: 'none', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(16px,1.5vw,24px)', lineHeight: '1', color: on ? 'var(--a)' : 'var(--mute)', transition: 'color .4s' }}>{row.n}.</span>
+        <span style={{ flex: '1', minWidth: '0', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(24px,2.9vw,44px)', lineHeight: '1', letterSpacing: '.01em', color: 'var(--ink)' }}>{row.title}</span>
+        <span aria-hidden="true" style={{ flex: 'none', width: '26px', height: '26px', display: 'grid', placeItems: 'center', color: on ? 'var(--a)' : 'var(--mute)', transform: on ? 'rotate(180deg)' : 'none', transition: `transform .5s ${EASE}, color .4s` }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+        </span>
+      </button>
 
-            <div style={{ display: 'grid', gridTemplateRows: on ? '1fr' : '0fr', transition: `grid-template-rows .6s ${EASE}` }}>
-              <div style={{ overflow: 'hidden' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(14px,2vh,20px)', padding: '0 0 clamp(22px,3vh,34px)', opacity: on ? 1 : 0, transition: `opacity .45s ${EASE}` }}>
-                  {/* heading stays in the display face; everything below it is
-                      body face, so the panel reads as one heading and its text
-                      rather than a stack of competing headings. */}
-                  <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(19px,1.9vw,29px)', lineHeight: '1.05', margin: '0' }}>{row.head}</h3>
-                  <p style={{ fontSize: 'clamp(13.5px,1vw,16px)', lineHeight: '1.7', color: 'var(--mute)', margin: '0' }}>{row.body}</p>
-
-                  {/* points as bare labels — no descriptions; the paragraph
-                      above now carries their context. */}
-                  <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px', margin: '2px 0 0', padding: '0', listStyle: 'none' }}>
-                    {row.points.map((p) => (
-                      <li
-                        key={p}
-                        style={{ padding: '8px 15px', borderRadius: '99px', border: '1px solid var(--line)', background: 'var(--bg2)', fontSize: '11.5px', fontWeight: '700', letterSpacing: '.11em', textTransform: 'uppercase', color: 'var(--ink)', whiteSpace: 'nowrap' }}
-                      >
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
+      <div style={{ display: 'grid', gridTemplateRows: on ? '1fr' : '0fr', transition: `grid-template-rows .55s ${EASE}` }}>
+        <div style={{ overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(13px,1.8vh,18px)', padding: '0 0 clamp(22px,3vh,34px)', opacity: on ? 1 : 0, transition: `opacity .4s ${EASE}` }}>
+            <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(19px,1.9vw,29px)', lineHeight: '1.05', margin: '0' }}>{row.head}</h3>
+            <p style={{ fontSize: 'clamp(13.5px,1vw,16px)', lineHeight: '1.7', color: 'var(--mute)', margin: '0' }}>{row.body}</p>
+            <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px', margin: '2px 0 0', padding: '0', listStyle: 'none' }}>
+              {row.points.map((p) => (
+                <li key={p} style={{ padding: '8px 15px', borderRadius: '99px', border: '1px solid var(--line)', background: 'var(--bg2)', fontSize: '11.5px', fontWeight: '700', letterSpacing: '.11em', textTransform: 'uppercase', color: 'var(--ink)', whiteSpace: 'nowrap' }}>{p}</li>
+              ))}
+            </ul>
           </div>
-        );
-      })}
+        </div>
+      </div>
     </div>
   );
 }
