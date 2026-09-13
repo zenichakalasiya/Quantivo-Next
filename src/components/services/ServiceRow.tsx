@@ -119,10 +119,10 @@ export function ServiceRow({
 
         {/* both descriptions share one grid cell, so the row never jumps */}
         <span style={{ display: 'grid', minWidth: '0' }}>
-          <span style={{ gridArea: '1 / 1', fontSize: 'clamp(15px,1.9vw,33px)', lineHeight: '1.5', color: 'var(--mute)', maxWidth: '40ch', opacity: on ? 0 : 1, transition: `opacity .3s ease ${on ? '0s' : '.16s'}` }}>
+          <span style={{ gridArea: '1 / 1', fontSize: 'clamp(11px,calc(1.9vw - 4px),29px)', lineHeight: '1.5', color: 'var(--mute)', maxWidth: '40ch', opacity: on ? 0 : 1, transition: `opacity .3s ease ${on ? '0s' : '.16s'}` }}>
             {blurb}
           </span>
-          <span style={{ gridArea: '1 / 1', fontSize: 'clamp(15px,1.9vw,33px)', lineHeight: '1.5', color: 'var(--ink)', maxWidth: '54ch', opacity: on ? 1 : 0, transition: `opacity .35s ease ${on ? '.14s' : '0s'}` }}>
+          <span style={{ gridArea: '1 / 1', fontSize: 'clamp(11px,calc(1.9vw - 4px),29px)', lineHeight: '1.5', color: 'var(--ink)', maxWidth: '54ch', opacity: on ? 1 : 0, transition: `opacity .35s ease ${on ? '.14s' : '0s'}` }}>
             {shown.join(' • ')}{extra > 0 ? ` • +${extra} more` : ''}
           </span>
         </span>
