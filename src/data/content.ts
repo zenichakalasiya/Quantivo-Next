@@ -114,6 +114,11 @@ export const APPROACH = [
   { num: '05 — Grow', title: 'Grow', body: 'For ongoing marketing projects, we analyze, optimize, and continuously improve.' },
 ];
 
+/**
+ * Projects. The last four are PLACEHOLDERS invented to bring the set to ten for
+ * the work page's featured columns — titles, copy and stand-in images alike.
+ * Replace them, or delete them, once there are ten real case studies.
+ */
 export const WORK = [
   { img: '/img/q-yr-2023.jpg', title: 'Aurelia Skincare', year: '2025', disc: 'Brand identity, packaging system and product visualization for a clean-beauty launch.', tags: ['Branding', 'Packaging', '3D Product'], cat: 'Branding', ratio: '4/3', slot: 'qv-work-1', ph: 'Case study cover — Aurelia Skincare' },
   { img: '/img/q-band-vision.jpg', title: 'Northline Residences', year: '2025', disc: 'Exterior and interior visualization suite for a residential development launch.', tags: ['3D Architectural', 'Environments'], cat: '3D', ratio: '4/3', slot: 'qv-work-2', ph: 'Case study cover — Northline Residences' },
@@ -121,6 +126,10 @@ export const WORK = [
   { img: '/img/q-art-5.jpg', title: 'Verda Foods', year: '2024', disc: 'Always-on social content and paid campaign management for a retail food brand.', tags: ['Social', 'Meta Ads'], cat: 'Marketing', ratio: '4/3', slot: 'qv-work-4', ph: 'Case study cover — Verda Foods' },
   { img: '/img/q-yr-2022.jpg', title: 'Kite Financial', year: '2024', disc: 'Search visibility programme and content optimization for a fintech platform.', tags: ['SEO', 'Content'], cat: 'Marketing', ratio: '4/3', slot: 'qv-work-5', ph: 'Case study cover — Kite Financial' },
   { img: '/img/q-yr-2024.jpg', title: 'Mono Audio', year: '2023', disc: 'Product renders and animation for an e-commerce and campaign rollout.', tags: ['3D Product', 'Animation'], cat: '3D', ratio: '4/3', slot: 'qv-work-6', ph: 'Case study cover — Mono Audio' },
+  { img: '/img/q-yr-2021.jpg', title: 'Halden Interiors', year: '2023', disc: 'Interior visualization suite for a furniture and fit-out studio.', tags: ['3D Architectural', 'Interiors'], cat: '3D', ratio: '4/3', slot: 'qv-work-7', ph: 'Case study cover — Halden Interiors' },
+  { img: '/img/q-yr-2025.jpg', title: 'Meridian Health', year: '2023', disc: 'Website rebuild and booking flow for a private clinic group.', tags: ['Web', 'UX'], cat: 'Web', ratio: '4/3', slot: 'qv-work-8', ph: 'Case study cover — Meridian Health' },
+  { img: '/img/q-art-1.jpg', title: 'Orbit Beverages', year: '2022', disc: 'Identity and can design for a soft drinks launch.', tags: ['Branding', 'Packaging'], cat: 'Branding', ratio: '4/3', slot: 'qv-work-9', ph: 'Case study cover — Orbit Beverages' },
+  { img: '/img/q-peek-pack.jpg', title: 'Grove & Co', year: '2022', disc: 'Paid social and content programme for a homeware retailer.', tags: ['Social', 'Content'], cat: 'Marketing', ratio: '4/3', slot: 'qv-work-10', ph: 'Case study cover — Grove & Co' },
 ];
 
 export const INTERESTS = ['Social Media', 'SEO', 'Google & Meta Ads', 'Branding', 'Packaging', 'Website', '3D Architectural', '3D Product'];
