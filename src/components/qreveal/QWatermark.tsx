@@ -24,6 +24,16 @@ import { Q_DOT, Q_OUTER, Q_RING, Q_VIEWBOX } from '@/lib/qmark';
  * The letter is very nearly square, so SIZE is also roughly its width — at 200svh
  * it was wider than the viewport and read as a full-bleed blob. 130svh keeps the
  * mark reading as a smaller accent rather than dominating the screen.
+ *
+ * ── Why half="top" starts invisible ──────────────────────────────────────────
+ * This instance sits inside QReveal's clip-path panel (see QReveal.tsx), which
+ * grows from a small window centred on the VIEWPORT MIDDLE — a different point
+ * than this mark's own bottom-anchored centre. Left visible throughout, the
+ * growing window exposed stray slivers of this mark's ring/arrow knockouts
+ * mid-transition — a second, misaligned "Q" fragment competing with the one
+ * actually being drawn. QReveal fades it in only once the window has (almost)
+ * fully opened, so nothing shows through until it's meant to. half="bottom"
+ * (the footer's copy) lives outside the reveal entirely and is unaffected.
  */
 const SIZE_SVH = 130;
 const HALF = SIZE_SVH / 2;
@@ -33,12 +43,13 @@ export function QWatermark({ half }: { half: 'top' | 'bottom' }) {
     <svg
       viewBox={Q_VIEWBOX}
       aria-hidden="true"
+      data-q-watermark={half === 'top' ? '' : undefined}
       style={{
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
         ...(half === 'top'
-          ? { bottom: `-${HALF}svh` }
+          ? { bottom: `-${HALF}svh`, opacity: 0 }
           : { top: `-${HALF}svh` }),
         height: `${SIZE_SVH}svh`,
         width: 'auto',

@@ -32,6 +32,7 @@ export function QReveal({ children }: { children: React.ReactNode }) {
     const clipPath = el.querySelector<SVGPathElement>('[data-q-clip]');
     const panel = el.querySelector<HTMLElement>('[data-q-panel]');
     const art = el.querySelector<HTMLElement>('[data-q-art]');
+    const watermark = el.querySelector<HTMLElement>('[data-q-watermark]');
 
     /** Places the clip letter centred on screen at `height` px tall. */
     const setClip = (height: number) => {
@@ -51,6 +52,7 @@ export function QReveal({ children }: { children: React.ReactNode }) {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       if (panel) { panel.style.clipPath = 'none'; panel.style.opacity = '1'; }
       if (art) art.style.display = 'none';
+      if (watermark) watermark.style.opacity = '1';
       return;
     }
 
@@ -95,6 +97,11 @@ export function QReveal({ children }: { children: React.ReactNode }) {
         tl.to('[data-q-panel]', { opacity: 1, ease: 'none', duration: 0.08 }, 0.52);
 
         // ---- phase 2: open the window ----
+        // The watermark stays hidden (see QWatermark.tsx) until the window is
+        // almost fully open, then fades in — by then the clip covers the whole
+        // viewport so there is nothing left for it to peek through unevenly.
+        tl.to('[data-q-watermark]', { opacity: 1, ease: 'none', duration: 0.12 }, 0.85);
+
         // Once the window is bigger than the screen the clip costs compositing
         // for no visual difference, so drop it at the very end.
         tl.set('[data-q-panel]', { clipPath: 'none' }, 0.995);
