@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { ABOUT_VMW, CAPABILITIES } from '@/data/content';
 
 /**
@@ -72,9 +72,9 @@ export function WhatWeDo() {
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 'clamp(30px,4.5vw,72px)' }}>
         {/* ---- left: the overlapping cluster ---- */}
         <div style={{ flex: '1 1 300px', minWidth: '0', position: 'sticky', top: STICK_TOP }}>
-          <div style={{ position: 'relative', width: 'min(100%, clamp(290px,31vw,430px))', aspectRatio: '1 / 1', margin: '0 auto' }}>
+          <div style={{ position: 'relative', width: 'min(100%, clamp(320px,36vw,500px))', aspectRatio: '1 / 1', margin: '0 auto' }}>
             {CAPABILITIES.map((c, i) => (
-              <Circle key={c.n} c={c} pos={POS[i]} spin={i * 90} depth={i} />
+              <Circle key={c.n} c={c} pos={POS[i]} spin={i * 90} depth={i} carve={i === 3} />
             ))}
           </div>
         </div>
@@ -92,7 +92,7 @@ export function WhatWeDo() {
   );
 }
 
-function Circle({ c, pos, spin, depth }: { c: (typeof CAPABILITIES)[number]; pos: (typeof POS)[number]; spin: number; depth: number }) {
+function Circle({ c, pos, spin, depth, carve }: { c: (typeof CAPABILITIES)[number]; pos: (typeof POS)[number]; spin: number; depth: number; carve: boolean }) {
   const [on, setOn] = useState(false);
 
   const face = {
@@ -130,6 +130,25 @@ function Circle({ c, pos, spin, depth }: { c: (typeof CAPABILITIES)[number]; pos
         boxShadow: '0 0 0 7px var(--bg)',
         // Hovered circle comes to the front; otherwise they stack in order.
         zIndex: on ? 10 : depth + 1,
+        // A pinwheel overlap is a CYCLE — each circle covers the next and is
+        // covered by another — and z-index cannot express a cycle. With a plain
+        // 1<2<3<4 order the bottom circle ends up bitten on BOTH sides while the
+        // top one is bitten on none.
+        //
+        // So the top circle has its neighbour's disc masked out of it, which
+        // closes the loop: each circle is now cut on exactly one side. The
+        // geometry is in the circle's own percentages (its neighbour sits at
+        // 104.17%/-4.17% of its width, with a radius of 53% of it — half the width for the neighbour, plus the ring gap) so it
+        // holds at every size. The radii are percentages, not calc(): a calc()
+        // mixing % and px is rejected outright in a gradient radius, and the
+        // declaration is then dropped silently. The mask is dropped while hovered, since the
+        // hovered circle rises above everything anyway.
+        ...(carve && !on
+          ? {
+              maskImage: 'radial-gradient(ellipse 53% 53% at 104.17% -4.17%, transparent 99%, #000 100%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 53% 53% at 104.17% -4.17%, transparent 99%, #000 100%)',
+            }
+          : null),
       }}
     >
       {/* The arc, drawn just inside the circle's edge. Outside it would be
@@ -195,8 +214,9 @@ function Circle({ c, pos, spin, depth }: { c: (typeof CAPABILITIES)[number]; pos
  */
 function Row({ row, i, on, onEnter }: { row: (typeof ABOUT_VMW)[number]; i: number; on: boolean; onEnter: () => void }) {
   return (
-    <div onMouseEnter={onEnter} style={{ borderBottom: '1px solid var(--line)' }}>
+    <Fragment>
       <button
+        onMouseEnter={onEnter}
         onClick={onEnter}
         onFocus={onEnter}
         aria-expanded={on}
@@ -214,6 +234,8 @@ function Row({ row, i, on, onEnter }: { row: (typeof ABOUT_VMW)[number]; i: numb
           top: `calc(${STICK_TOP} + ${i * ROW_H}px)`,
           zIndex: i + 2,
           background: 'var(--bg)',
+          borderTop: i === 0 ? 'none' : '1px solid var(--line)',
+          borderBottom: '1px solid var(--line)',
           textAlign: 'left',
         }}
       >
@@ -237,6 +259,6 @@ function Row({ row, i, on, onEnter }: { row: (typeof ABOUT_VMW)[number]; i: numb
           </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 }

@@ -61,10 +61,10 @@ export default function AboutPage() {
       <TeamMarquee />
 
       {/* ---------- Final CTA ---------- */}
-      <section data-screen-label="About / Final CTA" style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'start' }}>
-        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,7.6vw,132px)', lineHeight: '.86', maxWidth: '20ch' }}>Let&apos;s Build Something Meaningful.</h2>
-        <p style={{ fontSize: 'clamp(15px,1.25vw,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '56ch' }}>Every great project starts with an idea. Whether you&apos;re building a new brand, improving your digital presence, launching a product, creating a website, or visualizing something — let&apos;s turn your idea into something people can experience.</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+      <section data-screen-label="About / Final CTA" style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', textAlign: 'center' }}>
+        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(32px,4.6vw,74px)', lineHeight: '.92', maxWidth: '18ch' }}>Let&apos;s Build Something Meaningful.</h2>
+        <p style={{ fontSize: 'clamp(14px,1.05vw,17px)', lineHeight: '1.6', color: 'var(--mute)', maxWidth: '58ch' }}>Every great project starts with an idea. Whether you&apos;re building a new brand, improving your digital presence, launching a product, creating a website, or visualizing something — let&apos;s turn your idea into something people can experience.</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px' }}>
           <button onClick={goContact} data-magnet="" data-cursor="Talk" style={{ padding: '16px 32px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Conversation</button>
           <button onClick={goWork} data-magnet="" data-cursor="Work" data-cta-outline="" style={{ padding: '16px 32px', borderRadius: '99px', border: '1px solid var(--line)', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase', transition: 'border-color .3s' }}>See Our Work</button>
         </div>

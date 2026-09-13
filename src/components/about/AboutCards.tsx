@@ -73,7 +73,7 @@ export function AboutCards() {
                 <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,3vw,50px)', lineHeight: '1', color: 'var(--line)' }}>{c.n}</span>
               </div>
 
-              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(20px,1.9vw,30px)', lineHeight: '1.02', maxWidth: '18ch', margin: '0' }}>{c.title}</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(15px,1.45vw,22px)', lineHeight: '1.15', margin: '0' }}>{c.title}</h3>
 
               {/* revealed body. min-height 0 lets the column actually scroll-clip
                   inside the fixed card height instead of overflowing it. */}

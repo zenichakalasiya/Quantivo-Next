@@ -164,3 +164,9 @@ summary::-webkit-details-marker{display:none}
   [data-journey-row] > *{grid-column:1!important;justify-self:start!important;max-width:100%!important}
   [data-journey-line],[data-journey-progress],[data-journey-dot]{left:14px!important}
 }
+
+/* ===== Nav card rail =====
+ * Two short bright segments that run continuously around a card while it is
+ * hovered. pathLength="100" on the rect normalises the perimeter to 100, so one
+ * full lap is exactly -100 of dashoffset regardless of the card's size. */
+@keyframes qvRailRun{to{stroke-dashoffset:-100}}

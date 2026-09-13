@@ -138,37 +138,48 @@ function Card({ card, onClick }: { card: MegaCard; onClick: () => void }) {
         transition: 'background .3s',
       }}
     >
-      {/* the rail */}
+      {/* The rail: a faint continuous outline plus two short bright segments
+          that run around it. The segments start half a lap apart, so the two
+          bright points are always on opposite sides of the card.
+
+          The whole thing fades in and out with hover rather than each stroke
+          being animated separately — an unhovered card carries no outline at
+          all, and the running animation is paused while it is invisible so it
+          costs nothing. */}
       <svg
         aria-hidden="true"
-        style={{ position: 'absolute', inset: '1px', width: 'calc(100% - 2px)', height: 'calc(100% - 2px)', pointerEvents: 'none', overflow: 'visible' }}
+        style={{ position: 'absolute', inset: '1px', width: 'calc(100% - 2px)', height: 'calc(100% - 2px)', pointerEvents: 'none', overflow: 'visible', opacity: on ? 1 : 0, transition: `opacity .32s ${EASE}` }}
       >
-        {[0, 180].map((rot) => (
+        <rect
+          rx="13"
+          ry="13"
+          fill="none"
+          stroke="rgba(255,255,255,.26)"
+          strokeWidth="1"
+          style={{ width: '100%', height: '100%' }}
+        />
+        {[0, 50].map((phase) => (
           <rect
-            key={rot}
+            key={phase}
             rx="13"
             ry="13"
             pathLength="100"
             fill="none"
-            stroke="rgba(255,255,255,.92)"
-            strokeWidth="1.4"
-            // Round caps look right on the moving ends, but a round cap paints a
-            // dot even where the dash has zero length — which left a mark at each
-            // card's corners at rest. Butt caps render nothing at zero.
-            strokeLinecap={on ? 'round' : 'butt'}
+            stroke="rgba(255,255,255,.95)"
+            strokeWidth="1.7"
+            strokeLinecap="round"
             style={{
               width: '100%',
               height: '100%',
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              transform: `rotate(${rot}deg)`,
-              // Grow the DASH from nothing, rather than offsetting a fixed
-              // pattern. stroke-dashoffset only slides a pattern along the path:
-              // "50 50" at offset 50 still paints half the perimeter, just a
-              // different half — which is why every card sat with a full border
-              // at rest instead of a bare one.
-              strokeDasharray: on ? '50 50' : '0 100',
-              transition: `stroke-dasharray .62s ${EASE}`,
+              strokeDasharray: '15 85',
+              animation: 'qvRailRun 2.8s linear infinite',
+              // Half a lap apart, so the two highlights always sit opposite each
+              // other. This has to be a negative DELAY, not a starting
+              // dash-offset: the keyframe animates dash-offset to -100, so an
+              // inline starting value would be overridden and the two segments
+              // would travel different distances and drift apart.
+              animationDelay: phase === 0 ? '0s' : '-1.4s',
+              animationPlayState: on ? 'running' : 'paused',
             }}
           />
         ))}
