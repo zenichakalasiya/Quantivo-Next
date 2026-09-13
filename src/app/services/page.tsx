@@ -133,7 +133,9 @@ export default function ServicesPage() {
       </section>
 
       {/* ---------- CTA ---------- */}
-      <section id="svc-contact" data-screen-label="Services / One team" style={{ borderTop: '1px solid var(--line)', padding: 'clamp(70px,10vw,150px) clamp(16px,3.4vw,48px)', display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'start' }}>
+      {/* Centred to match the Home page's Final CTA (FinalCta.tsx) rather than
+          left-aligned like the rest of this page's sections. */}
+      <section id="svc-contact" data-screen-label="Services / One team" style={{ borderTop: '1px solid var(--line)', padding: 'clamp(70px,10vw,150px) clamp(16px,3.4vw,48px)', display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', textAlign: 'center', maxWidth: '1100px', margin: '0 auto' }}>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(40px,6.8vw,124px)', lineHeight: '.88', letterSpacing: '.01em', maxWidth: '18ch' }}>One Team. Multiple Capabilities.</h2>
         <p style={{ fontSize: 'clamp(15px,1.25vw,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '66ch' }}>From building your brand identity and packaging to growing your digital presence, developing your website, running advertising campaigns, and creating high-quality 3D visualizations—Quantivo brings strategy, creativity, technology, and visualization together under one roof.</p>
         <p style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(26px,3.2vw,50px)', lineHeight: '1', letterSpacing: '.02em' }}>Have a Project in Mind? Let&apos;s create something meaningful.</p>

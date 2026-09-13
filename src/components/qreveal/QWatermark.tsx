@@ -22,11 +22,10 @@ import { Q_DOT, Q_OUTER, Q_RING, Q_VIEWBOX } from '@/lib/qmark';
  *   half="bottom" -> top:-SIZE/2, centre on the section's TOP edge.
  *
  * The letter is very nearly square, so SIZE is also roughly its width — at 200svh
- * it was wider than the viewport and read as a full-bleed blob. 175svh brings the
- * arc up near the top of the viewport (asked for so the mark reads immediately,
- * not 30% down into empty space) while staying short of that blob threshold.
+ * it was wider than the viewport and read as a full-bleed blob. 130svh keeps the
+ * mark reading as a smaller accent rather than dominating the screen.
  */
-const SIZE_SVH = 175;
+const SIZE_SVH = 130;
 const HALF = SIZE_SVH / 2;
 
 export function QWatermark({ half }: { half: 'top' | 'bottom' }) {
