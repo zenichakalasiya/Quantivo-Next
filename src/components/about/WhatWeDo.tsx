@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { ABOUT_VMW, CAPABILITIES } from '@/data/content';
 
 /**
@@ -27,26 +27,25 @@ import { ABOUT_VMW, CAPABILITIES } from '@/data/content';
  * The arc now draws just inside the circle's edge instead of orbiting outside
  * it, because an outer ring would be sliced by whichever neighbour overlaps it.
  *
- * ── The accordion stacks as you scroll ───────────────────────────────────────
- * Hovering a row expands it; the other two narrow to their title. Each row's
- * HEADER is `position: sticky` at a staggered offset, so scrolling on does not
- * change what is open — instead the next row's header rides up and parks on top
- * of the open row's description, hiding it behind. The headers end up stacked.
+ * ── The sections stack as you scroll ─────────────────────────────────────────
+ * Each section sticks AS A WHOLE — title and body together — one title-height
+ * below the section above. So a body is never pushed behind its own title;
+ * instead the next section rides up over it, leaving the previous title showing.
  *
- * Sticky headers only hide what is behind them if they are opaque, so each one
- * paints `var(--bg)`. A transparent header would let the description scroll
- * through it.
- *
- * Which row is open used to be driven by scroll progress. That is gone: it
- * fought the pointer, reopening a row the moment you scrolled away from the one
- * you were reading.
+ * An earlier version made only the HEADER sticky, which produced exactly the
+ * wrong thing: the body scrolled up behind its own title and reappeared above
+ * it. Sticking the whole section is the fix.
  */
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 const FLIP_MS = 260;
 /** Where the first header parks, clear of the fixed site header. */
 const STICK_TOP = 'clamp(82px,12vh,122px)';
-/** Approximate header height — each row parks one of these below the last. */
-const ROW_H = 72;
+/**
+ * The title row's height, measured: 81px of content plus its 1px divider. Each
+ * section parks one of these below the one above, so if this is short the title
+ * above gets clipped by the section covering it.
+ */
+const ROW_H = 82;
 
 /** Diamond positions, tight enough that neighbours overlap. */
 const POS = [
@@ -57,7 +56,6 @@ const POS = [
 ] as const;
 
 export function WhatWeDo() {
-  const [open, setOpen] = useState(0);
 
   return (
     <section data-screen-label="About / What We Do" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px) clamp(60px,8vw,120px)', borderTop: '1px solid var(--line)' }}>
@@ -81,9 +79,9 @@ export function WhatWeDo() {
 
         {/* ---- right: Vision / Mission / Why ---- */}
         <div style={{ flex: '1.25 1 360px', minWidth: '0' }}>
-          <div style={{ borderTop: '1px solid var(--line)' }}>
+          <div>
             {ABOUT_VMW.map((row, i) => (
-              <Row key={row.n} row={row} i={i} on={open === i} onEnter={() => setOpen(i)} />
+              <Row key={row.n} row={row} i={i} />
             ))}
           </div>
         </div>
@@ -207,58 +205,57 @@ function Circle({ c, pos, spin, depth, carve }: { c: (typeof CAPABILITIES)[numbe
 }
 
 /**
- * One accordion row. The body animates `grid-template-rows: 0fr -> 1fr`, which
- * reaches the content's real height — `height: auto` cannot be transitioned, and
- * a fixed max-height has to be guessed. The inner wrapper needs
- * `overflow: hidden` or the content spills out of the collapsed row.
+ * One section of the stack.
+ *
+ * Each section is sticky AS A WHOLE — title and body together — parked one
+ * title-height below the section above it. Scrolling therefore never pushes a
+ * body behind its own title. Instead the NEXT section rides up, opaque, and
+ * covers the previous body while leaving its title showing. The titles end up
+ * stacked and exactly one body is visible at a time.
+ *
+ * Every section is expanded. A collapsed one would arrive with nothing to show,
+ * which is the opposite of the intent: each section is meant to come up with its
+ * details already open.
+ *
+ * The opaque background is what makes the covering work. A transparent section
+ * would let the one beneath read straight through it.
+ *
+ * The divider sits on the TOP of each section, so it separates one section from
+ * the next. A border under the title as well put a second rule between a title
+ * and its own body, which read as a split where there is none.
  */
-function Row({ row, i, on, onEnter }: { row: (typeof ABOUT_VMW)[number]; i: number; on: boolean; onEnter: () => void }) {
+function Row({ row, i }: { row: (typeof ABOUT_VMW)[number]; i: number }) {
+  const [on, setOn] = useState(false);
+
   return (
-    <Fragment>
-      <button
-        onMouseEnter={onEnter}
-        onClick={onEnter}
-        onFocus={onEnter}
-        aria-expanded={on}
-        data-cursor={on ? 'Open' : 'Expand'}
-        style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'clamp(12px,2vw,28px)',
-          padding: 'clamp(15px,2vh,22px) 0',
-          // Sticky, one row height lower than the row above, so the headers
-          // stack instead of scrolling away. Opaque, or the description behind
-          // would scroll straight through it.
-          position: 'sticky',
-          top: `calc(${STICK_TOP} + ${i * ROW_H}px)`,
-          zIndex: i + 2,
-          background: 'var(--bg)',
-          borderTop: i === 0 ? 'none' : '1px solid var(--line)',
-          borderBottom: '1px solid var(--line)',
-          textAlign: 'left',
-        }}
-      >
+    <div
+      onMouseEnter={() => setOn(true)}
+      onMouseLeave={() => setOn(false)}
+      style={{
+        position: 'sticky',
+        top: `calc(${STICK_TOP} + ${i * ROW_H}px)`,
+        zIndex: i + 1,
+        background: 'var(--bg)',
+        borderTop: '1px solid var(--line)',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px,2vw,28px)', padding: 'clamp(15px,2vh,22px) 0' }}>
         <span style={{ flex: 'none', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(16px,1.5vw,24px)', lineHeight: '1', color: on ? 'var(--a)' : 'var(--mute)', transition: 'color .4s' }}>{row.n}.</span>
         <span style={{ flex: '1', minWidth: '0', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(24px,2.9vw,44px)', lineHeight: '1', letterSpacing: '.01em', color: 'var(--ink)' }}>{row.title}</span>
-        <span aria-hidden="true" style={{ flex: 'none', width: '26px', height: '26px', display: 'grid', placeItems: 'center', color: on ? 'var(--a)' : 'var(--mute)', transform: on ? 'rotate(180deg)' : 'none', transition: `transform .5s ${EASE}, color .4s` }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+        <span aria-hidden="true" style={{ flex: 'none', width: '24px', height: '24px', display: 'grid', placeItems: 'center', color: on ? 'var(--a)' : 'var(--mute)', transition: 'color .4s' }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M17 7L7 17M7 9v8h8" /></svg>
         </span>
-      </button>
-
-      <div style={{ display: 'grid', gridTemplateRows: on ? '1fr' : '0fr', transition: `grid-template-rows .55s ${EASE}` }}>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(13px,1.8vh,18px)', padding: '0 0 clamp(22px,3vh,34px)', opacity: on ? 1 : 0, transition: `opacity .4s ${EASE}` }}>
-            <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(19px,1.9vw,29px)', lineHeight: '1.05', margin: '0' }}>{row.head}</h3>
-            <p style={{ fontSize: 'clamp(13.5px,1vw,16px)', lineHeight: '1.7', color: 'var(--mute)', margin: '0' }}>{row.body}</p>
-            <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px', margin: '2px 0 0', padding: '0', listStyle: 'none' }}>
-              {row.points.map((p) => (
-                <li key={p} style={{ padding: '8px 15px', borderRadius: '99px', border: '1px solid var(--line)', background: 'var(--bg2)', fontSize: '11.5px', fontWeight: '700', letterSpacing: '.11em', textTransform: 'uppercase', color: 'var(--ink)', whiteSpace: 'nowrap' }}>{p}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
-    </Fragment>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(13px,1.8vh,18px)', padding: '0 0 clamp(26px,4vh,44px)' }}>
+        <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(19px,1.9vw,29px)', lineHeight: '1.05', margin: '0' }}>{row.head}</h3>
+        <p style={{ fontSize: 'clamp(13.5px,1vw,16px)', lineHeight: '1.7', color: 'var(--mute)', margin: '0' }}>{row.body}</p>
+        <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px', margin: '2px 0 0', padding: '0', listStyle: 'none' }}>
+          {row.points.map((p) => (
+            <li key={p} style={{ padding: '8px 15px', borderRadius: '99px', border: '1px solid var(--line)', background: 'var(--bg2)', fontSize: '11.5px', fontWeight: '700', letterSpacing: '.11em', textTransform: 'uppercase', color: 'var(--ink)', whiteSpace: 'nowrap' }}>{p}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }

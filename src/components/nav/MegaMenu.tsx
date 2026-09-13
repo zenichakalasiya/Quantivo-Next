@@ -172,13 +172,13 @@ function Card({ card, onClick }: { card: MegaCard; onClick: () => void }) {
               width: '100%',
               height: '100%',
               strokeDasharray: '15 85',
-              animation: 'qvRailRun 2.8s linear infinite',
+              animation: 'qvRailRun 7s linear infinite',
               // Half a lap apart, so the two highlights always sit opposite each
               // other. This has to be a negative DELAY, not a starting
               // dash-offset: the keyframe animates dash-offset to -100, so an
               // inline starting value would be overridden and the two segments
               // would travel different distances and drift apart.
-              animationDelay: phase === 0 ? '0s' : '-1.4s',
+              animationDelay: phase === 0 ? '0s' : '-3.5s',
               animationPlayState: on ? 'running' : 'paused',
             }}
           />
