@@ -51,7 +51,7 @@ export default function AboutPage() {
         style={{ minHeight: '58svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2vh,22px)', padding: 'clamp(100px,13vh,140px) clamp(16px,3.4vw,48px) clamp(32px,5vh,64px)' }}
       >
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>About Quantivo</span>
-        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(46px,8.4vw,150px)', lineHeight: '.86', maxWidth: '18ch' }}>Built for Ideas That Move Forward.</h1>
+        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,calc(8.4vw - 8px),142px)', lineHeight: '.86', maxWidth: '18ch' }}>Built for Ideas That Move Forward.</h1>
         <p data-anim="up" style={{ fontSize: 'clamp(15px,1.3vw,20px)', lineHeight: '1.5', color: 'var(--mute)', maxWidth: '62ch' }}>Quantivo is a creative and digital solutions company helping businesses build stronger brands, create meaningful digital experiences, and communicate their ideas with greater impact.</p>
       </section>
 

@@ -174,7 +174,7 @@ export function HeroSlider() {
               >
                 {[
                   <span key="eyebrow" style={{ display: 'block', fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: '#fff', opacity: '.75' }}>{s.eyebrow}</span>,
-                  <h1 key="head" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(42px,7.4vw,124px)', lineHeight: '.88', letterSpacing: '-.005em', color: '#fff', maxWidth: '16ch' }}>{s.head}</h1>,
+                  <h1 key="head" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,calc(7.4vw - 8px),116px)', lineHeight: '.88', letterSpacing: '-.005em', color: '#fff', maxWidth: '16ch' }}>{s.head}</h1>,
                   <p key="sub" style={{ fontSize: 'clamp(14px,1.25vw,19px)', lineHeight: '1.55', color: 'rgba(255,255,255,.86)', maxWidth: '46ch' }}>{s.sub}</p>,
                   <button
                     key="cta"

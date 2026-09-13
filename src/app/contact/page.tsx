@@ -43,7 +43,7 @@ export default function ContactPage() {
       <section data-screen-label="Contact" style={{ minHeight: '100svh', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 'clamp(32px,5vw,80px)', padding: '150px clamp(16px,3.4vw,48px) clamp(60px,7vw,110px)', alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '26px', position: 'sticky', top: '120px' }}>
           <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Contact</span>
-          <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,7.4vw,132px)', lineHeight: '.86', maxWidth: '14ch' }}>Let&apos;s Work Together.</h1>
+          <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(36px,calc(7.4vw - 8px),124px)', lineHeight: '.86', maxWidth: '14ch' }}>Let&apos;s Work Together.</h1>
           <p style={{ fontSize: 'clamp(15px,1.25vw,19px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '46ch' }}>Tell us about the brand, the challenge, and where you want to be. We&apos;ll come back with a clear direction.</p>
           <ul style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '14px', overflow: 'hidden' }}>
             {CONTACT_ROWS.map((c) => (

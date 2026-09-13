@@ -26,10 +26,28 @@ import { asset } from '@/lib/assets';
  *    at the join. That is what gives the resting state the look of a separate,
  *    rounded picture tile without there being one.
  *
+ * ── Why the hover state is TWO layers, not one changing colour ───────────────
+ * The hovered state is a horizontal wash: solid at the left edge where the copy
+ * starts, thinning across the card, gone by the right edge so it dissolves into
+ * the photograph with no seam. The resting state is a flat opaque panel.
+ *
+ * A gradient and a flat colour cannot be interpolated, so a single element
+ * transitioning `background` between them would snap rather than fade. Instead
+ * the two states are separate layers that cross-fade on OPACITY:
+ *
+ *   image  — the cover, whole card
+ *   wash   — the gradient, whole card, 0 → 1 on hover
+ *   panel  — the flat resting cover, left portion only, 1 → 0 on hover
+ *   copy   — on top of all of it, never fading
+ *
+ * The panel taking its rounded corners with it as it goes is the point: at rest
+ * you see a rounded tile, and by the time the wash is fully in there is no tile
+ * edge left anywhere — just copy on a picture that gets lighter to the right.
+ *
  * ── Legibility ───────────────────────────────────────────────────────────────
- * The hovered tint cannot be a fixed rgba value, because the copy stays in
- * `var(--ink)` — over a photograph, dark ink needs a light veil and light ink
- * needs a dark one. `--ins-veil` in globals.css carries the right one per theme.
+ * The wash cannot be one fixed set of rgba stops, because the copy stays in
+ * `var(--ink)` — over a photograph, dark ink needs a light wash and light ink
+ * needs a dark one. `--ins-wash` in globals.css carries the right one per theme.
  */
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 
@@ -82,7 +100,19 @@ export function InsightCard({ a, onOpen }: { a: (typeof ARTICLES)[number]; onOpe
           />
         </span>
 
-        {/* the panel that hides it */}
+        {/* the wash: whole card, strong at the left edge, gone at the right */}
+        <span
+          aria-hidden="true"
+          style={{ position: 'absolute', inset: `${PAD}px`, borderRadius: `${R_INNER}px`, background: 'var(--ins-wash)', opacity: on ? 1 : 0, transition: 'opacity .45s ease', pointerEvents: 'none' }}
+        />
+
+        {/* the flat panel that hides the cover at rest, corners and all */}
+        <span
+          aria-hidden="true"
+          style={{ position: 'absolute', left: `${PAD}px`, top: `${PAD}px`, bottom: `${PAD}px`, width: PANEL_W, borderRadius: `${R_INNER}px`, background: 'var(--bg2)', opacity: on ? 0 : 1, transition: 'opacity .4s ease', pointerEvents: 'none' }}
+        />
+
+        {/* the copy, over both */}
         <span
           style={{
             position: 'absolute',
@@ -94,9 +124,6 @@ export function InsightCard({ a, onOpen }: { a: (typeof ARTICLES)[number]; onOpe
             flexDirection: 'column',
             gap: '9px',
             padding: 'clamp(15px,1.5vw,21px)',
-            borderRadius: `${R_INNER}px`,
-            background: on ? 'var(--ins-veil)' : 'var(--bg2)',
-            transition: 'background .45s ease',
           }}
         >
           {/* Read time lives HERE, not over the picture. Out there it sat on

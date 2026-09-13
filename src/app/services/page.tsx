@@ -36,7 +36,7 @@ export default function ServicesPage() {
     <main style={{ position: 'relative', zIndex: '1' }}>
       <section data-screen-label="Services / Hero" style={{ minHeight: '62svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: '24px', padding: '150px clamp(16px,3.4vw,48px) clamp(44px,5vw,80px)' }}>
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Our Services</span>
-        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(44px,8.4vw,158px)', lineHeight: '.84', maxWidth: '20ch' }}>Everything Your Brand Needs to Move Forward.</h1>
+        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(36px,calc(8.4vw - 8px),150px)', lineHeight: '.84', maxWidth: '20ch' }}>Everything Your Brand Needs to Move Forward.</h1>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 'clamp(20px,4vw,60px)', textAlign: 'center' }}>
           <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>At Quantivo, we combine digital marketing, branding, web development, and 3D visualization to help businesses build stronger brands, improve their digital presence, and communicate their ideas more effectively.</p>
           <p data-anim="up" style={{ fontSize: '15px', lineHeight: '1.65', color: 'var(--mute)' }}>Our services are designed to support businesses at different stages—from building a brand and reaching the right audience to creating digital experiences and high-quality visualizations.</p>

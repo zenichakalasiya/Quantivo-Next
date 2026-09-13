@@ -172,14 +172,21 @@ summary::-webkit-details-marker{display:none}
 @keyframes qvRailRun{to{stroke-dashoffset:-100}}
 
 /* ===== Insights =====
- * --ins-veil is the tint the card's text panel fades to on hover, once the
- * cover image behind it is showing through. It has to be theme-scoped: the copy
- * stays in var(--ink), so over a photograph dark ink needs a LIGHT veil and
- * light ink needs a DARK one. One shared value makes one of the two themes
- * unreadable. */
-:root{--ins-veil:rgba(12,12,16,.60)}
-:root:not([data-qv="light"]){--ins-veil:rgba(12,12,16,.60)}
-:root[data-qv="light"]{--ins-veil:rgba(255,255,255,.68)}
+ * --ins-wash is what a card fades IN behind its copy on hover, over the cover
+ * image. It runs left to right: near-solid where the text starts, thinning
+ * through the column, and fully clear by the card's right edge, so it dissolves
+ * into the photograph instead of ending on a visible edge.
+ *
+ * The stops are placed against the copy, not spaced evenly — the text column is
+ * the left 64%, so the wash has to still be ~.76 at that mark and only falls
+ * away across the strip of picture beyond it.
+ *
+ * Theme-scoped, because the copy stays in var(--ink): over a photograph dark
+ * ink needs a LIGHT wash and light ink needs a DARK one. One shared value makes
+ * one of the two themes unreadable. */
+:root{--ins-wash:linear-gradient(90deg,rgba(12,12,16,.97) 0%,rgba(12,12,16,.94) 38%,rgba(12,12,16,.76) 64%,rgba(12,12,16,.32) 84%,rgba(12,12,16,0) 100%)}
+:root:not([data-qv="light"]){--ins-wash:linear-gradient(90deg,rgba(12,12,16,.97) 0%,rgba(12,12,16,.94) 38%,rgba(12,12,16,.76) 64%,rgba(12,12,16,.32) 84%,rgba(12,12,16,0) 100%)}
+:root[data-qv="light"]{--ins-wash:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.94) 38%,rgba(255,255,255,.80) 64%,rgba(255,255,255,.36) 84%,rgba(255,255,255,0) 100%)}
 
 /* Three cards to a row is the design; below these widths three cards cannot
  * hold a title and a standfirst side by side, so the row steps down. There are

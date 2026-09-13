@@ -50,7 +50,7 @@ export default function WorkPage() {
       {/* ---------- Hero ---------- */}
       <section data-screen-label="Work / Hero" style={{ minHeight: '52svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2vh,22px)', padding: 'clamp(100px,13vh,140px) clamp(16px,3.4vw,48px) clamp(30px,4vh,56px)' }}>
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Our Work</span>
-        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(46px,8.4vw,150px)', lineHeight: '.86', maxWidth: '16ch' }}>Ideas Turned Into Experiences.</h1>
+        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,calc(8.4vw - 8px),142px)', lineHeight: '.86', maxWidth: '16ch' }}>Ideas Turned Into Experiences.</h1>
         <p data-anim="up" style={{ fontSize: 'clamp(15px,1.3vw,20px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '56ch' }}>Every project is an opportunity to solve a problem, communicate something meaningful, and create something memorable.</p>
       </section>
 

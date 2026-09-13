@@ -35,7 +35,7 @@ export default function BlogPage() {
       {/* ---------- Hero ---------- */}
       <section data-screen-label="Blog / Hero" style={{ minHeight: '46svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2vh,22px)', padding: 'clamp(104px,14vh,150px) clamp(16px,3.4vw,48px) clamp(32px,4.5vh,62px)' }}>
         <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Insights</span>
-        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(46px,8.4vw,150px)', lineHeight: '.86', maxWidth: '15ch' }}>Notes On Brand &amp; Growth.</h1>
+        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,calc(8.4vw - 8px),142px)', lineHeight: '.86', maxWidth: '15ch' }}>Notes On Brand &amp; Growth.</h1>
         <p data-anim="up" style={{ fontSize: 'clamp(15px,1.3vw,20px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '54ch' }}>What we are learning in the middle of the work — search, brand, paid media and the occasional strong opinion.</p>
         <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)', border: '1px dashed var(--line)', borderRadius: '99px', padding: '6px 13px' }}>Sample articles — editorial copy to be supplied</span>
       </section>
