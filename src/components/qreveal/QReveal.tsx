@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { Q_BBOX, Q_DOT, Q_OUTER, Q_RING, Q_VIEWBOX } from '@/lib/qmark';
 
 /**
@@ -18,6 +18,17 @@ import { Q_BBOX, Q_DOT, Q_OUTER, Q_RING, Q_VIEWBOX } from '@/lib/qmark';
  * clip PATH — not on the panel. That is deliberate: scaling the panel would scale
  * its text too. Here the content never moves a pixel; only the window onto it
  * opens. Same reason Klarna's inset reveal reads as expensive — nothing resamples.
+ *
+ * ── Why useLayoutEffect, not useEffect ────────────────────────────────────────
+ * ScrollTrigger's `pin` wraps this section in a `.pin-spacer` div that React
+ * never rendered — GSAP inserts it directly. Navigating away unmounts this
+ * component, and `ctx.revert()` in the cleanup unwraps that spacer so the DOM
+ * matches React's tree again. useEffect cleanups run in React's PASSIVE phase,
+ * which fires after React has already tried to remove this section's DOM node
+ * from its (React-recorded) parent — but the node's real parent is the spacer,
+ * so that removeChild throws and the whole navigation crashes mid-commit.
+ * useLayoutEffect cleanups run synchronously as part of that same commit,
+ * before the removal, so the spacer is gone by the time React needs it to be.
  */
 const BBOX_CX = Q_BBOX.x + Q_BBOX.w / 2;
 const BBOX_CY = Q_BBOX.y + Q_BBOX.h / 2;
@@ -25,7 +36,7 @@ const BBOX_CY = Q_BBOX.y + Q_BBOX.h / 2;
 export function QReveal({ children }: { children: React.ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = root.current;
     if (!el) return;
 

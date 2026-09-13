@@ -337,6 +337,17 @@ literally `50`.
     the card and both full-size images each time. Write `style.transform` from a
     ref instead — one element, and it stays on the compositor.
 
+17. **The first item in a slider needs its OFF state forced, or it never
+    transitions in.** `HeroSlider.tsx`'s slide 0 is active from the very first
+    render, so React never paints an OFF state for it — it just appears already
+    fully open, skipping the reveal every other slide gets when it becomes
+    active. Fix: a `ready` flag starting `false` forces every slide (0 included)
+    to its OFF style on first paint, then flips true a tick later so slide 0
+    gets a real OFF → ON transition too. Used `setTimeout`, not the more usual
+    double-`requestAnimationFrame`: rAF never fires at all while the tab is
+    backgrounded (see the debugging note below), which would leave the slide
+    stuck OFF indefinitely instead of merely delayed.
+
 ## The home outro — Q draw-and-reveal
 
 Home ends with a scroll sequence modelled on wearebulletproof.com: the logo Q
@@ -376,6 +387,29 @@ that scale reads as busy linework competing with the copy — both were tried.
 it was the only code creating ScrollTriggers. `runPageMotion()` fires ~80ms after
 every route change, so a blanket kill silently destroys any scroll component
 mounted alongside it — this is exactly what broke the Q reveal, with no error.
+
+**`QReveal`'s cleanup must be a `useLayoutEffect`, not a `useEffect`.** `pin: true`
+wraps the section in a `.pin-spacer` div GSAP inserts directly — React never
+rendered it. Navigating away unmounts `QReveal`, and `ctx.revert()` in the
+cleanup unwraps that spacer so the DOM matches React's tree again. A `useEffect`
+cleanup runs in React's passive phase, which fires AFTER React has already tried
+to remove the section from the parent it thinks it has — but the section's real
+parent is the spacer, so `removeChild` throws (`NotFoundError: ... is not a
+child of this node`) and the whole client-side navigation crashes. `useLayoutEffect`
+cleanups run synchronously in the same commit, before that removal, so the spacer
+is already gone by the time React needs it to be. This is a general rule for any
+GSAP `pin: true` element that can unmount via client-side routing, not specific
+to this one component.
+
+**Every inner page shares the SAME footer as home now.** `GlobalFooter.tsx`
+renders `OutroFooter` (from `qreveal/OutroScreen.tsx`) directly — unwrapped, no
+`QReveal`, no draw/expand intro, just the static Connect/nav-words/Newsletter
+footer with its bottom-half Q watermark — on every route except `/` (which
+composes it itself inside `HomeOutro`, sharing one watermark with the Let's Talk
+screen above it) and `/q-reveal`. The older, differently-designed `SiteFooter.tsx`
++ `QuantivoLogoFooter.tsx` + `SplitWordmark.tsx` are consequently dead code (no
+remaining imports) — pending deletion, kept for now only because a sandboxed
+`rm` was blocked; delete them outright next time this area is touched.
 
 ## Known, and inherited from the original
 

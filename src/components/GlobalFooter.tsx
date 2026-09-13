@@ -1,18 +1,19 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { SiteFooter } from './SiteFooter';
+import { OutroFooter } from './qreveal/OutroScreen';
 
 /**
  * Renders the site footer everywhere EXCEPT the routes that compose it
  * themselves.
  *
- * Home wraps the footer inside HomeOutro so one Q watermark can span both the
- * Let's Talk screen and the footer; /q-reveal is the standalone prototype. Both
- * render SiteFooter directly, so the global one would double up.
- *
- * The check lives here rather than inside SiteFooter because SiteFooter must stay
- * route-agnostic — otherwise the instance HomeOutro renders would hide itself.
+ * Every inner page gets the SAME footer as home — `OutroFooter`, with its
+ * bottom-half Q watermark — just without the Q-draw/expand intro: that reveal
+ * is HomeOutro's `<QReveal>` wrapper around the Let's Talk screen, and this
+ * renders OutroFooter directly, unwrapped, so it's a plain static footer here.
+ * Home still composes it itself (inside HomeOutro, sharing one Q watermark
+ * with the Let's Talk screen above it) and /q-reveal is the standalone
+ * prototype — both would double up if this rendered on them too.
  */
 const SELF_COMPOSED = ['/q-reveal'];
 
@@ -20,5 +21,5 @@ export function GlobalFooter() {
   const pathname = usePathname();
   const p = pathname.replace(/\/+$/, '') || '/';
   if (p === '/' || SELF_COMPOSED.some((r) => p.startsWith(r))) return null;
-  return <SiteFooter />;
+  return <OutroFooter />;
 }

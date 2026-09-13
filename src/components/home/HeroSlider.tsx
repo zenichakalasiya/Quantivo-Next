@@ -40,6 +40,15 @@ import { goService } from '@/lib/goService';
  * with `0ms` duration on a delay equal to the fade, i.e. it snaps back to 45%
  * only once it is already invisible. The z-index keeps the incoming slide on top
  * while that happens.
+ *
+ * ── Why slide 0 needs a `ready` gate ──────────────────────────────────────────
+ * Slides 1+ only ever become active via `go()`, so React always renders their
+ * OFF state first and their ON state is a genuine transition. Slide 0 is active
+ * from the very first render, though — with no prior OFF paint, there is nothing
+ * for the browser to transition FROM, so it would just appear already fully open,
+ * skipping the reveal entirely. `ready` starts false (forcing every slide,
+ * including 0, to their OFF styles on first paint) and flips true a tick later,
+ * giving slide 0 the same OFF -> ON transition every other slide gets.
  */
 const TEXT_MS = 820;
 const TEXT_STAGGER = 95;
@@ -60,10 +69,19 @@ export function HeroSlider() {
   const router = useRouter();
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
+  const [ready, setReady] = useState(false);
   const hovering = useRef(false);
 
   useEffect(() => {
     setReduced(matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    // A tick after mount so the OFF styles definitely commit a paint before we
+    // flip to ON — flipping in the same tick leaves nothing for the browser to
+    // transition FROM. A timeout rather than requestAnimationFrame: rAF never
+    // fires at all while the tab is backgrounded/not composited, which would
+    // leave the slide stuck OFF indefinitely instead of just delayed.
+    const id = setTimeout(() => setReady(true), 50);
+    return () => clearTimeout(id);
   }, []);
 
   const go = useCallback((i: number) => {
@@ -111,7 +129,7 @@ export function HeroSlider() {
         }}
       >
         {HERO_SLIDES.map((s, i) => {
-          const on = i === active;
+          const on = ready && i === active;
           return (
             <div
               key={s.target}
@@ -153,7 +171,7 @@ export function HeroSlider() {
         {/* ---- copy: leads the media ---- */}
         <div style={{ position: 'absolute', inset: '0', zIndex: 2, display: 'grid', alignContent: 'center', padding: 'clamp(24px,5vw,88px)', pointerEvents: 'none' }}>
           {HERO_SLIDES.map((s, i) => {
-            const on = i === active;
+            const on = ready && i === active;
             return (
               <div
                 key={s.target}
