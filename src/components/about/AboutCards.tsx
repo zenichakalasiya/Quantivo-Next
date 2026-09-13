@@ -29,7 +29,9 @@ export function AboutCards() {
   return (
     <section data-screen-label="About / About Quantivo" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(22px,3vw,42px)' }}>
-        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,4.6vw,72px)', lineHeight: '.94' }}>
+        {/* Bebas is a condensed face — at display sizes the letters close up on
+            each other, so everything in this section carries a little tracking. */}
+        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,4.6vw,72px)', lineHeight: '.94', letterSpacing: '.025em' }}>
           About <span style={{ background: 'var(--grad)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>Quantivo</span>
         </h2>
         <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover a card</span>
@@ -73,14 +75,14 @@ export function AboutCards() {
             >
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
                 <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>{c.eyebrow}</span>
-                <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,3vw,50px)', lineHeight: '1', color: 'var(--line)' }}>{c.n}</span>
+                <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,3vw,50px)', lineHeight: '1', letterSpacing: '.03em', color: 'var(--line)' }}>{c.n}</span>
               </div>
 
               {/* Same size as the Vision / Mission / Why statement heading
                   further down the page — both are a white Bebas statement line
                   introducing a block of copy, so they should read as the same
                   level of the page, not two different ones. */}
-              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(19px,1.9vw,29px)', lineHeight: '1.08', margin: '0' }}>{c.title}</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(21px,2.15vw,33px)', lineHeight: '1.08', letterSpacing: '.03em', margin: '0' }}>{c.title}</h3>
 
               {/* revealed body. min-height 0 lets the column actually scroll-clip
                   inside the fixed card height instead of overflowing it. */}
@@ -107,7 +109,7 @@ export function AboutCards() {
                 {c.points.length > 0 && (
                   <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '0', padding: '0', listStyle: 'none' }}>
                     {c.points.map((p) => (
-                      <li key={p} style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(15px,1.3vw,21px)', lineHeight: '1.12', paddingBottom: '10px', borderBottom: '1px solid var(--line)' }}>{p}</li>
+                      <li key={p} style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(15px,1.3vw,21px)', lineHeight: '1.12', letterSpacing: '.03em', paddingBottom: '10px', borderBottom: '1px solid var(--line)' }}>{p}</li>
                     ))}
                   </ul>
                 )}
