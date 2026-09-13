@@ -170,3 +170,24 @@ summary::-webkit-details-marker{display:none}
  * hovered. pathLength="100" on the rect normalises the perimeter to 100, so one
  * full lap is exactly -100 of dashoffset regardless of the card's size. */
 @keyframes qvRailRun{to{stroke-dashoffset:-100}}
+
+/* ===== Insights =====
+ * --ins-veil is the tint the card's text panel fades to on hover, once the
+ * cover image behind it is showing through. It has to be theme-scoped: the copy
+ * stays in var(--ink), so over a photograph dark ink needs a LIGHT veil and
+ * light ink needs a DARK one. One shared value makes one of the two themes
+ * unreadable. */
+:root{--ins-veil:rgba(12,12,16,.60)}
+:root:not([data-qv="light"]){--ins-veil:rgba(12,12,16,.60)}
+:root[data-qv="light"]{--ins-veil:rgba(255,255,255,.68)}
+
+/* Three cards to a row is the design; below these widths three cards cannot
+ * hold a title and a standfirst side by side, so the row steps down. There are
+ * no classes to hang this on, hence the attribute selector — and !important,
+ * because grid-template-columns is also set inline. */
+@media (max-width:1080px){
+  [data-insights-grid]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media (max-width:680px){
+  [data-insights-grid]{grid-template-columns:1fr!important}
+}

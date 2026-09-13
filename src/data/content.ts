@@ -231,13 +231,29 @@ export const TESTIMONIALS: { items: Testimonial[]; dir: 'up' | 'down' }[] = [
  * Insight cards. These were hardcoded five times in the markup
  * (Quantivo.dc.html L554-627) rather than driven by a list; lifted to data here
  * so the card is written once.
+ *
+ * The first entry is the one the /blog page runs as its featured, most-read
+ * article, so keep whatever should lead at index 0.
+ *
+ * `date` is the short form the home rail has always shown; `posted` is the long
+ * form the insights cards use. `cat` is the single primary category that goes on
+ * the chip — `tags` stays the full list, because the mega-menu filters on it.
+ *
+ * EVERY ARTICLE BELOW IS INVENTED. There is no editorial copy from the client
+ * yet; these exist so the page can be designed and reviewed. Replace the whole
+ * array before launch.
  */
 export const ARTICLES = [
-  { img: '/img/q-art-1.jpg', date: 'July . 2026', title: 'Building a Search Foundation That Lasts', desc: 'What actually moves organic traffic when the quick wins run out, and why structure beats volume.', tags: ['SEO', 'Content'] },
-  { img: '/img/q-art-2.jpg', date: 'June . 2026', title: 'When a Rebrand Is Actually Worth It', desc: 'Three signals that tell you the identity is holding the business back, and three that do not.', tags: ['Branding', 'Strategy'] },
-  { img: '/img/q-art-3.jpg', date: 'June . 2026', title: 'Why Product Renders Beat Photo Shoots', desc: 'Cost, control and turnaround — how 3D changes what a product launch can look like.', tags: ['3D', 'Product'] },
-  { img: '/img/q-art-4.jpg', date: 'May . 2026', title: 'Designing Websites Around Business Goals', desc: 'Start from the decision a visitor needs to make, not from the sections a template offers.', tags: ['Web Design', 'UX'] },
-  { img: '/img/q-art-5.jpg', date: 'May . 2026', title: 'One Partner vs. Five Vendors', desc: 'Where consolidation saves time, and where specialist help is still the right call.', tags: ['Strategy'] },
+  { img: '/img/q-art-1.jpg', date: 'Sept . 2026', posted: 'September 4, 2026', cat: 'SEO', read: '6 min read', author: 'The Quantivo Team', title: 'Building a Search Foundation That Lasts', desc: 'What actually moves organic traffic once the quick wins run out — and why site structure beats publishing volume every single time.', tags: ['SEO', 'Content'] },
+  { img: '/img/q-art-2.jpg', date: 'Aug . 2026', posted: 'August 21, 2026', cat: 'Branding', read: '4 min read', author: 'The Quantivo Team', title: 'When a Rebrand Is Actually Worth It', desc: 'Three signals that tell you the identity is holding the business back, and three that only look like they do.', tags: ['Branding', 'Strategy'] },
+  { img: '/img/q-art-3.jpg', date: 'Aug . 2026', posted: 'August 9, 2026', cat: '3D', read: '6 min read', author: 'The Quantivo Team', title: 'Why Product Renders Beat Photo Shoots', desc: 'Cost, control and turnaround — how 3D quietly changed what a product launch is allowed to look like.', tags: ['3D', 'Product'] },
+  { img: '/img/q-art-4.jpg', date: 'July . 2026', posted: 'July 30, 2026', cat: 'Web Design', read: '5 min read', author: 'The Quantivo Team', title: 'Designing Websites Around Business Goals', desc: 'Start from the decision a visitor needs to make, not from the sections a template happens to offer you.', tags: ['Web Design', 'UX'] },
+  { img: '/img/q-art-5.jpg', date: 'July . 2026', posted: 'July 12, 2026', cat: 'Strategy', read: '4 min read', author: 'The Quantivo Team', title: 'One Partner vs. Five Vendors', desc: 'Where consolidating your marketing saves real time, and where specialist help is still the right call.', tags: ['Strategy'] },
+  { img: '/img/q-peek-ads.jpg', date: 'June . 2026', posted: 'June 28, 2026', cat: 'Paid Media', read: '7 min read', author: 'The Quantivo Team', title: 'The Ad Account Audit We Run Before Spending Anything', desc: 'Eleven checks that decide whether a budget compounds or quietly leaks. Most accounts fail at least four.', tags: ['Strategy', 'Paid Media'] },
+  { img: '/img/q-peek-social.jpg', date: 'June . 2026', posted: 'June 15, 2026', cat: 'Social', read: '5 min read', author: 'The Quantivo Team', title: 'Posting Less and Reaching More', desc: 'Why a smaller calendar usually outperforms a full one, and how to decide what to stop making.', tags: ['Strategy', 'Social'] },
+  { img: '/img/q-peek-pack.jpg', date: 'May . 2026', posted: 'May 29, 2026', cat: 'Packaging', read: '4 min read', author: 'The Quantivo Team', title: 'Shelf Presence Is a Design Problem', desc: 'A pack has about three seconds and six feet of distance to do its job. Here is what survives that test.', tags: ['Branding', 'Packaging'] },
+  { img: '/img/q-cat-growth.jpg', date: 'May . 2026', posted: 'May 14, 2026', cat: 'Analytics', read: '8 min read', author: 'The Quantivo Team', title: 'The Only Four Numbers Worth Reading Weekly', desc: 'Dashboards grow until nobody opens them. These four stay useful, and the rest can wait for the quarter.', tags: ['Strategy', 'Analytics'] },
+  { img: '/img/q-peek-arch.jpg', date: 'Apr . 2026', posted: 'April 26, 2026', cat: '3D', read: '5 min read', author: 'The Quantivo Team', title: 'Selling a Building Before It Exists', desc: 'What architectural visualisation has to get right before a render can carry a sales conversation.', tags: ['3D', 'Product'] },
 ] as const;
 
 /* ── About page data. All were inline arrays in renderVals(). ─────────────── */

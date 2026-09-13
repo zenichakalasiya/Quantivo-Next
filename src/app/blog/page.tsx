@@ -1,56 +1,79 @@
-import { ImageSlot } from '@/components/ImageSlot';
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { ARTICLES } from '@/data/content';
+import { FeaturedInsight } from '@/components/insights/FeaturedInsight';
+import { InsightCard } from '@/components/insights/InsightCard';
 
 /**
- * Insights. Ported from Quantivo.dc.html lines 1111-1146.
+ * Insights.
  *
- * Route is /blog to match the original's PAGES entry, while the nav label
- * reads "Insights" - see labelFor() in lib/nav.
+ *   Hero
+ *   Most read      one lead article, picture left / copy right
+ *   All insights   the rest, three to a row
+ *
+ * Route is /blog to match the original's PAGES entry, while the nav label reads
+ * "Insights" — see labelFor() in lib/nav.
+ *
+ * `ARTICLES[0]` is the lead and the grid takes everything after it, so changing
+ * which article is featured is a matter of reordering the data, not the markup.
+ *
+ * Every article is invented — there is no editorial copy yet. The chip in the
+ * hero says so, and it should stay until the real pieces land.
  */
-const POSTS = [
-  { cat: 'SEO', title: 'Building a Search Foundation That Lasts', read: '5 min read', slot: 'qv-post-1', ph: 'Article cover — 3:2' },
-  { cat: 'Branding', title: 'When a Rebrand Is Actually Worth It', read: '4 min read', slot: 'qv-post-2', ph: 'Article cover — 3:2' },
-  { cat: '3D', title: 'Why Product Renders Beat Photo Shoots', read: '6 min read', slot: 'qv-post-3', ph: 'Article cover — 3:2' },
-  { cat: 'Web', title: 'Designing Websites Around Business Goals', read: '5 min read', slot: 'qv-post-4', ph: 'Article cover — 3:2' },
-  { cat: 'Packaging', title: 'Shelf Presence Is a Design Problem', read: '3 min read', slot: 'qv-post-5', ph: 'Article cover — 3:2' },
-  { cat: 'Strategy', title: 'One Partner vs. Five Vendors', read: '4 min read', slot: 'qv-post-6', ph: 'Article cover — 3:2' },
-];
-
 export default function BlogPage() {
+  const router = useRouter();
+
+  // Nothing to open yet: there are no article routes, so reading goes to
+  // contact rather than to a dead link.
+  const open = () => { router.push('/contact'); scrollTo({ top: 0, behavior: 'instant' }); };
+
+  const [lead, ...rest] = ARTICLES;
+
   return (
     <main style={{ position: 'relative', zIndex: '1' }}>
-      <section data-screen-label="Blog / Hero" style={{ minHeight: '52svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: '22px', padding: '150px clamp(16px,3.4vw,48px) clamp(40px,5vw,72px)' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', alignItems: 'baseline', justifyContent: 'center' }}>
-          <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Insights</span>
-          <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)', border: '1px dashed var(--line)', borderRadius: '99px', padding: '5px 11px' }}>Placeholder articles — titles &amp; copy to be supplied</span>
-        </div>
-        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(46px,9vw,168px)', lineHeight: '.84', maxWidth: '14ch' }}>Notes on Brand &amp; Growth.</h1>
+      {/* ---------- Hero ---------- */}
+      <section data-screen-label="Blog / Hero" style={{ minHeight: '46svh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: 'clamp(14px,2vh,22px)', padding: 'clamp(104px,14vh,150px) clamp(16px,3.4vw,48px) clamp(32px,4.5vh,62px)' }}>
+        <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>Insights</span>
+        <h1 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(46px,8.4vw,150px)', lineHeight: '.86', maxWidth: '15ch' }}>Notes On Brand &amp; Growth.</h1>
+        <p data-anim="up" style={{ fontSize: 'clamp(15px,1.3vw,20px)', lineHeight: '1.55', color: 'var(--mute)', maxWidth: '54ch' }}>What we are learning in the middle of the work — search, brand, paid media and the occasional strong opinion.</p>
+        <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)', border: '1px dashed var(--line)', borderRadius: '99px', padding: '6px 13px' }}>Sample articles — editorial copy to be supplied</span>
       </section>
 
-      <section style={{ padding: '0 clamp(16px,3.4vw,48px) clamp(60px,8vw,120px)', borderTop: '1px solid var(--line)' }}>
-        <article data-anim="up" data-cursor="Read" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,320px),1fr))', gap: 'clamp(20px,3vw,44px)', alignItems: 'center', padding: 'clamp(20px,3vw,40px) 0', borderBottom: '1px solid var(--line)' }}>
-          <span style={{ display: 'block', position: 'relative', aspectRatio: '16/10', borderRadius: '18px', overflow: 'hidden', background: 'var(--bg2)', border: '1px solid var(--line)' }}>
-            <ImageSlot id="qv-blog-hero" placeholder="Featured article cover image" style={{ position: 'absolute', inset: '0' }} />
+      {/* ---------- Most read ---------- */}
+      <section data-screen-label="Blog / Featured" style={{ padding: 'clamp(36px,5vw,72px) clamp(16px,3.4vw,48px) clamp(44px,6vw,86px)', borderTop: '1px solid var(--line)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(22px,3vw,40px)' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '11px', fontSize: '11px', fontWeight: '700', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--a)' }}>
+            <span aria-hidden="true" style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--a)' }} />
+            Most read this month
           </span>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--a)' }}>Featured</span>
-            <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,3.8vw,60px)', lineHeight: '.98' }}>What Actually Moves the Needle in Paid Social</h2>
-            <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'var(--mute)', maxWidth: '52ch' }}>Placeholder excerpt. Replace with the article standfirst once editorial copy is ready.</p>
-            <span style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)' }}>6 min read</span>
-          </div>
-        </article>
+          <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>{ARTICLES.length} articles</span>
+        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap: 'clamp(16px,2.4vw,30px)', paddingTop: 'clamp(24px,3vw,44px)' }}>
-          {POSTS.map((p) => (
-            <article key={p.slot} data-anim="up" data-cursor="Read" data-post-card="" style={{ display: 'flex', flexDirection: 'column', gap: '14px', border: '1px solid var(--line)', borderRadius: '18px', padding: '14px', background: 'var(--bg2)', transition: 'transform .5s cubic-bezier(.16,1,.3,1),border-color .4s' }}>
-              <span style={{ display: 'block', position: 'relative', aspectRatio: '3/2', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg)' }}>
-                <ImageSlot id={p.slot} placeholder={p.ph} style={{ position: 'absolute', inset: '0' }} />
-              </span>
-              <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--a)' }}>{p.cat}</span>
-              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(20px,2vw,30px)', lineHeight: '1.02' }}>{p.title}</h3>
-              <span style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--mute)', marginTop: 'auto' }}>{p.read}</span>
-            </article>
+        <FeaturedInsight a={lead} onOpen={open} />
+      </section>
+
+      {/* ---------- The rest ---------- */}
+      <section data-screen-label="Blog / All" style={{ padding: 'clamp(44px,6vw,88px) clamp(16px,3.4vw,48px) clamp(64px,8vw,124px)', borderTop: '1px solid var(--line)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(22px,3vw,40px)' }}>
+          <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,4vw,60px)', lineHeight: '.96' }}>All Insights.</h2>
+          <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover a card to see its cover</span>
+        </div>
+
+        {/* Three to a row, fixed — not auto-fill, which would give four on a wide
+            screen. [data-insights-grid] drops it to two and then one in
+            globals.css, because there are no classes to hang a query on here. */}
+        <div data-insights-grid="" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 'clamp(14px,1.7vw,26px)' }}>
+          {rest.map((a) => (
+            <InsightCard key={a.title} a={a} onOpen={open} />
           ))}
         </div>
+      </section>
+
+      {/* ---------- CTA ---------- */}
+      <section style={{ padding: 'clamp(56px,8vw,120px) clamp(16px,3.4vw,48px)', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', textAlign: 'center' }}>
+        <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(32px,4.6vw,74px)', lineHeight: '.92', maxWidth: '18ch' }}>Rather Talk It Through?</h2>
+        <button onClick={open} data-magnet="" data-cursor="Say hello" style={{ padding: '16px 32px', borderRadius: '99px', background: 'var(--grad)', color: '#fff', fontSize: '12px', fontWeight: '700', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start a Conversation</button>
       </section>
     </main>
   );
