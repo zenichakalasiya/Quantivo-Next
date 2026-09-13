@@ -80,11 +80,11 @@ export function ProjectCard({
               transition: `transform .5s ${EASE}`,
             }}
           >
-            <span style={{ fontSize: '10px', fontWeight: '700', letterSpacing: '.18em', color: 'rgba(255,255,255,.6)' }}>{w.year} · {w.cat}</span>
-            <span style={{ fontSize: 'clamp(12px,.95vw,14.5px)', lineHeight: '1.55', color: 'rgba(255,255,255,.92)' }}>{w.disc}</span>
+            <span style={{ fontSize: 'clamp(10px,.85vw,12px)', fontWeight: '700', letterSpacing: '.18em', color: 'rgba(255,255,255,.65)' }}>{w.year} · {w.cat}</span>
+            <span style={{ fontSize: 'clamp(13.5px,1.05vw,17px)', lineHeight: '1.55', color: 'rgba(255,255,255,.93)' }}>{w.disc}</span>
             <span style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {w.tags.map((t) => (
-                <span key={t} style={{ padding: '5px 11px', borderRadius: '99px', border: '1px solid rgba(255,255,255,.3)', fontSize: '9.5px', fontWeight: '700', letterSpacing: '.13em', textTransform: 'uppercase', color: '#fff', whiteSpace: 'nowrap' }}>{t}</span>
+                <span key={t} style={{ padding: '6px 13px', borderRadius: '99px', border: '1px solid rgba(255,255,255,.32)', fontSize: 'clamp(10px,.8vw,11.5px)', fontWeight: '700', letterSpacing: '.13em', textTransform: 'uppercase', color: '#fff', whiteSpace: 'nowrap' }}>{t}</span>
               ))}
             </span>
           </span>

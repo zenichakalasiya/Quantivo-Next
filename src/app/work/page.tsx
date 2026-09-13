@@ -128,9 +128,9 @@ export default function WorkPage() {
           })}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(min(100%,250px),1fr))', gap: 'clamp(18px,2.4vw,34px)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(min(100%,300px),1fr))', gap: 'clamp(18px,2.4vw,34px)' }}>
           {shown.map((w) => (
-            <ProjectCard key={w.slot} w={w} n={numberOf(w.slot)} onOpen={go('/contact')} ratio="4 / 3" />
+            <ProjectCard key={w.slot} w={w} n={numberOf(w.slot)} onOpen={go('/contact')} ratio="4 / 5" />
           ))}
         </div>
       </section>

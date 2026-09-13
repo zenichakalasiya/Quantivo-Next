@@ -99,7 +99,7 @@ function Circle({ c, pos, spin, depth, carve }: { c: (typeof CAPABILITIES)[numbe
     borderRadius: '50%',
     display: 'grid',
     placeItems: 'center',
-    padding: '16%',
+    padding: '14%',
     textAlign: 'center',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
@@ -192,9 +192,9 @@ function Circle({ c, pos, spin, depth, carve }: { c: (typeof CAPABILITIES)[numbe
           </div>
 
           <div style={{ ...face, transform: 'rotateY(180deg)', background: 'var(--grad)', border: '1px solid transparent' }}>
-            <ul style={{ display: 'grid', gap: '3px', margin: '0', padding: '0', listStyle: 'none' }}>
+            <ul style={{ display: 'grid', gap: '5px', margin: '0', padding: '0', listStyle: 'none' }}>
               {c.items.map((it) => (
-                <li key={it} style={{ fontSize: 'clamp(8.5px,.68vw,10.5px)', fontWeight: '600', lineHeight: '1.25', color: '#fff' }}>{it}</li>
+                <li key={it} style={{ fontSize: 'clamp(10px,.92vw,13px)', fontWeight: '600', lineHeight: '1.3', color: '#fff' }}>{it}</li>
               ))}
             </ul>
           </div>
