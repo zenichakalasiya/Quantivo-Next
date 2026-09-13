@@ -41,12 +41,12 @@ frameworks. GSAP, ScrollTrigger and three.js came across at identical pinned ver
 - `src/components/about/` — the about sections, in page order.
 - `src/vendor/` — code deliberately NOT rewritten (see below).
 
-**`/`, `/about` and `/work` are no longer ports.** All three have been redesigned
-section by section against client reference images and sticky-note sketches — see
-"The home page redesign", "The about page rebuild" and "The work page rebuild"
-below. `Quantivo.dc.html` is still the source of truth for the remaining three
-routes (`/services`, `/blog`, `/contact`), but do not "fix" the redesigned pages
-back toward it.
+**`/`, `/about`, `/work` and `/blog` are no longer ports.** All four have been
+redesigned section by section against client reference images and sticky-note
+sketches — see "The home page redesign", "The about page rebuild", "The work page
+rebuild" and "The insights page rebuild" below. `Quantivo.dc.html` is still the
+source of truth for the remaining two routes (`/services`, `/contact`), but do
+not "fix" the redesigned pages back toward it.
 
 ### Vendored, not rewritten
 
@@ -202,6 +202,39 @@ grid track alone made the hover copy *worse*, because a wider `4 / 3` card has
 less height for the text to sit in. The portrait `4 / 5` crop is what actually
 fixed it.
 
+## The insights page rebuild
+
+`/blog` (labelled "Insights" in the nav — see `labelFor()` in `lib/nav`) was
+rebuilt from two client reference frames.
+
+    Hero → Most read (one lead article) → All insights (nine cards, 3 per row) → CTA
+
+| Part | Where | Mechanic |
+| --- | --- | --- |
+| Most read | `src/components/insights/FeaturedInsight.tsx` | Picture left, copy right; category chip + read time over the headline, then a `Read →` control with a circular arrow. Driven by `ARTICLES[0]`, so reordering the data changes the lead. |
+| All insights | `src/components/insights/InsightCard.tsx` | The cover fills the WHOLE card; an opaque panel covers its left 64%, so at rest only a strip of picture shows. On hover the panel goes and a left-to-right wash takes its place. |
+
+**The card's hover is two layers cross-fading on opacity, not one element
+changing colour.** The resting state is a flat panel; the hovered state is a
+gradient that is near-solid at the left edge and fully clear by the right, so it
+dissolves into the photograph. A gradient and a flat colour cannot be
+interpolated, so a single element transitioning `background` between them
+*snaps*. So: image, then the gradient (whole card, `0 → 1`), then the flat panel
+(left portion, `1 → 0`), then the copy on top of all of it, never fading. The
+panel taking its rounded corners with it is the point — once the wash is in,
+there is no tile edge left anywhere.
+
+**`--ins-wash`'s stops are placed against the copy, not spaced evenly.** The text
+column is the left 64%, so the wash must still be ~.76 opaque at that mark and
+only fall away across the strip of picture beyond it. It is theme-scoped for the
+same reason the rest of the page is: the copy stays `var(--ink)`, so dark ink
+needs a light wash and light ink a dark one.
+
+**Read time sits in the panel, beside the date — not over the picture.** Out
+there it lands on whatever the cover happens to be, and over a light photograph
+white text with a shadow is still unreadable. Only the category chip is out on
+the image, and it carries its own dark pill.
+
 ## The header mega-menus
 
 `src/components/nav/MegaMenu.tsx` + `src/lib/megaMenu.ts`, mounted from
@@ -216,7 +249,7 @@ rotated 180° about its own centre (which maps a rect onto itself but moves the
 path's start to the opposite corner), `pathLength="100"` so "half a lap" is
 literally `50`.
 
-## Five more things learned the hard way
+## Seven more things learned the hard way
 
 9. **`stroke-dashoffset` slides a dash pattern; it does not hide it.** Setting
    the offset to the full length to "hide" a stroke just moves the dash one lap
@@ -246,6 +279,17 @@ literally `50`.
 13. **Measure, don't estimate, a stacking offset.** `ROW_H` in `WhatWeDo.tsx` is
     the pinned title-row height. Estimated at 72px it clipped every stacked
     title; measured, it is an 81px row plus a 1px divider — hence 82.
+
+14. **A gradient and a flat colour cannot be interpolated.** Transitioning one
+    element's `background` between them compiles, runs, and simply *snaps* at the
+    end of the duration. To cross-fade between a flat state and a gradient state,
+    make them two stacked layers and animate `opacity` on both.
+
+15. **Shrinking a `clamp()` means shrinking the FLUID term too.** Every heading
+    here is `clamp(min, Nvw, max)`, and at any normal viewport width the `vw`
+    term is what the clamp actually resolves to — so trimming only the bounds
+    changes nothing on screen. `clamp(min-8, calc(Nvw - 8px), max-8)` is what
+    actually takes 8px off at every width.
 
 ## The home outro — Q draw-and-reveal
 
@@ -305,6 +349,7 @@ real content:
 | `TEAM` | Same: names are `Name Surname`, and `img` is a stock stand-in. Drives the /about marquee, where six desk-and-crowd photographs stand in for six people — the weakest-looking placeholder on the site. |
 | `HOME_TESTIMONIALS` | Quotes, names, **and the star ratings and "N months ago" dates, which were invented** — the old data had no such fields. A 5-star rating with a date reads as a verified review. |
 | `WORK` | All 10 covers are stock stand-ins (every project originally pointed at an empty image slot), **and 4 of the 10 projects are invented** — Halden Interiors, Meridian Health, Orbit Beverages, Grove & Co — added to fill the work page's two columns of five. |
+| `ARTICLES` | **All ten articles are invented** — titles, standfirsts, dates, read times and the "The Quantivo Team" byline. There is no editorial copy from the client. The /blog hero carries a visible chip saying so; keep it until the real pieces land. |
 | `STATS` | Figures are placeholders (the section carries a visible chip saying so). |
 | `ABOUT_VMW[].points` | Vision and Mission sub-point lines are written for the accordion; the old layout had no equivalent. The Why row's points are the real `WHY_US`. |
 

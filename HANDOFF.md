@@ -1,51 +1,47 @@
-# Handoff — 2026-09-13 14:38
+# Handoff — 2026-09-13 15:35
 
 ## Read first
 
-In `CLAUDE.md`: **"The work page rebuild"** and **"The header mega-menus"** (both
-new this session), the **"Five more things learned the hard way"** list (lessons
-9–13), and **"Placeholder content — do not ship in front of a client"**, which is
-still the biggest thing standing between this build and a client review.
+In `CLAUDE.md`: **"The insights page rebuild"** (new this session), and the
+**"Seven more things learned the hard way"** list — lessons 14 and 15 are both
+from this session and both cost real time.
 
-If you are touching anything that sticks, pins or stacks, read lesson 12 first.
-It is the bug this project keeps making.
+Then **"Placeholder content — do not ship in front of a client"**. It grew again:
+all ten insight articles are invented, on top of the testimonials, the work
+projects and the team. That table is still the only thing standing between this
+build and a client review.
 
 ## What we worked on this session
 
-Built the **work page** from scratch (staggered featured columns + a filterable
-gallery), rewrote **What We Do** on `/about` from an accordion into a sticky
-section stack with a four-circle pinwheel, added **hover mega-menus** to the
-header for Services / Work / Insights, and worked through a long list of the
-client's own fixes on `/` and `/about`.
+Rebuilt the **insights page** (`/blog`) from two client reference frames — a
+featured lead article over a nine-card gallery whose hover uncovers the cover
+image behind a left-to-right wash. Then enlarged the **About Quantivo** card type
+and trimmed **every hero heading** by 8px.
 
 ## Completed
 
-- **`/work` rebuilt** — hero, Selected Work (top 10 in two staggered flex
-  columns, rotated wordmark behind them), All Projects (category tabs over an
-  `auto-fill` grid), CTA. `src/app/work/page.tsx`.
-- **`ProjectCard.tsx`** — shared by both sections. Name below the image; year,
-  description and tags revealed on hover over the image under a gradient rising
-  from its foot.
-- **Gallery cards enlarged** — grid track min `250px → 300px` (4 per row,
-  ~372×464) and the crop changed `4 / 3 → 4 / 5`, which is what actually made the
-  hover copy readable. Hover text raised to `clamp(13.5px,1.05vw,17px)`.
-- **`WhatWeDo.tsx` rewritten** — Vision / Mission / Why is now a stack of
-  always-expanded sections, each sticking *as a whole* one title-height below the
-  last, so an opened section stays put and the next arrives already open and
-  parks below the previous title. Second divider removed.
-- **The four circles** — bigger, cut on one side only, arranged as a pinwheel via
-  a radial-gradient mask (z-index can't express the cycle). Flip text raised to
-  `clamp(10px,.92vw,13px)`; all four services now sit on single lines.
-- **Header mega-menus** — `src/components/nav/MegaMenu.tsx`, `src/lib/megaMenu.ts`,
-  wired into `SiteHeader.tsx`. Cards carry a slow continuous hairline that runs
-  around the edge on hover (7s, two segments half a lap apart) and **no outline at
-  all at rest**.
-- **Home fixes** — FAQ centred with less gap to the Q outro; Let's Talk card
-  given contrast against the page and equal column heights; Work rail tiles
-  enlarged to 5 per row; **Home removed from the nav**.
-- **About fixes** — card titles forced onto one line; Final CTA centred and
-  shrunk; a gap opened between the section title and the circles.
-- Everything above is committed and deployed.
+- **`/blog` rebuilt.** Hero → Most read → All insights (3 per row) → CTA.
+  - `src/components/insights/FeaturedInsight.tsx` — picture left, copy right,
+    category chip + read time, `Read →` control. Driven by `ARTICLES[0]`.
+  - `src/components/insights/InsightCard.tsx` — the cover fills the whole card
+    with an opaque panel over its left 64%, so only a strip of picture shows at
+    rest.
+- **The card hover.** The panel cross-fades out while a left-to-right wash fades
+  in: near-solid where the copy starts, thinning across the column, gone by the
+  right edge so it dissolves into the photograph with no panel edge or corner
+  radius left. Verified in both themes.
+- **`ARTICLES` extended** — now ten entries with `cat` / `read` / `posted` /
+  `author` alongside the original fields, so the home rail and the mega-menu keep
+  working unchanged.
+- **`--ins-wash`** added to `globals.css`, theme-scoped, plus the
+  `[data-insights-grid]` media queries that step 3 columns down to 2 and then 1.
+- **About Quantivo cards** (`AboutCards.tsx`) — title up to the Vision heading's
+  size, revealed copy enlarged (lead 14→17px, belief lines 13→21px, paragraphs
+  13→16px) with real gaps between the three groups. The hovered card grows to `3`
+  and the height to `55vh` so it all still fits.
+- **Every hero heading down 8px** — home (`HeroSlider`), about, services, work,
+  insights, contact.
+- All of it committed and deployed.
 
 ## In progress
 
@@ -53,61 +49,60 @@ Nothing mid-flight. The tree is clean and the live site matches it.
 
 ## Next steps
 
-1. **Replace the placeholder content.** This is the only thing blocking a client
-   review. In priority order:
-   - `HOME_TESTIMONIALS` — the quotes, names, **and the invented star ratings and
-     "N months ago" dates**. A 5-star rating with a date reads as a verified
-     review and should not go live as fiction.
-   - `WORK` — 4 of the 10 projects are invented (Halden Interiors, Meridian
-     Health, Orbit Beverages, Grove & Co) and all 10 covers are stock.
-   - `HOME_TEAM` / `TEAM` — names are `Name Surname`, photos are stock stand-ins,
-     LinkedIn URLs are `#`.
-   - `STATS` figures, and `ABOUT_VMW[].points`.
-2. **Renumber the home section eyebrows.** They have been stale since the section
-   reorder — Services says `04` but sits third, Work says `06` but sits fourth,
-   Testimonials says `05` but sits eighth. Small job, currently visible on the
-   live site.
-3. Decide whether `/q-reveal` (the standalone test route) stays or goes.
-4. Apply the white-arrow logo fix to the **original** V4 site — the two logos now
+1. **Replace the placeholder content.** Unchanged from last session except that
+   it now includes the whole `ARTICLES` array. Priority order:
+   - `ARTICLES` — all ten are written by Claude, not the client.
+   - `HOME_TESTIMONIALS` — quotes, names, **and the invented star ratings and
+     "N months ago" dates**, which read as verified reviews.
+   - `WORK` — 4 of 10 projects invented, all 10 covers stock.
+   - `HOME_TEAM` / `TEAM`, `STATS`, `ABOUT_VMW[].points`.
+2. **Decide whether insights need individual article routes.** There are none, so
+   every `Read` control on `/blog` currently goes to `/contact` rather than a dead
+   link. Fine as a placeholder, wrong once real articles exist.
+3. **Renumber the home section eyebrows.** Still stale since the section reorder —
+   Services says `04` but sits third, Work `06` but fourth, Testimonials `05` but
+   eighth. Visible on the live site.
+4. Decide whether `/q-reveal` (the standalone test route) stays or goes.
+5. Apply the white-arrow logo fix to the **original** V4 site — the two logos
    differ (documented at the bottom of the original project's `CLAUDE.md`).
 
 ## Decisions made
 
-- **Vision / Mission / Why: stack, not accordion.** The client asked that an open
-  section stay open and the next arrive already open. A collapse state fought
-  that, so it was removed entirely — every section is expanded and the *stacking*
-  is what reveals them one at a time.
-- **Stick the whole section, not just its header.** Sticking only the header made
-  the body scroll up behind its own title, which is exactly the artefact the
-  client reported.
-- **The work gallery repeats the featured projects on purpose.** The columns are
-  an editorial pick; the gallery is the filterable archive. Different jobs.
-- **Two real flex columns on `/work`, not a grid.** A grid fills row by row, so
-  the right column would always sit level with the left and the stagger would be
-  impossible.
-- **The menu card outline fades in with hover** rather than each stroke animating
-  from zero — simpler, and the running animation is paused while invisible so it
-  costs nothing.
+- **The insight card's hover is two layers, not one changing colour.** A gradient
+  and a flat colour cannot be interpolated, so a single element transitioning
+  `background` between them snaps instead of fading. Image / wash / flat panel /
+  copy, with the two middle layers cross-fading on opacity.
+- **The wash's stops are placed against the copy**, not spaced evenly — it must
+  still be ~.76 opaque where the text column ends at 64%, and only fall away
+  across the strip of picture beyond it.
+- **Read time moved off the picture** into the panel beside the date. Over a light
+  cover, white text with a shadow is still unreadable. Only the category chip
+  stays out on the image, and it carries its own dark pill.
+- **Heroes shrunk via `calc(Nvw - 8px)`**, not just the clamp bounds — at any
+  normal viewport width the `vw` term is what the clamp resolves to, so trimming
+  the bounds alone would have changed nothing.
+- **The About card grew wider rather than the type staying small.** The bigger
+  copy no longer fits the fixed height, and the fix is more width (fewer, longer
+  lines), not less type.
 
 ## Gotchas & notes
 
-- **`stroke-dashoffset` does not hide a stroke** — it slides the dash pattern one
-  lap. That is why the menu cards showed a white outline with no hover. Grow
-  `stroke-dasharray` from `0 100` instead, and watch the round line-caps, which
-  paint a dot at zero length.
-- **`calc()` inside a gradient radius is rejected silently.** The first attempt at
-  the circle mask did nothing at all, with no error. Use percentages.
-- **Don't edit source files with `node -e` from the shell.** It mangled code
-  repeatedly this session — it produced a broken `maxWidth` value that tsc
-  happily accepted, and it broke JSX closing tags. Use the Edit/Write tools, or
-  write a script to a file and run that. Note that `content.ts` stores curly
-  quotes as literal escape text, which the shell will happily destroy.
-- **Measure, don't estimate.** `ROW_H = 82` in `WhatWeDo.tsx` is a measured
-  value. The estimate (72) clipped every stacked title.
+- **The overflow guard hides bugs.** `AboutCards`' body column has
+  `overflow-y: auto` so a copy change can never silently cut a sentence — but
+  that means overflow shows up as a *scrollbar*, not as an error. Card 01 was
+  overflowing by 36px and looked fine at a glance. Measure `scrollHeight -
+  clientHeight`, don't eyeball it.
+- **Measuring a hover state is awkward.** A synthetic `mouseover` does not
+  trigger React's `onMouseEnter` here, and a real hover is lost the moment the JS
+  tool runs. Force the layout instead — override `style.flex`, kill the
+  transition, wait a frame, measure.
+- **The renderer wedges** when driving this site over CDP, especially on a heavy
+  measurement loop. A fresh tab recovers it. Inherited from the original V4 site.
 - **A backgrounded tab pauses rAF**, so transitions freeze at t=0 and computed
-  style disagrees with the inline style forever. This looks exactly like a stuck
-  animation and is not one — screenshots are the trustworthy check.
-- The renderer can still wedge when driving the site over CDP; a fresh tab
-  recovers it. Inherited from the original V4 site, not introduced here.
-- There is also a client-facing **`Quantivo - Website Build Record.pdf`** in the
+  style disagrees with the inline style forever. Screenshots are the trustworthy
+  check.
+- **Reference images**: `.jfif` files are not read as images — convert them with
+  the `sharp` already in `node_modules` (also the way to downscale anything over
+  256KB).
+- There is a client-facing **`Quantivo - Website Build Record.pdf`** in the
   original project folder (workflow + costing), plus its artifact version.
