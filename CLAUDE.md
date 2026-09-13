@@ -41,11 +41,12 @@ frameworks. GSAP, ScrollTrigger and three.js came across at identical pinned ver
 - `src/components/about/` — the about sections, in page order.
 - `src/vendor/` — code deliberately NOT rewritten (see below).
 
-**`/` and `/about` are no longer ports.** Both have been redesigned section by
-section against client reference images and sticky-note sketches — see "The home
-page redesign" and "The about page rebuild" below. `Quantivo.dc.html` is still
-the source of truth for the other four routes (`/services`, `/work`, `/blog`,
-`/contact`), but do not "fix" the two redesigned pages back toward it.
+**`/`, `/about` and `/work` are no longer ports.** All three have been redesigned
+section by section against client reference images and sticky-note sketches — see
+"The home page redesign", "The about page rebuild" and "The work page rebuild"
+below. `Quantivo.dc.html` is still the source of truth for the remaining three
+routes (`/services`, `/blog`, `/contact`), but do not "fix" the redesigned pages
+back toward it.
 
 ### Vendored, not rewritten
 
@@ -146,9 +147,19 @@ Global are gone; Journey and Team came back rebuilt.
 | Section | Component | Mechanic |
 | --- | --- | --- |
 | About Quantivo | `AboutCards.tsx` | Three cards; hovering one animates `flex-grow` so the row's total width never changes. Fixed height. |
-| What We Do | `WhatWeDo.tsx` | Circle cluster pinned beside the Vision/Mission/Why accordion. Circles flip 180° at 260ms to show sub-services. |
+| What We Do | `WhatWeDo.tsx` | Four overlapping circles pinned beside the Vision/Mission/Why stack. Circles flip 180° at 260ms to show sub-services. |
 | Our Journey | `JourneyTimeline.tsx` | Vertical 2021–2025 timeline, rows alternating either side of a rail that fills on scroll. |
 | Our Team | `TeamMarquee.tsx` | Continuously scrolling cards; hover darkens the portrait bottom-up and reveals the quote. |
+
+**Vision / Mission / Why is a stack, not an accordion.** Every section is always
+expanded, and each sticks **as a whole** — title and body together — parked
+`i * ROW_H` below the one above. Scrolling therefore never pushes a body behind
+its own title; instead the next section rides up, opaque, covers the previous
+body and leaves its title showing. The titles end up stacked and exactly one body
+is visible. The opaque `var(--bg)` background is what makes the covering work.
+
+**The four circles are a pinwheel**, each overlapping the next. See lesson 11 —
+the cycle cannot be expressed with `z-index`, so the last circle is masked.
 
 ### Three more things learned here
 
@@ -166,6 +177,75 @@ Global are gone; Journey and Team came back rebuilt.
 8. **A fixed-height card will silently eat a sentence.** Any card whose height is
    fixed to stop layout jump needs `overflow-y: auto` as a guard — it already
    clipped copy once here, invisibly, because nothing errors.
+
+## The work page rebuild
+
+`/work` was rebuilt from client reference frames. Two sections doing two
+different jobs:
+
+    Hero → Selected Work (10, two staggered columns) → All Projects (tabs + gallery) → CTA
+
+| Part | Where | Mechanic |
+| --- | --- | --- |
+| Selected Work | `src/app/work/page.tsx` | Two **real flex columns**, odd-indexed projects on the right, right column dropped by `OFFSET`. A giant rotated "Selected Work" wordmark at `opacity: .09` down the left edge. |
+| All Projects | same file | The original's category tabs over an `auto-fill` grid, `minmax(min(100%,300px),1fr)` — four per row, portrait `4 / 5` crops. |
+| Both tiles | `src/components/work/ProjectCard.tsx` | Name below the image; year, description and tags appear on hover *over* the image, under a gradient rising from its foot. |
+
+**The two columns are not a wrapping grid.** A grid fills row by row, so the right
+column would always sit level with the left and the stagger would be impossible.
+
+**The gallery repeating the featured projects is intentional** — the columns are
+an editorial pick, the gallery is the filterable archive.
+
+**A wider tile is a shorter tile.** Enlarging the gallery cards by widening the
+grid track alone made the hover copy *worse*, because a wider `4 / 3` card has
+less height for the text to sit in. The portrait `4 / 5` crop is what actually
+fixed it.
+
+## The header mega-menus
+
+`src/components/nav/MegaMenu.tsx` + `src/lib/megaMenu.ts`, mounted from
+`SiteHeader.tsx`. Services, Work and Insights each open a hover panel: entries
+down the left, a card grid on the right that swaps as you move through them.
+Entries pad to `CARDS_PER_VIEW = 6` so the grid never reflows between entries.
+The header tracks ONE `openKey` with a `CLOSE_DELAY = 140`, so moving between two
+triggers doesn't flicker the panel shut.
+
+On hover a hairline runs around each card: two identical rounded rects, one
+rotated 180° about its own centre (which maps a rect onto itself but moves the
+path's start to the opposite corner), `pathLength="100"` so "half a lap" is
+literally `50`.
+
+## Five more things learned the hard way
+
+9. **`stroke-dashoffset` slides a dash pattern; it does not hide it.** Setting
+   the offset to the full length to "hide" a stroke just moves the dash one lap
+   round — the stroke stays fully painted, which is why the menu cards showed a
+   white outline at rest. To grow a stroke from nothing, animate
+   `stroke-dasharray` from `0 100`. (And round line-caps paint a visible dot at
+   zero length, so the cap has to go to `butt` while the length is zero.)
+
+10. **A CSS keyframe overrides an inline starting value.** Two rails that should
+    run half a lap apart cannot be offset with an inline `stroke-dashoffset` —
+    the keyframe wins and the two segments drift apart. Use a negative
+    `animation-delay`.
+
+11. **z-index cannot express a cycle.** The four-circle pinwheel needs each
+    circle over the next and under the previous, which no stacking order can
+    satisfy. The last circle is carved instead, with a
+    `mask-image: radial-gradient(ellipse …)`. Note that `calc()` is rejected
+    inside a gradient radius and fails *silently* — express the radius in
+    percentages.
+
+12. **Sticky containing blocks, three ways to get it wrong.** A row wrapped in
+    its own div sticks only within that div (use Fragments); sticking only a
+    section's *header* lets its body scroll up behind its own title (stick the
+    whole section); and a sticky element with no taller parent never travels at
+    all (lesson 6). This was the single most repeated bug of the whole redesign.
+
+13. **Measure, don't estimate, a stacking offset.** `ROW_H` in `WhatWeDo.tsx` is
+    the pinned title-row height. Estimated at 72px it clipped every stacked
+    title; measured, it is an 81px row plus a 1px divider — hence 82.
 
 ## The home outro — Q draw-and-reveal
 
@@ -224,7 +304,7 @@ real content:
 | `HOME_TEAM` | Names (`Name Surname`), photos (stock stand-ins — `/img` has no portraits), LinkedIn URLs (`#`). |
 | `TEAM` | Same: names are `Name Surname`, and `img` is a stock stand-in. Drives the /about marquee, where six desk-and-crowd photographs stand in for six people — the weakest-looking placeholder on the site. |
 | `HOME_TESTIMONIALS` | Quotes, names, **and the star ratings and "N months ago" dates, which were invented** — the old data had no such fields. A 5-star rating with a date reads as a verified review. |
-| `WORK[].img` | Stock stand-ins; all six projects originally pointed at empty image slots. |
+| `WORK` | All 10 covers are stock stand-ins (every project originally pointed at an empty image slot), **and 4 of the 10 projects are invented** — Halden Interiors, Meridian Health, Orbit Beverages, Grove & Co — added to fill the work page's two columns of five. |
 | `STATS` | Figures are placeholders (the section carries a visible chip saying so). |
 | `ABOUT_VMW[].points` | Vision and Mission sub-point lines are written for the accordion; the old layout had no equivalent. The Why row's points are the real `WHY_US`. |
 

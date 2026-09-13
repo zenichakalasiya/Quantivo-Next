@@ -1,95 +1,113 @@
-# Handoff — 2026-09-13 01:13
+# Handoff — 2026-09-13 14:38
 
 ## Read first
 
-`CLAUDE.md` in this directory:
+In `CLAUDE.md`: **"The work page rebuild"** and **"The header mega-menus"** (both
+new this session), the **"Five more things learned the hard way"** list (lessons
+9–13), and **"Placeholder content — do not ship in front of a client"**, which is
+still the biggest thing standing between this build and a client review.
 
-- **"The about page rebuild"** — this session's work, plus three mechanics
-  (numbered 6–8) that each cost real debugging.
-- **"Placeholder content — do not ship in front of a client"** — still the most
-  important thing on this project.
-- **"A debugging note that will save an hour"** at the bottom, before touching
-  anything animated.
+If you are touching anything that sticks, pins or stacks, read lesson 12 first.
+It is the bug this project keeps making.
 
 ## What we worked on this session
 
-Rebuilt `/about` from a photographed sticky note and reference frames — the
-client said the page "looks bad UI wise". It went from 12,792px over eight
-sections to ~6,400px over five. Built, verified in the browser, committed and
-deployed section by section; the live site is current.
+Built the **work page** from scratch (staggered featured columns + a filterable
+gallery), rewrote **What We Do** on `/about` from an accordion into a sticky
+section stack with a four-circle pinwheel, added **hover mega-menus** to the
+header for Services / Work / Insights, and worked through a long list of the
+client's own fixes on `/` and `/about`.
 
 ## Completed
 
-- **About Quantivo** → `AboutCards.tsx`. Three cards, one widening on hover.
-  Later shrunk 570px → 410px; they were mostly empty at rest.
-- **What We Do** → `WhatWeDo.tsx`. Started as two sections (circle cluster with a
-  side detail panel, and a separate Vision/Mission/Why accordion), then merged at
-  the client's direction: cluster pinned on the left, accordion scrolling past on
-  the right, one heading. Circles now flip 180° at 260ms to show sub-services;
-  the side panel is gone.
-- **Our Journey** → `JourneyTimeline.tsx`. Vertical 2021–2025 timeline,
-  alternating rows, rail fills on scroll. Driven by the existing `JOURNEY` data.
-- **Our Team** → `TeamMarquee.tsx`. Continuously scrolling cards, hover darkens
-  the portrait bottom-up and reveals the quote. Six people (the note said seven;
-  client chose to use the six that exist).
-- Approach and Global sections dropped. New data: `ABOUT_CARDS`, `ABOUT_VMW`, and
-  an `img` field on `TEAM`.
-- One media query added to `globals.css` for the Journey timeline — the only
-  thing on this project that inline styles cannot express.
+- **`/work` rebuilt** — hero, Selected Work (top 10 in two staggered flex
+  columns, rotated wordmark behind them), All Projects (category tabs over an
+  `auto-fill` grid), CTA. `src/app/work/page.tsx`.
+- **`ProjectCard.tsx`** — shared by both sections. Name below the image; year,
+  description and tags revealed on hover over the image under a gradient rising
+  from its foot.
+- **Gallery cards enlarged** — grid track min `250px → 300px` (4 per row,
+  ~372×464) and the crop changed `4 / 3 → 4 / 5`, which is what actually made the
+  hover copy readable. Hover text raised to `clamp(13.5px,1.05vw,17px)`.
+- **`WhatWeDo.tsx` rewritten** — Vision / Mission / Why is now a stack of
+  always-expanded sections, each sticking *as a whole* one title-height below the
+  last, so an opened section stays put and the next arrives already open and
+  parks below the previous title. Second divider removed.
+- **The four circles** — bigger, cut on one side only, arranged as a pinwheel via
+  a radial-gradient mask (z-index can't express the cycle). Flip text raised to
+  `clamp(10px,.92vw,13px)`; all four services now sit on single lines.
+- **Header mega-menus** — `src/components/nav/MegaMenu.tsx`, `src/lib/megaMenu.ts`,
+  wired into `SiteHeader.tsx`. Cards carry a slow continuous hairline that runs
+  around the edge on hover (7s, two segments half a lap apart) and **no outline at
+  all at rest**.
+- **Home fixes** — FAQ centred with less gap to the Q outro; Let's Talk card
+  given contrast against the page and equal column heights; Work rail tiles
+  enlarged to 5 per row; **Home removed from the nav**.
+- **About fixes** — card titles forced onto one line; Final CTA centred and
+  shrunk; a gap opened between the section title and the circles.
+- Everything above is committed and deployed.
 
 ## In progress
 
-Nothing mid-flight. Working tree clean, `main` pushed, Pages deploy green.
+Nothing mid-flight. The tree is clean and the live site matches it.
 
 ## Next steps
 
-1. **Replace the placeholder content** — see the table in `CLAUDE.md`. Two are
-   worse than the rest: the invented testimonial star ratings and dates, and the
-   /about team marquee, where six stock photographs of desks and crowds stand in
-   for six people at large size.
-2. **Renumber the home page section eyebrows.** Still stale from the reorder two
-   sessions ago — Services says `04` but is 3rd, Work `06` but is 4th,
-   Testimonials `05` but is 8th. Offered three times; never asked for.
-3. Continue section-by-section redesign if more references arrive. Per earlier
-   instructions, home Process and Insights stay as they are.
-4. Optional: decide whether to keep the `/q-reveal` route, and whether to apply
-   the white-arrow logo fix to the original V4 site.
+1. **Replace the placeholder content.** This is the only thing blocking a client
+   review. In priority order:
+   - `HOME_TESTIMONIALS` — the quotes, names, **and the invented star ratings and
+     "N months ago" dates**. A 5-star rating with a date reads as a verified
+     review and should not go live as fiction.
+   - `WORK` — 4 of the 10 projects are invented (Halden Interiors, Meridian
+     Health, Orbit Beverages, Grove & Co) and all 10 covers are stock.
+   - `HOME_TEAM` / `TEAM` — names are `Name Surname`, photos are stock stand-ins,
+     LinkedIn URLs are `#`.
+   - `STATS` figures, and `ABOUT_VMW[].points`.
+2. **Renumber the home section eyebrows.** They have been stale since the section
+   reorder — Services says `04` but sits third, Work says `06` but sits fourth,
+   Testimonials says `05` but sits eighth. Small job, currently visible on the
+   live site.
+3. Decide whether `/q-reveal` (the standalone test route) stays or goes.
+4. Apply the white-arrow logo fix to the **original** V4 site — the two logos now
+   differ (documented at the bottom of the original project's `CLAUDE.md`).
 
 ## Decisions made
 
-- **Merged What We Do with Vision/Mission/Why** rather than keeping two sections.
-  The circle detail panel moved onto the back of the circles, which freed the
-  right half of the row for the accordion.
-- **Circles flip properly (180°, 260ms)**, unlike the home team cards' soft 14°
-  turn — the brief asked for something instant, and the two effects are meant to
-  read differently.
-- **The circle back carries the sub-service list only**, not the lead line. That
-  line ends in a colon introducing the list, so the list alone reads complete —
-  and a paragraph does not fit the usable middle of a circle at any readable size.
-- **Six team members, not the note's seven.** `TEAM` already had six with a role
-  and quote each, and the marquee works at any count.
-- **`position: sticky` over a JS pin** for the circle cluster, consistent with the
-  home Services deck.
+- **Vision / Mission / Why: stack, not accordion.** The client asked that an open
+  section stay open and the next arrive already open. A collapse state fought
+  that, so it was removed entirely — every section is expanded and the *stacking*
+  is what reveals them one at a time.
+- **Stick the whole section, not just its header.** Sticking only the header made
+  the body scroll up behind its own title, which is exactly the artefact the
+  client reported.
+- **The work gallery repeats the featured projects on purpose.** The columns are
+  an editorial pick; the gallery is the filterable archive. Different jobs.
+- **Two real flex columns on `/work`, not a grid.** A grid fills row by row, so
+  the right column would always sit level with the left and the stagger would be
+  impossible.
+- **The menu card outline fades in with hover** rather than each stroke animating
+  from zero — simpler, and the running animation is paused while invisible so it
+  costs nothing.
 
 ## Gotchas & notes
 
-- **A sticky element needs a parent taller than itself.** `align-items: stretch`
-  (the flex default) makes both columns the row's full height, so the sticky one
-  already fills its parent and never travels. `flex-start` is what gives it a
-  runway — 194px here, from the accordion column.
-- **A fixed-height card silently ate a sentence.** Card 02 clipped its last
-  paragraph with no error and nothing visibly broken. Any fixed-height card needs
-  `overflow-y: auto` as a guard.
-- **Shell escaping keeps biting.** `content.ts` stores `’` as literal text,
-  so a `node -e` script matching the real apostrophe found nothing; and an earlier
-  script produced `` maxWidth: `px` `` which TypeScript accepted, because `'px'`
-  is a valid string. Use the Edit tool for anything with backticks, `${}` or
-  escapes.
-- **The renderer wedges regularly** when driving this site over CDP, and reading
-  the very large client reference PNGs is the worst offender — decode them with
-  `createImageBitmap(blob, {resizeWidth})` rather than an `<img>` at full size,
-  and expect to open a fresh tab when screenshots start timing out.
-- `ABOUT_STEPS`, `JOURNEY`'s `left` field and `HOME_SERVICES` are unused data,
-  left in place deliberately. `_initVM`, `_initTeam` and `_initYearRail` in
-  `src/vendor/motion.js` are now no-ops — each bails when its root attribute is
-  absent.
+- **`stroke-dashoffset` does not hide a stroke** — it slides the dash pattern one
+  lap. That is why the menu cards showed a white outline with no hover. Grow
+  `stroke-dasharray` from `0 100` instead, and watch the round line-caps, which
+  paint a dot at zero length.
+- **`calc()` inside a gradient radius is rejected silently.** The first attempt at
+  the circle mask did nothing at all, with no error. Use percentages.
+- **Don't edit source files with `node -e` from the shell.** It mangled code
+  repeatedly this session — it produced a broken `maxWidth` value that tsc
+  happily accepted, and it broke JSX closing tags. Use the Edit/Write tools, or
+  write a script to a file and run that. Note that `content.ts` stores curly
+  quotes as literal escape text, which the shell will happily destroy.
+- **Measure, don't estimate.** `ROW_H = 82` in `WhatWeDo.tsx` is a measured
+  value. The estimate (72) clipped every stacked title.
+- **A backgrounded tab pauses rAF**, so transitions freeze at t=0 and computed
+  style disagrees with the inline style forever. This looks exactly like a stuck
+  animation and is not one — screenshots are the trustworthy check.
+- The renderer can still wedge when driving the site over CDP; a fresh tab
+  recovers it. Inherited from the original V4 site, not introduced here.
+- There is also a client-facing **`Quantivo - Website Build Record.pdf`** in the
+  original project folder (workflow + costing), plus its artifact version.
