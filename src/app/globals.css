@@ -198,3 +198,16 @@ summary::-webkit-details-marker{display:none}
 @media (max-width:680px){
   [data-insights-grid]{grid-template-columns:1fr!important}
 }
+
+/* ===== Smooth scroll (site-wide) =====
+ * `scroll-behavior` only animates scrolls the PAGE itself initiates — anchor/
+ * hash links (e.g. the mega-menu's /services#svc-social links) and any
+ * scrollIntoView()/scrollTo() call that doesn't specify its own `behavior`. It
+ * does NOT touch native wheel/touch/trackpad scrolling, so it cannot fight
+ * ScrollTrigger's pinning or scrubbing on Home, About, Services etc. — those
+ * read the actual scroll position however it got there. It also cannot
+ * override the "reset to top" `scrollTo({behavior:'instant'})` calls already
+ * used on every route change, since an explicit `behavior` always wins over
+ * this default. Off for reduced-motion, matching every other animation here. */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

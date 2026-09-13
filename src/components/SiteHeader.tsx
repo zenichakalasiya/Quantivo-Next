@@ -31,7 +31,7 @@ const CLOSE_DELAY = 140;
 export function SiteHeader() {
   const pathname = normalise(usePathname());
   const router = useRouter();
-  const { toggle } = useTheme();
+  const { theme, toggle } = useTheme();
   const [openKey, setOpenKey] = useState<string | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -102,8 +102,19 @@ export function SiteHeader() {
           );
         })}
 
-        <button onClick={toggle} data-cursor="Theme" data-theme-toggle="" aria-label="Toggle colour scheme" style={{ marginLeft: '8px', width: '38px', height: '38px', borderRadius: '50%', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', transition: 'border-color .3s' }}>
-          <span style={{ width: '14px', height: '14px', borderRadius: '50%', background: 'var(--grad)', boxShadow: 'inset -4px 0 0 0 var(--bg)' }} />
+        <button onClick={toggle} data-cursor="Theme" data-theme-toggle="" aria-label="Toggle colour scheme" style={{ marginLeft: '8px', width: '38px', height: '38px', borderRadius: '50%', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', color: 'var(--ink)', transition: 'border-color .3s' }}>
+          {theme === 'dark' ? (
+            // Moon — shown while dark is active.
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+            </svg>
+          ) : (
+            // Sun — shown while light is active.
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+          )}
         </button>
       </nav>
 
