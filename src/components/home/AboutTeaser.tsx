@@ -125,7 +125,7 @@ export function AboutTeaser() {
         {/* 3 — image, copy, CTA */}
         <div style={{ minWidth: '0', display: 'flex', flexDirection: 'column', gap: 'clamp(14px,1.8vh,24px)' }}>
           <img
-            src={asset('/img/q-cat-web.jpg')}
+            src={asset('/img/q-about-studio.jpg')}
             alt="The Quantivo studio"
             style={{ display: 'block', width: '100%', aspectRatio: '16 / 9', objectFit: 'cover', borderRadius: '12px' }}
           />

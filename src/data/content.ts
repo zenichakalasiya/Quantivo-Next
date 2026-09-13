@@ -252,7 +252,7 @@ export const ARTICLES = [
   { img: '/img/q-peek-ads.jpg', date: 'June . 2026', posted: 'June 28, 2026', cat: 'Paid Media', read: '7 min read', author: 'The Quantivo Team', title: 'The Ad Account Audit We Run Before Spending Anything', desc: 'Eleven checks that decide whether a budget compounds or quietly leaks. Most accounts fail at least four.', tags: ['Strategy', 'Paid Media'] },
   { img: '/img/q-peek-social.jpg', date: 'June . 2026', posted: 'June 15, 2026', cat: 'Social', read: '5 min read', author: 'The Quantivo Team', title: 'Posting Less and Reaching More', desc: 'Why a smaller calendar usually outperforms a full one, and how to decide what to stop making.', tags: ['Strategy', 'Social'] },
   { img: '/img/q-peek-pack.jpg', date: 'May . 2026', posted: 'May 29, 2026', cat: 'Packaging', read: '4 min read', author: 'The Quantivo Team', title: 'Shelf Presence Is a Design Problem', desc: 'A pack has about three seconds and six feet of distance to do its job. Here is what survives that test.', tags: ['Branding', 'Packaging'] },
-  { img: '/img/q-cat-growth.jpg', date: 'May . 2026', posted: 'May 14, 2026', cat: 'Analytics', read: '8 min read', author: 'The Quantivo Team', title: 'The Only Four Numbers Worth Reading Weekly', desc: 'Dashboards grow until nobody opens them. These four stay useful, and the rest can wait for the quarter.', tags: ['Strategy', 'Analytics'] },
+  { img: '/img/team-marketing.jpg', date: 'May . 2026', posted: 'May 14, 2026', cat: 'Analytics', read: '8 min read', author: 'The Quantivo Team', title: 'The Only Four Numbers Worth Reading Weekly', desc: 'Dashboards grow until nobody opens them. These four stay useful, and the rest can wait for the quarter.', tags: ['Strategy', 'Analytics'] },
   { img: '/img/q-peek-arch.jpg', date: 'Apr . 2026', posted: 'April 26, 2026', cat: '3D', read: '5 min read', author: 'The Quantivo Team', title: 'Selling a Building Before It Exists', desc: 'What architectural visualisation has to get right before a render can carry a sales conversation.', tags: ['3D', 'Product'] },
 ] as const;
 
@@ -289,9 +289,9 @@ export const WHY_US = [
 
 /** Team carousel. _initTeam syncs [data-team-card] with [data-team-bio] by index. */
 export const TEAM = [
-  { slot: 'qv-team-1', img: '/img/q-band-mission.jpg', bio: 'Quantivo exists to give ambitious businesses one partner for strategy, craft and delivery — not five vendors pulling in different directions.', name: 'Name Surname', role: 'Founder & Creative Director' },
-  { slot: 'qv-team-2', img: '/img/q-peek-social.jpg', bio: 'The work I care about is the kind that survives contact with a real budget. Quantivo lets us plan campaigns around outcomes, not vanity metrics.', name: 'Name Surname', role: 'Head of Digital Marketing' },
-  { slot: 'qv-team-3', img: '/img/q-band-why.jpg', bio: 'Seeing a space or product before it exists changes how clients decide. That is the part of Quantivo I find most rewarding.', name: 'Name Surname', role: 'Lead 3D Visualization Artist' },
+  { slot: 'qv-team-1', img: '/img/team-founder.jpg', bio: 'Quantivo exists to give ambitious businesses one partner for strategy, craft and delivery — not five vendors pulling in different directions.', name: 'Name Surname', role: 'Founder & Creative Director' },
+  { slot: 'qv-team-2', img: '/img/team-marketing.jpg', bio: 'The work I care about is the kind that survives contact with a real budget. Quantivo lets us plan campaigns around outcomes, not vanity metrics.', name: 'Name Surname', role: 'Head of Digital Marketing' },
+  { slot: 'qv-team-3', img: '/img/team-3d.jpg', bio: 'Seeing a space or product before it exists changes how clients decide. That is the part of Quantivo I find most rewarding.', name: 'Name Surname', role: 'Lead 3D Visualization Artist' },
   { slot: 'qv-team-4', img: '/img/q-art-3.jpg', bio: 'A site should make one decision easy for the visitor. At Quantivo the build starts from that decision, not from a template.', name: 'Name Surname', role: 'Web Development Lead' },
   { slot: 'qv-team-5', img: '/img/q-art-2.jpg', bio: 'Identity is a promise repeated consistently. Quantivo gives us the room to design that promise properly, across every surface.', name: 'Name Surname', role: 'Brand & Packaging Designer' },
   { slot: 'qv-team-6', img: '/img/q-art-4.jpg', bio: 'My job is to keep the brief honest. Quantivo works best when the client and the team are looking at the same problem.', name: 'Name Surname', role: 'Client Partner' },
@@ -357,7 +357,7 @@ export const HOME_TEAM = [
     name: 'Name Surname',
     role: 'Founder & Creative Director',
     quote: 'Quantivo exists to give ambitious businesses one partner for strategy, craft and delivery — not five vendors pulling in different directions.',
-    img: '/img/q-cat-brand.jpg',
+    img: '/img/team-founder.jpg',
     linkedin: '#',
   },
   {
@@ -371,7 +371,7 @@ export const HOME_TEAM = [
     name: 'Name Surname',
     role: 'Lead 3D Visualization Artist',
     quote: 'Seeing a space or product before it exists changes how clients decide. That is the part of Quantivo I find most rewarding.',
-    img: '/img/q-cat-3d.jpg',
+    img: '/img/team-3d.jpg',
     linkedin: '#',
   },
 ] as const;

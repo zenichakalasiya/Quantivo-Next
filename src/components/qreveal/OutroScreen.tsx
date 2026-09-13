@@ -67,11 +67,13 @@ export function OutroLetsTalk() {
   return (
     <div data-outro-screen="lets-talk" style={SCREEN}>
       <QWatermark half="top" />
-      {/* alignContent centres the single row in the screen; alignItems:start then
-          lines the two columns up on the SAME top edge, so "Let's Talk" and
-          "Contact Us" sit on one horizontal line instead of each column being
-          independently centred against the other. */}
-      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignContent: 'center', alignItems: 'stretch', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(24px,4vh,54px)' }}>
+      {/* alignContent:end sits the row low in the screen, just above the shared
+          edge where the Q's centre lands (see QWatermark) rather than centred
+          in the dead space above it. alignItems:stretch then lines the two
+          columns up on the SAME top edge, so "Let's Talk" and "Contact Us" sit
+          on one horizontal line instead of each column being independently
+          centred against the other. */}
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,340px),1fr))', alignContent: 'end', alignItems: 'stretch', gap: 'clamp(24px,4vw,80px)', padding: 'clamp(80px,12vh,150px) clamp(16px,3.4vw,48px) clamp(64px,10vh,110px)' }}>
 
         {/* ---- the pitch ---- */}
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 'clamp(16px,3vh,34px)', alignItems: 'flex-start', textAlign: 'left', minWidth: '0' }}>
@@ -142,7 +144,7 @@ export function OutroFooter() {
 
       <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* columns */}
-        <div style={{ flex: '1', minHeight: '0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 'clamp(18px,2.6vw,56px)', alignItems: 'center', padding: 'clamp(18px,3vh,44px) clamp(16px,3.4vw,48px) clamp(14px,2.4vh,30px)' }}>
+        <div style={{ flex: '1', minHeight: '0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 'clamp(18px,2.6vw,56px)', alignItems: 'start', padding: 'clamp(28px,5vh,64px) clamp(16px,3.4vw,48px) clamp(14px,2.4vh,30px)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(5px,1.1vh,11px)', alignItems: 'center', textAlign: 'center' }}>
             <span style={LABEL}>Connect</span>
             <button onClick={go('/contact')} data-cursor="Go" data-foot-link="" style={LINK}>Get in touch</button>
