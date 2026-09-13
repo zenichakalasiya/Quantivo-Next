@@ -41,12 +41,13 @@ frameworks. GSAP, ScrollTrigger and three.js came across at identical pinned ver
 - `src/components/about/` — the about sections, in page order.
 - `src/vendor/` — code deliberately NOT rewritten (see below).
 
-**`/`, `/about`, `/work` and `/blog` are no longer ports.** All four have been
-redesigned section by section against client reference images and sticky-note
-sketches — see "The home page redesign", "The about page rebuild", "The work page
-rebuild" and "The insights page rebuild" below. `Quantivo.dc.html` is still the
-source of truth for the remaining two routes (`/services`, `/contact`), but do
-not "fix" the redesigned pages back toward it.
+**Only `/contact` is still a port.** Every other route has been redesigned
+section by section against client reference images, sticky-note sketches and, for
+services, a live reference site — see "The home page redesign", "The about page
+rebuild", "The work page rebuild", "The insights page rebuild" and "The services
+page rebuild" below. `Quantivo.dc.html` remains the source of truth for
+`/contact` and for the copy in `content.ts`, but do not "fix" the redesigned
+pages back toward it.
 
 ### Vendored, not rewritten
 
@@ -202,6 +203,45 @@ grid track alone made the hover copy *worse*, because a wider `4 / 3` card has
 less height for the text to sit in. The portrait `4 / 5` crop is what actually
 fixed it.
 
+## The services page rebuild
+
+`/services` was rebuilt against a live reference site (marino.co.uk/services),
+matching its structure and its type sizes — 53px service titles, 33px
+descriptions (since trimmed by 4px), 17px "More Info".
+
+    Hero (copy left, picture right) → the eight services as rows → Latest work → CTA
+
+| Part | Where | Mechanic |
+| --- | --- | --- |
+| The rows | `src/components/services/ServiceRow.tsx` | On hover a picture opens from the LEFT, the copy slides across, the description swaps from the blurb to the capability list, and the arrow gains a "More Info" label. |
+| Latest work | `src/components/services/BeforeAfterCard.tsx` | Click an image to swap the finished work for what was there before, with a disc tracking the pointer to say which state the click gives. |
+
+**The picture opens by animating its own `width` from 0, not by sliding in.** The
+copy is a flex sibling, so it is pushed across by exactly as much as the picture
+occupies — one value drives both. A fixed-width picture sliding in from off-screen
+would need the copy's translate kept in sync by hand, and the two would drift at
+different viewport widths. `overflow: hidden` over a fixed-width inner image is
+what makes it read as an aperture opening rather than a picture being squashed.
+
+**Both descriptions live in one grid cell.** The row's height is therefore always
+the taller of the two and never jumps mid-hover. Swapping one element's text
+would reflow the row and shove everything below it down the page.
+
+**The `svc-*` anchor ids live on the rows.** They used to sit on the sticky
+detail cards this page was built from; the mega-menu links to them
+(`/services#svc-social`), so they had to move rather than disappear.
+
+**The row content is three constants joined on index** — `SVC_MENU` (picture +
+id), `SERVICES` (the one-line blurb), `DETAIL` (the full capability list). All
+three are eight long and in the same order. The row shows the first six items
+with "+N more"; nothing was deleted from the data, but **there is currently
+nowhere that shows a service's full write-up** — `DETAIL[].paras` is unused.
+Per-service routes are the natural next step.
+
+**The before images are fake.** `public/img/before/*` are the same photographs
+run through sharp — desaturated, contrast-flattened, blacks lifted, softened — so
+the mechanism can be demonstrated. The section carries a visible chip saying so.
+
 ## The insights page rebuild
 
 `/blog` (labelled "Insights" in the nav — see `labelFor()` in `lib/nav`) was
@@ -249,7 +289,7 @@ rotated 180° about its own centre (which maps a rect onto itself but moves the
 path's start to the opposite corner), `pathLength="100"` so "half a lap" is
 literally `50`.
 
-## Seven more things learned the hard way
+## Eight more things learned the hard way
 
 9. **`stroke-dashoffset` slides a dash pattern; it does not hide it.** Setting
    the offset to the full length to "hide" a stroke just moves the dash one lap
@@ -289,7 +329,13 @@ literally `50`.
     here is `clamp(min, Nvw, max)`, and at any normal viewport width the `vw`
     term is what the clamp actually resolves to — so trimming only the bounds
     changes nothing on screen. `clamp(min-8, calc(Nvw - 8px), max-8)` is what
-    actually takes 8px off at every width.
+    actually takes 8px off at every width. (Used for every hero heading and for
+    the services subtext.)
+
+16. **Don't drive a cursor-following element through React state.** The
+    before/after disc updates on every `mousemove`; through state that re-renders
+    the card and both full-size images each time. Write `style.transform` from a
+    ref instead — one element, and it stays on the compositor.
 
 ## The home outro — Q draw-and-reveal
 
@@ -349,6 +395,7 @@ real content:
 | `TEAM` | Same: names are `Name Surname`, and `img` is a stock stand-in. Drives the /about marquee, where six desk-and-crowd photographs stand in for six people — the weakest-looking placeholder on the site. |
 | `HOME_TESTIMONIALS` | Quotes, names, **and the star ratings and "N months ago" dates, which were invented** — the old data had no such fields. A 5-star rating with a date reads as a verified review. |
 | `WORK` | All 10 covers are stock stand-ins (every project originally pointed at an empty image slot), **and 4 of the 10 projects are invented** — Halden Interiors, Meridian Health, Orbit Beverages, Grove & Co — added to fill the work page's two columns of five. |
+| `public/img/before/` | **Not real before-shots.** Each is its matching cover desaturated and blurred by a script, so the /services before/after has something to swap to. Replace with genuine client screenshots. |
 | `ARTICLES` | **All ten articles are invented** — titles, standfirsts, dates, read times and the "The Quantivo Team" byline. There is no editorial copy from the client. The /blog hero carries a visible chip saying so; keep it until the real pieces land. |
 | `STATS` | Figures are placeholders (the section carries a visible chip saying so). |
 | `ABOUT_VMW[].points` | Vision and Mission sub-point lines are written for the accordion; the old layout had no equivalent. The Why row's points are the real `WHY_US`. |

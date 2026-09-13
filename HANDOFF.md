@@ -1,46 +1,51 @@
-# Handoff — 2026-09-13 15:35
+# Handoff — 2026-09-13 16:27
 
 ## Read first
 
-In `CLAUDE.md`: **"The insights page rebuild"** (new this session), and the
-**"Seven more things learned the hard way"** list — lessons 14 and 15 are both
-from this session and both cost real time.
+In `CLAUDE.md`: **"The services page rebuild"** (new this session) and
+**"The insights page rebuild"**, then the **"Eight more things learned the hard
+way"** list — lessons 14, 15 and 16 all came out of these two pages.
 
 Then **"Placeholder content — do not ship in front of a client"**. It grew again:
-all ten insight articles are invented, on top of the testimonials, the work
-projects and the team. That table is still the only thing standing between this
-build and a client review.
+`public/img/before/*` are fabricated, on top of the ten invented articles, the
+testimonials' invented ratings, the invented work projects and the team.
 
 ## What we worked on this session
 
-Rebuilt the **insights page** (`/blog`) from two client reference frames — a
-featured lead article over a nine-card gallery whose hover uncovers the cover
-image behind a left-to-right wash. Then enlarged the **About Quantivo** card type
-and trimmed **every hero heading** by 8px.
+Rebuilt the **insights page** and the **services page**, then a run of type-size
+fixes across the site. Services was built against a live reference
+(marino.co.uk/services) rather than a static frame — eight full-width rows whose
+picture opens from the left on hover, plus a latest-work section where clicking a
+card swaps the finished work for a "before".
 
 ## Completed
 
-- **`/blog` rebuilt.** Hero → Most read → All insights (3 per row) → CTA.
-  - `src/components/insights/FeaturedInsight.tsx` — picture left, copy right,
-    category chip + read time, `Read →` control. Driven by `ARTICLES[0]`.
-  - `src/components/insights/InsightCard.tsx` — the cover fills the whole card
-    with an opaque panel over its left 64%, so only a strip of picture shows at
-    rest.
-- **The card hover.** The panel cross-fades out while a left-to-right wash fades
-  in: near-solid where the copy starts, thinning across the column, gone by the
-  right edge so it dissolves into the photograph with no panel edge or corner
-  radius left. Verified in both themes.
-- **`ARTICLES` extended** — now ten entries with `cat` / `read` / `posted` /
-  `author` alongside the original fields, so the home rail and the mega-menu keep
-  working unchanged.
-- **`--ins-wash`** added to `globals.css`, theme-scoped, plus the
-  `[data-insights-grid]` media queries that step 3 columns down to 2 and then 1.
-- **About Quantivo cards** (`AboutCards.tsx`) — title up to the Vision heading's
-  size, revealed copy enlarged (lead 14→17px, belief lines 13→21px, paragraphs
-  13→16px) with real gaps between the three groups. The hovered card grows to `3`
-  and the height to `55vh` so it all still fits.
-- **Every hero heading down 8px** — home (`HeroSlider`), about, services, work,
-  insights, contact.
+- **`/blog` rebuilt** — featured lead article (`FeaturedInsight.tsx`) over a
+  nine-card gallery (`InsightCard.tsx`), three to a row. The card's cover fills
+  the whole card behind an opaque panel; on hover the panel cross-fades out and a
+  left-to-right wash fades in, so the picture is uncovered and dissolves into the
+  copy with no panel edge left. `--ins-wash` is theme-scoped.
+- **`ARTICLES` extended** to ten entries with `cat` / `read` / `posted` /
+  `author`, so the home rail and mega-menu keep working unchanged.
+- **`/services` rebuilt** — hero (copy left, picture right), the eight services
+  as rows, latest work, CTA.
+  - `ServiceRow.tsx` — hover opens a picture from the left by animating its own
+    width from 0; the copy is a flex sibling so it is pushed across by exactly
+    that much. Description swaps from the blurb to the capability list. Both
+    descriptions share one grid cell so the row height never jumps.
+  - `BeforeAfterCard.tsx` — click to swap finished work ↔ before, with a disc
+    tracking the pointer saying which state the click gives.
+  - The `svc-*` anchor ids moved from the old sticky detail cards onto the rows.
+    **Verified all eight still resolve** for the mega-menu.
+  - `public/img/before/*` generated with sharp (desaturate, flatten contrast,
+    lift blacks, blur) from each cover.
+- **About Quantivo cards** — title up to the Vision heading's size then up again
+  to `clamp(21px,2.15vw,33px)`, tracking added to everything set in Bebas in that
+  section, revealed copy enlarged with real gaps between the groups. Hovered card
+  grows to `3` and the height to `55vh` so it all still fits.
+- **Type trims** — every hero heading down 8px (home, about, services, work,
+  insights, contact); the services subtext down 4px. Both via
+  `calc(Nvw - Xpx)` so the fluid term takes the cut too.
 - All of it committed and deployed.
 
 ## In progress
@@ -49,60 +54,68 @@ Nothing mid-flight. The tree is clean and the live site matches it.
 
 ## Next steps
 
-1. **Replace the placeholder content.** Unchanged from last session except that
-   it now includes the whole `ARTICLES` array. Priority order:
-   - `ARTICLES` — all ten are written by Claude, not the client.
+1. **Per-service detail routes.** The old `/services` sticky cards are gone, so
+   `DETAIL[].paras` and the full capability lists are now unused — each row shows
+   the first six items with "+N more" and links to `/contact`. Nothing was deleted
+   from `content.ts`, but there is currently nowhere that shows a service's full
+   write-up.
+2. **Replace the placeholder content**, in priority order:
+   - `public/img/before/*` — fabricated; the /services before/after is the one
+     place on the site that makes a visual claim about client results.
+   - `ARTICLES` — all ten written by Claude, not the client.
    - `HOME_TESTIMONIALS` — quotes, names, **and the invented star ratings and
      "N months ago" dates**, which read as verified reviews.
    - `WORK` — 4 of 10 projects invented, all 10 covers stock.
    - `HOME_TEAM` / `TEAM`, `STATS`, `ABOUT_VMW[].points`.
-2. **Decide whether insights need individual article routes.** There are none, so
-   every `Read` control on `/blog` currently goes to `/contact` rather than a dead
-   link. Fine as a placeholder, wrong once real articles exist.
-3. **Renumber the home section eyebrows.** Still stale since the section reorder —
+3. **Article routes for insights.** There are none, so every `Read` control on
+   `/blog` goes to `/contact`. Fine as a placeholder, wrong once real articles
+   exist.
+4. **Renumber the home section eyebrows.** Still stale since the section reorder —
    Services says `04` but sits third, Work `06` but fourth, Testimonials `05` but
    eighth. Visible on the live site.
-4. Decide whether `/q-reveal` (the standalone test route) stays or goes.
-5. Apply the white-arrow logo fix to the **original** V4 site — the two logos
-   differ (documented at the bottom of the original project's `CLAUDE.md`).
+5. Decide whether `/q-reveal` stays, and apply the white-arrow logo fix to the
+   original V4 site.
 
 ## Decisions made
 
-- **The insight card's hover is two layers, not one changing colour.** A gradient
-  and a flat colour cannot be interpolated, so a single element transitioning
-  `background` between them snaps instead of fading. Image / wash / flat panel /
-  copy, with the two middle layers cross-fading on opacity.
-- **The wash's stops are placed against the copy**, not spaced evenly — it must
-  still be ~.76 opaque where the text column ends at 64%, and only fall away
-  across the strip of picture beyond it.
-- **Read time moved off the picture** into the panel beside the date. Over a light
-  cover, white text with a shadow is still unreadable. Only the category chip
-  stays out on the image, and it carries its own dark pill.
-- **Heroes shrunk via `calc(Nvw - 8px)`**, not just the clamp bounds — at any
-  normal viewport width the `vw` term is what the clamp resolves to, so trimming
-  the bounds alone would have changed nothing.
-- **The About card grew wider rather than the type staying small.** The bigger
-  copy no longer fits the fixed height, and the fix is more width (fewer, longer
-  lines), not less type.
+- **The services picture opens by width, not by sliding in.** The copy is a flex
+  sibling, so animating the picture's own width pushes the copy across by exactly
+  as much as the picture occupies. One value drives both, and it cannot drift at
+  different viewport widths the way a hand-synced translate would.
+- **Both service descriptions live in one grid cell**, so the row's height is
+  always the taller of the two and never jumps mid-hover.
+- **The `svc-*` ids moved onto the rows** rather than being dropped, because the
+  mega-menu links to them.
+- **The insight card hover is two layers cross-fading on opacity**, not one
+  element changing colour — a gradient and a flat colour cannot be interpolated,
+  so a single `background` transition snaps instead of fading.
+- **Before-images are faked from the afters** (user chose this over unrelated
+  stock or blank panels): same photograph, processed two ways, so it reads as one
+  thing improved rather than two unrelated pictures.
+- **Bebas kept for the service titles at the reference's 53px** rather than
+  switching to Manrope to match the reference's look — consistency with every
+  other page won.
 
 ## Gotchas & notes
 
+- **`calc(Nvw - Xpx)` is the only way to actually shrink a heading.** Trimming
+  the clamp's min/max alone changes nothing at normal viewport widths, because
+  the `vw` term is what the clamp resolves to. Verified both times by reading
+  `getComputedStyle().fontSize` before and after.
 - **The overflow guard hides bugs.** `AboutCards`' body column has
-  `overflow-y: auto` so a copy change can never silently cut a sentence — but
-  that means overflow shows up as a *scrollbar*, not as an error. Card 01 was
-  overflowing by 36px and looked fine at a glance. Measure `scrollHeight -
-  clientHeight`, don't eyeball it.
-- **Measuring a hover state is awkward.** A synthetic `mouseover` does not
-  trigger React's `onMouseEnter` here, and a real hover is lost the moment the JS
-  tool runs. Force the layout instead — override `style.flex`, kill the
-  transition, wait a frame, measure.
+  `overflow-y: auto` so copy can never be silently cut — which means overflow
+  shows up as a *scrollbar*, not an error. Measure `scrollHeight - clientHeight`.
+- **Measuring a hover state is awkward.** A synthetic `mouseover` does not fire
+  React's `onMouseEnter` here, and a real hover is lost the moment the JS tool
+  runs. Force the layout instead: override `style.flex`, kill the transition,
+  wait a frame, measure.
 - **The renderer wedges** when driving this site over CDP, especially on a heavy
-  measurement loop. A fresh tab recovers it. Inherited from the original V4 site.
+  measurement loop. A fresh tab recovers it.
 - **A backgrounded tab pauses rAF**, so transitions freeze at t=0 and computed
   style disagrees with the inline style forever. Screenshots are the trustworthy
   check.
-- **Reference images**: `.jfif` files are not read as images — convert them with
-  the `sharp` already in `node_modules` (also the way to downscale anything over
-  256KB).
+- **`.jfif` reference files are not read as images** — convert them with the
+  `sharp` already in `node_modules`, which is also how to downscale anything over
+  256KB and how `public/img/before/*` were made.
 - There is a client-facing **`Quantivo - Website Build Record.pdf`** in the
   original project folder (workflow + costing), plus its artifact version.
