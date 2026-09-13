@@ -38,12 +38,14 @@ frameworks. GSAP, ScrollTrigger and three.js came across at identical pinned ver
   (verified by diff), then a `PORTED PSEUDO-CLASSES` section at the bottom.
 - `src/data/content.ts` — every content constant, copied verbatim from the source.
 - `src/components/home/` — the home sections, in page order.
+- `src/components/about/` — the about sections, in page order.
 - `src/vendor/` — code deliberately NOT rewritten (see below).
 
-**The home page is no longer a port.** Everything else on the site still is, but
-`/` has been redesigned section by section against client reference images — see
-"The home page redesign" below. Treat `Quantivo.dc.html` as the source of truth
-for the other five routes only.
+**`/` and `/about` are no longer ports.** Both have been redesigned section by
+section against client reference images and sticky-note sketches — see "The home
+page redesign" and "The about page rebuild" below. `Quantivo.dc.html` is still
+the source of truth for the other four routes (`/services`, `/work`, `/blog`,
+`/contact`), but do not "fix" the two redesigned pages back toward it.
 
 ### Vendored, not rewritten
 
@@ -133,6 +135,38 @@ and the "Four Things We Bring" pillars. New: `TeamCards`.
    see is not *behind* anything, it has just gone. Stop around `.3–.55` and give
    each card a small sticky offset so a sliver of its top edge stays visible.
 
+## The about page rebuild
+
+`/about` was rebuilt from a photographed sticky note plus reference frames. It
+went from **12,792px over eight sections to ~6,400px over five**. Approach and
+Global are gone; Journey and Team came back rebuilt.
+
+    Hero → About Quantivo → What We Do → Our Journey → Our Team → Final CTA
+
+| Section | Component | Mechanic |
+| --- | --- | --- |
+| About Quantivo | `AboutCards.tsx` | Three cards; hovering one animates `flex-grow` so the row's total width never changes. Fixed height. |
+| What We Do | `WhatWeDo.tsx` | Circle cluster pinned beside the Vision/Mission/Why accordion. Circles flip 180° at 260ms to show sub-services. |
+| Our Journey | `JourneyTimeline.tsx` | Vertical 2021–2025 timeline, rows alternating either side of a rail that fills on scroll. |
+| Our Team | `TeamMarquee.tsx` | Continuously scrolling cards; hover darkens the portrait bottom-up and reveals the quote. |
+
+### Three more things learned here
+
+6. **A sticky element needs a parent taller than itself.** `align-items` on the
+   flex row decides this: the default `stretch` makes both columns the row's full
+   height, so the sticky one already fills its parent and never travels. Use
+   `flex-start` and let the other column's height create the runway.
+
+7. **`grid-template-rows: 0fr → 1fr` is how you transition to auto height.**
+   `height: auto` cannot be animated, and a fixed `max-height` has to be guessed —
+   too small clips the longest panel, too large makes short ones ease with nothing
+   moving. The inner wrapper needs `overflow: hidden` or content spills out of the
+   collapsed row.
+
+8. **A fixed-height card will silently eat a sentence.** Any card whose height is
+   fixed to stop layout jump needs `overflow-y: auto` as a guard — it already
+   clipped copy once here, invisibly, because nothing errors.
+
 ## The home outro — Q draw-and-reveal
 
 Home ends with a scroll sequence modelled on wearebulletproof.com: the logo Q
@@ -188,9 +222,15 @@ real content:
 | Where | What is fake |
 | --- | --- |
 | `HOME_TEAM` | Names (`Name Surname`), photos (stock stand-ins — `/img` has no portraits), LinkedIn URLs (`#`). |
+| `TEAM` | Same: names are `Name Surname`, and `img` is a stock stand-in. Drives the /about marquee, where six desk-and-crowd photographs stand in for six people — the weakest-looking placeholder on the site. |
 | `HOME_TESTIMONIALS` | Quotes, names, **and the star ratings and "N months ago" dates, which were invented** — the old data had no such fields. A 5-star rating with a date reads as a verified review. |
 | `WORK[].img` | Stock stand-ins; all six projects originally pointed at empty image slots. |
 | `STATS` | Figures are placeholders (the section carries a visible chip saying so). |
+| `ABOUT_VMW[].points` | Vision and Mission sub-point lines are written for the accordion; the old layout had no equivalent. The Why row's points are the real `WHY_US`. |
+
+Everything else on `/about` is the client's own writing, moved rather than
+rewritten — `ABOUT_CARDS`, the Vision/Mission bodies and `JOURNEY` all came from
+the previous page verbatim.
 
 ## A debugging note that will save an hour
 
