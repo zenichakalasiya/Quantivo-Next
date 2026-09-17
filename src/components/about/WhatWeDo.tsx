@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { ABOUT_VMW, CAPABILITIES } from '@/data/content';
 
 /**
@@ -35,17 +35,63 @@ import { ABOUT_VMW, CAPABILITIES } from '@/data/content';
  * An earlier version made only the HEADER sticky, which produced exactly the
  * wrong thing: the body scrolled up behind its own title and reappeared above
  * it. Sticking the whole section is the fix.
+ *
+ * Sticky alone still broke on the LAST section (it never stuck, and slid over
+ * the title above) and on the way out (the three let go one at a time). Both are
+ * fixed by measured geometry — see `layout()`.
  */
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 const FLIP_MS = 260;
 /** Where the first header parks, clear of the fixed site header. */
 const STICK_TOP = 'clamp(82px,12vh,122px)';
 /**
- * The title row's height, measured: 81px of content plus its 1px divider. Each
- * section parks one of these below the one above, so if this is short the title
- * above gets clipped by the section covering it.
+ * First-paint guess at the title row's height (content + 1px divider). The real
+ * value is measured on mount — the row's padding is vh-based, so no constant is
+ * right at every viewport. This one was hard-coded at 82 while the row measured
+ * 80.5, which left a sliver of the previous body showing between stacked titles.
  */
 const ROW_H = 82;
+
+type Geo = { rowH: number; pads: number[]; tail: number };
+
+/**
+ * Where each section sticks, and how much hidden height it needs, so that the
+ * stack behaves the same for EVERY section — the last one included.
+ *
+ * Two things have to be true, and plain sticky gives neither:
+ *
+ * 1. The last section needs somewhere to stick. A sticky element is held only
+ *    while its parent still extends below it, and the last child's bottom IS
+ *    the parent's bottom — so it had zero runway and scrolled straight past its
+ *    line, over the previous title. `tail` is a spacer after the last section:
+ *    that runway. It is one title-height short of the section's own height,
+ *    which is exactly how long the section before it stayed visible before being
+ *    covered, so all three hold for the same beat.
+ *
+ * 2. All sections must let go at the same moment. Section i is released when the
+ *    parent's bottom reaches (its sticky line + its box height). The sections are
+ *    different heights and park at different lines, so each lets go at a
+ *    different scroll position — the stack came apart as it left. `pads[i]`
+ *    extends each section's sticky box so that sum is the same for all of them.
+ *    The padding is invisible: the next section is pulled up over it by the same
+ *    amount, so nothing on screen moves.
+ */
+function layout(content: number[], rowH: number): Geo {
+  const reach = content.map((h, i) => i * rowH + h);
+  const top = Math.max(...reach);
+  const last = content.length - 1;
+  return {
+    rowH,
+    pads: reach.map((r) => top - r),
+    tail: Math.max(0, content[last] - rowH),
+  };
+}
+
+/** Half-pixel tolerance, so sub-pixel measurement noise can't loop renders. */
+const sameGeo = (a: Geo, b: Geo) =>
+  Math.abs(a.rowH - b.rowH) < 0.5 &&
+  Math.abs(a.tail - b.tail) < 0.5 &&
+  a.pads.every((p, i) => Math.abs(p - b.pads[i]) < 0.5);
 
 /** Diamond positions, tight enough that neighbours overlap. */
 const POS = [
@@ -56,6 +102,31 @@ const POS = [
 ] as const;
 
 export function WhatWeDo() {
+  const list = useRef<HTMLDivElement>(null);
+  const [geo, setGeo] = useState<Geo>(() => ({ rowH: ROW_H, pads: ABOUT_VMW.map(() => 0), tail: 0 }));
+
+  // Measure the title and body — never the whole row, which includes the `pad`
+  // this sets and would feed back into itself. A ResizeObserver rather than a
+  // resize listener, because the heights also change when the web fonts land.
+  useLayoutEffect(() => {
+    const el = list.current;
+    if (!el) return;
+    const rows = [...el.querySelectorAll<HTMLElement>('[data-vmw-row]')];
+    const parts = rows.flatMap((r) => [r.querySelector<HTMLElement>('[data-vmw-title]')!, r.querySelector<HTMLElement>('[data-vmw-body]')!]);
+
+    const measure = () => {
+      const h = (n: HTMLElement) => n.getBoundingClientRect().height;
+      // +1 for each row's top border
+      const content = rows.map((_, i) => 1 + h(parts[i * 2]) + h(parts[i * 2 + 1]));
+      const next = layout(content, 1 + h(parts[0]));
+      setGeo((prev) => (sameGeo(prev, next) ? prev : next));
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    parts.forEach((p) => ro.observe(p));
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <section data-screen-label="About / What We Do" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px) clamp(60px,8vw,120px)', borderTop: '1px solid var(--line)' }}>
@@ -79,10 +150,12 @@ export function WhatWeDo() {
 
         {/* ---- right: Vision / Mission / Why ---- */}
         <div style={{ flex: '1.25 1 360px', minWidth: '0' }}>
-          <div>
+          <div ref={list}>
             {ABOUT_VMW.map((row, i) => (
-              <Row key={row.n} row={row} i={i} />
+              <Row key={row.n} row={row} i={i} top={i * geo.rowH} pad={geo.pads[i]} pull={i > 0 ? geo.pads[i - 1] : 0} />
             ))}
+            {/* the last section's runway — without it, it cannot stick at all */}
+            <div aria-hidden="true" style={{ height: `${geo.tail}px` }} />
           </div>
         </div>
       </div>
@@ -224,30 +297,37 @@ function Circle({ c, pos, spin, depth, carve }: { c: (typeof CAPABILITIES)[numbe
  * the next. A border under the title as well put a second rule between a title
  * and its own body, which read as a split where there is none.
  */
-function Row({ row, i }: { row: (typeof ABOUT_VMW)[number]; i: number }) {
+function Row({ row, i, top, pad, pull }: { row: (typeof ABOUT_VMW)[number]; i: number; top: number; pad: number; pull: number }) {
   const [on, setOn] = useState(false);
 
   return (
     <div
+      data-vmw-row=""
       onMouseEnter={() => setOn(true)}
       onMouseLeave={() => setOn(false)}
       style={{
         position: 'sticky',
-        top: `calc(${STICK_TOP} + ${i * ROW_H}px)`,
+        top: `calc(${STICK_TOP} + ${top}px)`,
         zIndex: i + 1,
         background: 'var(--bg)',
+        // A solid ring of page background just outside the box. The column's
+        // edges rarely land on a whole pixel, so the background is anti-aliased
+        // there — and the section underneath showed through that edge pixel as
+        // a thin tick beside each divider (the first letter of its heading).
+        // The ring covers the seam without changing layout.
+        boxShadow: '0 0 0 3px var(--bg)',
         borderTop: '1px solid var(--line)',
+        // pulled up over the previous section's `pad`, so the layout on screen
+        // is exactly what it would be without it
+        marginTop: pull ? `-${pull}px` : undefined,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px,2vw,28px)', padding: 'clamp(15px,2vh,22px) 0' }}>
+      <div data-vmw-title="" style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px,2vw,28px)', padding: 'clamp(15px,2vh,22px) 0' }}>
         <span style={{ flex: 'none', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(16px,1.5vw,24px)', lineHeight: '1', color: on ? 'var(--a)' : 'var(--mute)', transition: 'color .4s' }}>{row.n}.</span>
         <span style={{ flex: '1', minWidth: '0', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(24px,2.9vw,44px)', lineHeight: '1', letterSpacing: '.01em', color: 'var(--ink)' }}>{row.title}</span>
-        <span aria-hidden="true" style={{ flex: 'none', width: '24px', height: '24px', display: 'grid', placeItems: 'center', color: on ? 'var(--a)' : 'var(--mute)', transition: 'color .4s' }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M17 7L7 17M7 9v8h8" /></svg>
-        </span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(13px,1.8vh,18px)', padding: '0 0 clamp(26px,4vh,44px)' }}>
+      <div data-vmw-body="" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(13px,1.8vh,18px)', padding: '0 0 clamp(26px,4vh,44px)' }}>
         <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(19px,1.9vw,29px)', lineHeight: '1.05', margin: '0' }}>{row.head}</h3>
         <p style={{ fontSize: 'clamp(13.5px,1vw,16px)', lineHeight: '1.7', color: 'var(--mute)', margin: '0' }}>{row.body}</p>
         <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px', margin: '2px 0 0', padding: '0', listStyle: 'none' }}>
@@ -256,6 +336,10 @@ function Row({ row, i }: { row: (typeof ABOUT_VMW)[number]; i: number }) {
           ))}
         </ul>
       </div>
+
+      {/* Invisible extension of this section's sticky box — see `layout()`.
+          It sits under the next section, which is pulled up over it. */}
+      {pad > 0 && <div aria-hidden="true" style={{ height: `${pad}px` }} />}
     </div>
   );
 }
