@@ -26,7 +26,6 @@ export function ApproachRail() {
             <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>07 — Our Approach</span>
             <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(38px,5.4vw,86px)', lineHeight: '.92' }}>From Vision to Execution.</h2>
           </div>
-          <span style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' }}>Keep scrolling — five steps</span>
         </div>
 
         <div style={{ position: 'relative', flex: '1', overflow: 'hidden' }}>

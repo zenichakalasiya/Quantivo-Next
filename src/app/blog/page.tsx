@@ -57,7 +57,6 @@ export default function BlogPage() {
       <section data-screen-label="Blog / All" style={{ padding: 'clamp(44px,6vw,88px) clamp(16px,3.4vw,48px) clamp(64px,8vw,124px)', borderTop: '1px solid var(--line)' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(22px,3vw,40px)' }}>
           <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,4vw,60px)', lineHeight: '.96' }}>All Insights.</h2>
-          <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover a card to see its cover</span>
         </div>
 
         {/* Three to a row, fixed — not auto-fill, which would give four on a wide

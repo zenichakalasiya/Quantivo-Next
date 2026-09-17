@@ -85,7 +85,6 @@ export default function WorkPage() {
 
         <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(26px,3.6vw,52px)', paddingLeft: 'clamp(0px,7vw,150px)' }}>
           <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,4vw,60px)', lineHeight: '.96' }}>Selected Work.</h2>
-          <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover for detail</span>
         </div>
 
         <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap', gap: 'clamp(20px,3.4vw,64px)', paddingLeft: 'clamp(0px,7vw,150px)' }}>

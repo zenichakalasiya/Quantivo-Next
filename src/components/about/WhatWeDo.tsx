@@ -132,7 +132,6 @@ export function WhatWeDo() {
     <section data-screen-label="About / What We Do" style={{ padding: 'clamp(48px,6vw,96px) clamp(16px,3.4vw,48px) clamp(60px,8vw,120px)', borderTop: '1px solid var(--line)' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', marginBottom: 'clamp(30px,4vw,56px)' }}>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,4.6vw,72px)', lineHeight: '.94' }}>What We Do.</h2>
-        <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover to explore</span>
       </div>
 
       {/* flex-start so both columns begin on the same line, and so the sticky
@@ -186,6 +185,7 @@ function Circle({ c, pos, spin, depth, carve }: { c: (typeof CAPABILITIES)[numbe
       onBlur={() => setOn(false)}
       tabIndex={0}
       data-cursor={c.title}
+      data-cursor-tone="light"
       aria-label={`${c.title}: ${c.items.join(', ')}`}
       style={{
         position: 'absolute',

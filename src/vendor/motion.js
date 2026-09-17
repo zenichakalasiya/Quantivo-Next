@@ -138,6 +138,12 @@ function _initCursor() {
       dot.style.opacity = '1';
       const hot = e.target instanceof Element ? e.target.closest('[data-cursor]') : null;
       const txt = hot ? hot.getAttribute('data-cursor') : '';
+      // NOT in the original — added in the port. An element can ask for the
+      // light pill with data-cursor-tone="light" when it turns the same
+      // gradient as the cursor on hover and the two would blend into each
+      // other. The look lives in globals.css under [data-qv-cursor][data-tone].
+      const tone = txt ? hot.getAttribute('data-cursor-tone') : null;
+      if (tone) dot.setAttribute('data-tone', tone); else dot.removeAttribute('data-tone');
       if (txt) {
         dot.style.width = 'auto'; dot.style.height = 'auto';
         dot.style.padding = '9px 13px'; dot.style.borderRadius = '99px';

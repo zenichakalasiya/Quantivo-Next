@@ -82,7 +82,6 @@ export function TeamMarquee() {
     <section data-screen-label="About / Team" style={{ padding: 'clamp(48px,6vw,96px) 0', borderTop: '1px solid var(--line)', overflow: 'hidden' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px', padding: '0 clamp(16px,3.4vw,48px)', marginBottom: 'clamp(24px,3.4vw,48px)' }}>
         <h2 data-split="" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(34px,4.6vw,72px)', lineHeight: '.94' }}>Our Team.</h2>
-        <span style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--mute)' }}>Hover to read</span>
       </div>
 
       <div

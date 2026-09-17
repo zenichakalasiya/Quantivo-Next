@@ -28,7 +28,6 @@ export function Articles() {
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--mute)' }}>Drag to browse</span>
           <button data-art-next="" data-cursor="Next" aria-label="Next article" style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'var(--grad)', color: '#fff', display: 'grid', placeItems: 'center', fontSize: '19px' }}>&#8594;</button>
         </div>
       </div>

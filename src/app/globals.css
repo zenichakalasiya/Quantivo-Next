@@ -211,3 +211,13 @@ summary::-webkit-details-marker{display:none}
  * this default. Off for reduced-motion, matching every other animation here. */
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* ===== Cursor pill, light tone =====
+ * For elements that turn the brand gradient on hover (the About circles): a
+ * gradient pill over a gradient face disappears into it. data-cursor-tone="light"
+ * on the element makes _initCursor stamp data-tone on the dot, which flips it to
+ * white with the gradient carried by the label text instead.
+ *
+ * !important because the dot's background and the label's colour are set inline. */
+[data-qv-cursor][data-tone="light"]{background:#fff!important;box-shadow:0 6px 20px rgba(9,9,12,.28)}
+[data-qv-cursor][data-tone="light"] [data-qv-cursor-label]{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent!important}
