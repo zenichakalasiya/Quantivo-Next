@@ -41,13 +41,14 @@ frameworks. GSAP, ScrollTrigger and three.js came across at identical pinned ver
 - `src/components/about/` — the about sections, in page order.
 - `src/vendor/` — code deliberately NOT rewritten (see below).
 
-**Only `/contact` is still a port.** Every other route has been redesigned
-section by section against client reference images, sticky-note sketches and, for
-services, a live reference site — see "The home page redesign", "The about page
-rebuild", "The work page rebuild", "The insights page rebuild" and "The services
-page rebuild" below. `Quantivo.dc.html` remains the source of truth for
-`/contact` and for the copy in `content.ts`, but do not "fix" the redesigned
-pages back toward it.
+**No route is a port any more.** Every page has been redesigned against client
+reference images, sticky-note sketches or a live reference site — see "The home
+page redesign", "The about page rebuild", "The work page rebuild", "The insights
+page rebuild" and "The services page rebuild" below. `/contact` was the last: a
+giant headline left and an underline-only four-field form right (its own header
+comment in `src/app/contact/page.tsx` explains what was dropped and why).
+`Quantivo.dc.html` remains the source of the client copy in `content.ts`, but do
+not "fix" any page back toward its layout.
 
 ### Vendored, not rewritten
 
@@ -159,8 +160,22 @@ its own title; instead the next section rides up, opaque, covers the previous
 body and leaves its title showing. The titles end up stacked and exactly one body
 is visible. The opaque `var(--bg)` background is what makes the covering work.
 
+**The stack's geometry is measured, not styled** — see `layout()` in
+`WhatWeDo.tsx` and lesson 18. Plain sticky broke twice: the last section never
+stuck, and the three released one at a time on the way out. A ResizeObserver
+measures each title and body and sets the stacking offset, a runway spacer after
+the last section, and an invisible extension on each section's sticky box so all
+three let go together. If you change the copy, spacing or number of sections,
+this keeps working — do not replace it with hard-coded pixel values.
+
+Each section also carries `boxShadow: 0 0 0 3px var(--bg)`. The column's edges
+land on fractional pixels, so without it the section underneath showed through
+the anti-aliased edge as a hairline tick beside each divider.
+
 **The four circles are a pinwheel**, each overlapping the next. See lesson 11 —
-the cycle cannot be expressed with `z-index`, so the last circle is masked.
+the cycle cannot be expressed with `z-index`, so the last circle is masked. They
+flip to the brand gradient on hover, so they carry `data-cursor-tone="light"`
+(see "Conventions") to keep the cursor pill from blending into them.
 
 ### Three more things learned here
 
@@ -289,7 +304,7 @@ rotated 180° about its own centre (which maps a rect onto itself but moves the
 path's start to the opposite corner), `pathLength="100"` so "half a lap" is
 literally `50`.
 
-## Eight more things learned the hard way
+## Nine more things learned the hard way
 
 9. **`stroke-dashoffset` slides a dash pattern; it does not hide it.** Setting
    the offset to the full length to "hide" a stroke just moves the dash one lap
@@ -347,6 +362,18 @@ literally `50`.
     double-`requestAnimationFrame`: rAF never fires at all while the tab is
     backgrounded (see the debugging note below), which would leave the slide
     stuck OFF indefinitely instead of merely delayed.
+
+18. **The last child of a sticky stack can never stick, and the stack releases
+    unevenly.** A sticky element is held only while its parent still extends
+    below it; the last child's bottom IS the parent's bottom, so it has zero
+    runway and scrolls straight past its line. And each sticky child is released
+    when the parent's bottom reaches (its sticky line + its own height) — so
+    children of different heights let go at different scroll positions. The fix
+    in `WhatWeDo.tsx`: a measured spacer after the last child, and a hidden
+    extension on each child's box (with the next child pulled up over it by a
+    negative margin) so that sum is equal for all of them. Found by stepping the
+    scroll in 100px increments and logging each row's `top` — the bug was
+    obvious in the numbers and invisible in a single screenshot.
 
 ## The home outro — Q draw-and-reveal
 
@@ -453,3 +480,16 @@ Layout is inline `style={{}}` with `clamp()`; there are no CSS classes anywhere,
 matching the original. Stateful styling is `[data-*]` attribute selectors in
 `globals.css`. When porting more markup, keep every `data-*` hook — the motion layer
 selects on them.
+
+**The custom cursor.** `data-cursor="Label"` on any element turns the follow-dot
+into a gradient pill showing that label. Add `data-cursor-tone="light"` alongside
+it on anything that itself turns the brand gradient on hover, and the pill goes
+white with gradient text instead, so the two don't blend into each other. This is
+the one addition made to the vendored `motion.js` (`_initCursor`, marked in a
+comment); the styling is under "Cursor pill, light tone" in `globals.css`.
+
+**No interaction hints in section headings.** The client removed every small grey
+"Hover a card" / "Drag to browse" / "Keep scrolling" caption from the right of a
+section heading, site-wide. Don't add new ones. The dashed placeholder notices
+("Sample articles — …", "Placeholder figures") are a different thing and stay
+until real content lands.
