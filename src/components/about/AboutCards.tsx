@@ -87,7 +87,7 @@ export function AboutCards() {
                   same job the Vision / Mission / Why headings do further down
                   the page. It used to claim to be the same SIZE as those, which
                   had stopped being true — they are clamp(24px,2.9vw,44px). This
-                  6px bump moves the two closer rather than further apart.
+                  8px bump moves the two closer rather than further apart.
 
                   Note the +6px is added to the FLUID term as well as the bounds.
                   At any normal viewport the vw term is what the clamp actually
@@ -96,11 +96,11 @@ export function AboutCards() {
               <h3
                 style={{
                   fontFamily: "'Bebas Neue',sans-serif",
-                  fontSize: 'clamp(27px,calc(2.15vw + 6px),39px)',
+                  fontSize: 'clamp(29px,calc(2.15vw + 8px),41px)',
                   lineHeight: '1.08',
                   // Up from .03em. Bebas is condensed, and the extra tracking
                   // keeps the letters from closing up at the larger size.
-                  letterSpacing: '.05em',
+                  letterSpacing: '.07em',
                   margin: '0',
                 }}
               >
