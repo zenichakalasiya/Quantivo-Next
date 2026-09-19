@@ -83,11 +83,29 @@ export function AboutCards() {
                 <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,3vw,50px)', lineHeight: '1', letterSpacing: '.03em', color: 'var(--line)' }}>{c.n}</span>
               </div>
 
-              {/* Same size as the Vision / Mission / Why statement heading
-                  further down the page — both are a white Bebas statement line
-                  introducing a block of copy, so they should read as the same
-                  level of the page, not two different ones. */}
-              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(21px,2.15vw,33px)', lineHeight: '1.08', letterSpacing: '.03em', margin: '0' }}>{c.title}</h3>
+              {/* A white Bebas statement line introducing a block of copy, the
+                  same job the Vision / Mission / Why headings do further down
+                  the page. It used to claim to be the same SIZE as those, which
+                  had stopped being true — they are clamp(24px,2.9vw,44px). This
+                  6px bump moves the two closer rather than further apart.
+
+                  Note the +6px is added to the FLUID term as well as the bounds.
+                  At any normal viewport the vw term is what the clamp actually
+                  resolves to, so raising only the min and max would change
+                  nothing on screen. */}
+              <h3
+                style={{
+                  fontFamily: "'Bebas Neue',sans-serif",
+                  fontSize: 'clamp(27px,calc(2.15vw + 6px),39px)',
+                  lineHeight: '1.08',
+                  // Up from .03em. Bebas is condensed, and the extra tracking
+                  // keeps the letters from closing up at the larger size.
+                  letterSpacing: '.05em',
+                  margin: '0',
+                }}
+              >
+                {c.title}
+              </h3>
 
               {/* revealed body. min-height 0 lets the column actually scroll-clip
                   inside the fixed card height instead of overflowing it. */}
