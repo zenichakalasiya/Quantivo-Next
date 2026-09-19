@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ABOUT_CARDS } from '@/data/content';
+import { AboutCardGlyph } from './AboutCardGlyph';
 
 /**
  * About / section 1 — three cards side by side, one widening on hover.
@@ -55,6 +56,9 @@ export function AboutCards() {
                 // overflow guard below quietly turned into a scrollbar.
                 flex: on ? '3 1 260px' : '1 1 260px',
                 minWidth: '0',
+                // The glyph in the card's empty bottom is positioned against
+                // this, and clipped by the overflow + radius below.
+                position: 'relative',
                 // Sized to card 01, which carries the most words: a long lead
                 // and two full paragraphs. The height is fixed rather than
                 // content-driven, or every card below would jump as the pointer
@@ -72,6 +76,8 @@ export function AboutCards() {
                 borderColor: on ? 'var(--a)' : 'var(--line)',
               }}
             >
+              <AboutCardGlyph index={i} on={on} />
+
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
                 <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--a)' }}>{c.eyebrow}</span>
                 <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,3vw,50px)', lineHeight: '1', letterSpacing: '.03em', color: 'var(--line)' }}>{c.n}</span>

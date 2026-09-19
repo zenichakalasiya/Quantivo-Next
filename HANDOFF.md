@@ -1,107 +1,98 @@
-# Handoff — 2026-09-17 22:14
+# Handoff — 2026-09-19 15:20
 
 ## Read first
 
 In `CLAUDE.md`:
-- **"The about page rebuild"** — the new paragraphs on how the Vision / Mission /
-  Why stack's geometry is *measured*, and why (lesson **18**). Don't replace that
-  measurement with hard-coded pixels.
-- **"Conventions"** — two new rules: the `data-cursor-tone="light"` cursor option,
-  and *no interaction hints in section headings*.
-- The Architecture note near the top was stale (it still said `/contact` was a
-  port); it now reflects that every route is a redesign.
+- **"The About cards' QUANTIVO wordmark"** (under "The about page rebuild") — the
+  whole design and the one trade-off it accepts.
+- Lessons **19** (edge-to-edge vs. immunity to resizing — you cannot have both)
+  and **20** (diagonal stripe spacing needs pitch × √2).
 
 ## What we worked on this session
 
-Fixed the About page's Vision / Mission / Why scroll so the third section behaves
-like the first two, then two site-wide polish requests: a light cursor pill over
-the About circles, and removing every "Hover a card"-style hint from section
-headings.
+One thing only: the striped **QUANTIVO wordmark** that now fills the empty
+bottom of the three About cards. New component
+`src/components/about/AboutCardGlyph.tsx`, mounted from `AboutCards.tsx`.
+
+It went through about six design directions before landing — abstract geometric
+glyphs, monoline letterforms, letters assembled from visible primitives, then
+three different client reference alphabets. Only the last one shipped; the rest
+are gone. **Don't re-propose the earlier ones**, they were each rejected on
+sight.
 
 ## Completed
 
-- **Why Quantivo now sticks under Mission's title**, and all three sections leave
-  the screen together (`src/components/about/WhatWeDo.tsx`).
-  - Cause, measured by stepping the scroll 100px at a time: the last section had
-    zero runway (sticky can't hold the last child of its parent), so it scrolled
-    straight past its 270px line and over Mission's title; and the three sections
-    — 323 / 323 / 392px tall — released at different scroll positions on the way
-    out.
-  - Fix: `layout()` + a ResizeObserver measure each title and body, then set a
-    runway spacer after the last section, an invisible extension on each
-    section's sticky box (next section pulled up over it) so all release
-    together, and the stacking offset from the measured title row (80.5px, it had
-    been hard-coded at 82).
-  - Verified: Why holds at Mission's line + one title-height, no title is ever
-    covered, all three move out in step with constant gaps; resting layout
-    unchanged.
-- **Hairline tick beside each divider fixed** — the column edge lands on a
-  fractional pixel, so the text underneath showed through the anti-aliased edge.
-  A 3px `boxShadow` ring of page background on each section covers it.
-- **Arrows removed** from the right of the Vision / Mission / Why titles.
-- **Light cursor pill over the About circles** — the circles flip to the brand
-  gradient, and the pill was the same gradient. Opt-in `data-cursor-tone="light"`
-  (small addition to `_initCursor` in vendored `motion.js`, plus CSS in
-  `globals.css`) makes it white with gradient text. Checked in the browser.
-- **Eight heading hint labels removed**: About ("Hover a card", "Hover to
-  explore", "Hover to read"), Home ("Hover a card", "Drag to browse", "Keep
-  scrolling — five steps"), Work ("Hover for detail"), Insights ("Hover a card to
-  see its cover").
-- All committed and deployed (`89c5b4b`, `bee2ec3`).
+- **`AboutCardGlyph.tsx`** — one wordmark spanning all three cards, sliced by
+  the card edges so A and I break across the boundaries and the row reads as one
+  continuous word.
+  - Letters are solid shapes with stripes **cut out** via `<mask>`, per the
+    client's reference sheet.
+  - Stripe rhythm is two constants (`STRIPE_W`, `STRIPE_PITCH`); every cut and
+    `BAR_H` derives from them.
+  - Verified by measurement, not by eye: all 8 letters land on an exact 150
+    advance and the word spans 0..1180 precisely.
+- **`AboutCards.tsx`** — `position: relative` on the article, plus
+  `<AboutCardGlyph index={i} on={on} />`. That is the only change to it.
+- `tsc --noEmit` clean; checked in both dark and light themes.
 
 ## In progress
 
-Nothing mid-flight.
+Nothing mid-flight. Both files are complete and the page renders.
 
 ## Next steps
 
-1. **Delete the dead footer files** (carried over from the previous handoff, still
-   true): `src/components/SiteFooter.tsx` and
-   `src/components/qreveal/SplitWordmark.tsx` are unused since the shared-footer
-   change. (`QuantivoLogoFooter.tsx` is already gone.) Confirm with a grep for
-   imports first.
-2. **Replace the placeholder content** — unchanged, in priority order:
-   `public/img/before/*` (fabricated before-shots on /services), `ARTICLES` (all
-   invented), `HOME_TESTIMONIALS` (invented ratings and dates), `WORK` (4 of 10
-   projects invented), `HOME_TEAM` / `TEAM`, `STATS`, `ABOUT_VMW[].points`.
-3. **Per-service and per-article routes** — `DETAIL[].paras` is unused since the
-   services rebuild, and every insights `Read` control goes to `/contact`.
-4. **Renumber the home section eyebrows** — still stale since the section
-   reorder (Services `04` sits third, Work `06` fourth, Testimonials `05` eighth).
-5. From the previous handoff: keep an eye on the hero slider's autoplay speed in
-   a clean tab — once seen cycling faster than `AUTOPLAY_MS`, not reproduced.
+1. **Look at it in a real browser.** Everything this session was verified by
+   rasterising the component's own path data with `sharp` — accurate for
+   artwork, sizing and both themes, but it does **not** show the hover
+   transition, the gradient cross-fade, or real Bebas/Manrope. Nobody has seen
+   this move.
+2. **Decide on the hover resize.** The letters scale with the card
+   (hovered 132%, siblings 84%). If the sibling shrink reads badly, the fix is
+   one line: fade all three wordmarks whenever *any* card is open, so the resize
+   happens under a fade.
+3. **Mobile.** Cards stack full-width, so each shows a third of a wordmark three
+   card-widths wide — abstract stripes, not a word. No fallback yet.
+4. Carried over, untouched this session: delete the dead
+   `src/components/SiteFooter.tsx` and `src/components/qreveal/SplitWordmark.tsx`;
+   replace the placeholder content (`public/img/before/*`, `ARTICLES`,
+   `HOME_TESTIMONIALS`, `WORK`, `HOME_TEAM`/`TEAM`, `STATS`); per-service and
+   per-article routes; renumber the stale home section eyebrows.
 
 ## Decisions made
 
-- **Measure the sticky stack instead of styling it.** Section heights depend on
-  copy, font loading and viewport height (the title padding is vh-based), so any
-  constant is wrong somewhere. A ResizeObserver keeps it right as copy changes.
-- **Release all three sections together** rather than letting sticky's default
-  per-height release run — a staggered exit re-creates the overlap bug on the
-  way out.
-- **Cursor tone is opt-in per element**, not automatic. Only elements that turn
-  the brand gradient under the pointer need it; everywhere else the gradient pill
-  is still the right look.
-- **Kept the placeholder notices** ("Sample articles — editorial copy to be
-  supplied", "Placeholder figures", "Dummy copy") while removing hint labels:
-  they flag fake content rather than explain an interaction. Also kept the
-  before/after "Click to see" disc (it *is* the control) and `/q-reveal` (an
-  unlinked test page).
+- **One wordmark across the row, not three per-card ones.** The `<svg>` is the
+  full row width and each card is offset by its index; the cards' existing
+  `overflow: hidden` does the cutting. This is what makes A and I slice across
+  the boundaries.
+- **The slicing geometry lives in CSS, not the viewBox.** The gap between two
+  halves of a cut letter IS the real card gap at every viewport, because the
+  same `clamp()` drives both. A gap baked into the viewBox would drift, since
+  the gap-to-card ratio changes with width.
+- **Edge-to-edge was chosen over immunity to the hover resize.** These are
+  mutually exclusive (lesson 19). Measured the cost first: the flex split is
+  1/1/3, not proportional, so siblings only drop to 84%.
+- **Stripes are generated from one pitch, never written out.** The literal
+  version had already drifted into two different rhythms.
+- **Where the reference alphabet hurts legibility, legibility won.** It draws A
+  as an arch and V as a round bowl, which in a word read as "n" and "u". Both
+  are triangles with counters instead.
 
 ## Gotchas & notes
 
-- **Find sticky bugs by stepping the scroll and logging `top`**, not by
-  screenshots. `scrollTo(base + d)` in 100px steps and print each row's
-  `getBoundingClientRect().top` — "never stopped at its line" and "released
-  early" are obvious in the numbers and invisible in a single frame.
-- **Set `document.documentElement.style.scrollBehavior = 'auto'` before
-  programmatic scrolling in tests** — the site now has smooth scroll on `html`,
-  which makes `scrollTo` animate and measurements land mid-scroll.
-- **The renderer wedges constantly** under CDP on this site: long measurement
-  loops and `computer` screenshots/zooms time out. Keep JS probes short, open a
-  fresh tab when it freezes, and use real wheel `scroll` actions — screenshots
-  taken right after a wheel scroll were the reliable ones this session.
-- **Hover a circle twice** when testing: the first `hover` often lands before the
-  page settles and never fires `pointermove`, leaving the cursor pill stale.
-- **The follow-cursor lags the pointer by design** (eased), so a zoom right after
-  a hover can catch the pill mid-travel or already moved on.
+- **The bash heredoc/`node -e` layer eats backslashes and template literals.**
+  Several edits silently produced empty `return ;` statements and broken regexes
+  this session. For anything containing backticks or `\d`, use the Write tool or
+  a plain `.js` file — don't inline it in a shell command.
+- **Harnesses go stale silently.** `bounds.js` kept measuring on a 320-wide
+  canvas after the component moved to 480, clipping every glyph and reporting a
+  right margin of 0 — which looked like a real centring bug. All harnesses now
+  read the canvas size and letter data out of the component itself.
+- **The measurement scripts live outside the repo**, in this session's scratchpad
+  (`glyphdata.js`, `glyph-preview.js`, `measure.js`). They are not committed. If
+  this artwork needs changing again they are worth recreating — `measure.js`
+  catches advance errors instantly.
+- **A dev server was already running on :3000** for this project; starting a
+  second one fails with "Another next dev server is already running".
+- **Chrome/Edge automation was unavailable all session** — the Claude extension
+  isn't installed in the Edge profile, so `list_connected_browsers` returns
+  empty. Being signed into claude.ai is not sufficient.

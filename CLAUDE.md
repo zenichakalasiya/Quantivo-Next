@@ -148,7 +148,7 @@ Global are gone; Journey and Team came back rebuilt.
 
 | Section | Component | Mechanic |
 | --- | --- | --- |
-| About Quantivo | `AboutCards.tsx` | Three cards; hovering one animates `flex-grow` so the row's total width never changes. Fixed height. |
+| About Quantivo | `AboutCards.tsx` + `AboutCardGlyph.tsx` | Three cards; hovering one animates `flex-grow` so the row's total width never changes. Fixed height. One striped QUANTIVO wordmark runs across all three behind the copy — see below. |
 | What We Do | `WhatWeDo.tsx` | Four overlapping circles pinned beside the Vision/Mission/Why stack. Circles flip 180° at 260ms to show sub-services. |
 | Our Journey | `JourneyTimeline.tsx` | Vertical 2021–2025 timeline, rows alternating either side of a rail that fills on scroll. |
 | Our Team | `TeamMarquee.tsx` | Continuously scrolling cards; hover darkens the portrait bottom-up and reveals the quote. |
@@ -193,6 +193,55 @@ flip to the brand gradient on hover, so they carry `data-cursor-tone="light"`
 8. **A fixed-height card will silently eat a sentence.** Any card whose height is
    fixed to stop layout jump needs `overflow-y: auto` as a guard — it already
    clipped copy once here, invisibly, because nothing errors.
+
+### The About cards' QUANTIVO wordmark
+
+`AboutCardGlyph.tsx`. At rest the three About cards show an eyebrow, a number
+and a title, then two thirds of nothing — the card height is sized to card 01's
+full hover copy. That space now carries the wordmark.
+
+**It is ONE wordmark, not three.** Every card renders the identical eight-letter
+QUANTIVO; the `<svg>` is as wide as all three cards plus both gaps
+(`width: calc(300% + 2 * gap)`) and each card is pulled left by its own index
+(`left: calc(-N * (100% + gap))`). The cards' existing `overflow: hidden` does
+the cutting, so **A and I land on the card boundaries and are sliced by them** —
+A's tail reappears at the head of card 2, I's head at its foot. That is what
+makes the row read as one continuous word.
+
+**The geometry is in CSS, not in the viewBox, and that is the point.** The gap
+between two halves of a sliced letter IS the real card gap at every viewport,
+because the same `clamp(12px,1.4vw,20px)` drives both. Baking a gap into the
+viewBox would drift, since the gap-to-card ratio changes with width.
+
+**Each letter is a solid shape with stripes CUT OUT of it**, built to the
+client's reference alphabet — a circle plus a squared corner makes Q, two bars
+and a half-annulus make U, a bar makes I. The stripes are subtraction, not
+linework, so every letter renders through a `<mask>` (silhouette white, stripes
+stroked black over it). Drawing them in the card's background colour instead
+would force them opaque, and the wordmark sits at 0.12.
+
+**The stripe rhythm is two constants**, `STRIPE_W = 5` and `STRIPE_PITCH = 9`,
+with every cut generated from them. It is generated rather than written out
+because the literal version drifted: the diagonals ended up 9 wide on a ~17.7
+perpendicular pitch while T and I were 5 on 9, and the diagonal letters read
+visibly coarser. `BAR_H` is derived the same way, so a striped bar's end margin
+always equals the gap between its cuts.
+
+**The letters need no coordinates of their own.** Inside each of the three
+`GLYPHS` groups they already sit 150 apart — exactly the full wordmark's advance
+— so joining the groups into one line is three translations: `-25`, `+350`,
+`+725`. Eight letters of 130 on a 150 advance = 1180 wide.
+
+**Known trade-off:** the box matches the art's aspect, so the scale is
+width-driven and the letters resize with the card on hover. The flex split is
+1/1/3 rather than proportional, so it is small — the hovered card reaches 132%
+while its own wordmark is already fading out, and its two siblings settle at
+84%. A height-driven box was immune to this but could never reach the card
+edges, which was the requirement.
+
+**On mobile the cards stack full-width**, so each still shows a third of a
+wordmark three card-widths wide; it reads as abstract striped shapes rather
+than a word. No narrow-viewport fallback yet.
 
 ## The work page rebuild
 
@@ -375,6 +424,21 @@ literally `50`.
     scroll in 100px increments and logging each row's `top` — the bug was
     obvious in the numbers and invisible in a single screenshot.
 
+19. **A shape sized to its container reaches the edges; a shape sized to its
+    own aspect never does.** `preserveAspectRatio="… meet"` scales by
+    `min(boxW/artW, boxH/artH)`, so whichever ratio is smaller wins. A box
+    deliberately WIDER in aspect than the art is height-driven and immune to a
+    width animation — but it also leaves slack either side forever. You cannot
+    have both edge-to-edge and immunity; pick, and write down which.
+    (`AboutCardGlyph.tsx` picked edge-to-edge.)
+
+20. **Diagonal stripes need a step of pitch × √2, not pitch.** A 45° line moved
+    one unit PERPENDICULAR travels √2 horizontally, so stepping diagonals by the
+    perpendicular pitch packs them 1.41× too tight against horizontal stripes of
+    the "same" spacing. This is exactly how the About wordmark's diagonal letters
+    ended up visibly coarser than T and I — two sets of literal coordinates that
+    were never the same rhythm. Generate every cut from one pitch constant.
+
 ## The home outro — Q draw-and-reveal
 
 Home ends with a scroll sequence modelled on wearebulletproof.com: the logo Q
@@ -493,3 +557,7 @@ comment); the styling is under "Cursor pill, light tone" in `globals.css`.
 section heading, site-wide. Don't add new ones. The dashed placeholder notices
 ("Sample articles — …", "Placeholder figures") are a different thing and stay
 until real content lands.
+
+## Handoff
+
+Latest session state is in [HANDOFF.md](HANDOFF.md) — read it first.
